@@ -22,16 +22,18 @@
         level_data = [{
             x: Crafty.viewport.width / 2 - 50,
             y: Crafty.viewport.height - 50,
-            w: 100,
-            h: 20
+            w: 50,
+            h: 26
         }];
 
+        var vw = (Crafty.viewport.width - 100)
+          , vh = -Crafty.viewport.y + Crafty.viewport.height;
         for(i = 0; i < 10000; i++) {
             level_data.push({
-                x: ~~ (Math.random() * (Crafty.viewport.width - 100)),
-                y: -Crafty.viewport.y + Crafty.viewport.height - i * 100,
+                x: ~~ (Math.random() * vw),
+                y: vh - i * 100,
                 w: 50 + 50 * Math.random(),
-                h: 20,
+                h: 26,
                 num: i
             });
         }
@@ -503,6 +505,8 @@
 
     function onHitPlatform(e) {
 
+        return;
+
         var c = e[0],
             obj = c.obj,
             octocat = Crafty("Player"),
@@ -513,7 +517,6 @@
 
         // if (-1 === c.normal.y) {
         if(-1 === c.normal.y) {
-
 
             Crafty.e("2D, DOM, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
                 x: this.x + 16,
@@ -593,50 +596,35 @@
             alpha: 0.2
         }).color("#006064");
 
-        // var clone = Crafty.e("2D, DOM, OctoClone, Octocat, SpriteAnimation, Tween, Delay").origin('center').attr({
-        //     x: 160,
-        //     y: Crafty.canvas._canvas.height / 2 - 48,
-        //     z: 1,
-        //     alpha: 0.5
-        // }).reel("walk", 200, 0, 0, 3).animate('walk', -1);
-
-        var octocat = Crafty.e("2D, DOM, Player, Octocat, SpriteAnimation, Physics, PlayerControls, Collision, Tween, Delay").origin('center').setName("octocat").attr({
+        var octocat = Crafty.e("2D, DOM, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
+        .setName("octocat")
+        .attr({
             x: 160,
             y: Crafty.canvas._canvas.height / 2 - 48,
             z: 999
-        }).reel("walk", 200, 0, 0, 3).animate('walk', -1)
-        // .gravity()
-        // .gravityConst(1)
-        // .collision(new Crafty.polygon([16, 80], [80, 80], [80, 16], [16, 16]))
-        // .collision(new Crafty.polygon([0, 96], [96, 96], [96, 0], [0, 0]))
-        .collision(new Crafty.circle(48, 48, 32)).onHit("Star", onHitStar).onHit("Fork", onHitFork).onHit("Platform", onHitPlatform);
+        })
+        .collision([0, 57], [50, 57], [25, 40])
+        .origin('center')
+        .twoway(4, 7)
+        .reel("walk", 450, 0, 0, 7).animate('walk', -1)
+        .gravity('Platform')
+        .onHit("Star", onHitStar)
+        .onHit("Fork", onHitFork)
+
+        octocat.bind("KeyDown", function (e) {
+            if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+                this._canJumpAgain = true;
+            } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+                this._up = true;
+                this._gy = 0;
+                this._canJumpAgain = false;
+            }
+        });        
 
         var ol = [{
             x: octocat.x,
             y: octocat.y
         }];
-
-        // function updateClone(e) {
-        //     // var ov = new Crafty.math.Vector2D(octocat.x, octocat.y),
-        //     //     oc = new Crafty.math.Vector2D(this.x, this.y),
-        //     //     d = oc.distance(ov);
-        //     // // console.log(d);
-        //     // if(e.frame > 100 && d !== 0 && d < 200) {
-        //     //     // Crafty.scene('dead');
-        //     // }
-        //     var p = ol.pop();
-        //     this.delay(function () {
-        //         this.x = p.x;
-        //         this.y = p.y;
-        //         // }, 750);
-        //     }, 1000);
-        //     ol.push({
-        //         x: octocat.x,
-        //         y: octocat.y
-        //     });
-        // }
-        // clone.bind("EnterFrame", updateClone);
-
 
         function scrollViewport(e) {
             // if(isDead) {
@@ -775,10 +763,10 @@
                     return;
                 }
 
-                if(this._oldpos.y > y) {
-                    this._oldpos.y = y;
-                    if(this._enabled) vp.y = Math.max(vp.y, vp.height / 2 - y - 200);
-                }
+                // if(this._oldpos.y > y) {
+                //     this._oldpos.y = y;
+                //     if(this._enabled) vp.y = Math.max(vp.y, vp.height / 2 - y - 200);
+                // }
             }
             octocat.bind("EnterFrame", updateOctocat);
         })(Crafty.viewport);
@@ -791,7 +779,8 @@
                 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
             };
             for(i in level_data.slice(1, 10)) {
-                Crafty.e("2D, Canvas, Color, PlatformBlue, Platform, Collision, Tween, Delay").attr(level_data[i])
+                var clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
+                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + clr).attr(level_data[i])
                 // .color("#c2aa48")
                 //.color("#FF00FF8")
                 // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
