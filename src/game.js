@@ -16,9 +16,21 @@
         n = 10,
         isDead = false;
 
+    function clone(obj) {
+        if(obj == null || typeof(obj) != 'object')
+            return obj;
+        var temp = obj.constructor(); // changed
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key)) {
+                temp[key] = clone(obj[key]);
+            }
+        }
+        return temp;
+    }
 
     function initLevel() {
-        var i = 0;
+        var i = 0, luck, platform2add;
+
         level_data = [{
             x: Crafty.viewport.width / 2 - 50,
             y: Crafty.viewport.height - 50,
@@ -28,14 +40,42 @@
 
         var vw = (Crafty.viewport.width - 100)
           , vh = -Crafty.viewport.y + Crafty.viewport.height;
-        for(i = 0; i < 10000; i++) {
-            level_data.push({
+
+        i = 0;
+        while (i < 5000) {
+            platform2add = {
                 x: ~~ (Math.random() * vw),
                 y: vh - i * 100,
-                w: 50 + 50 * Math.random(),
+                w: 50, //+ 75 * Math.random(),
                 h: 26,
                 num: i
-            });
+            };
+            level_data.push(platform2add);
+            luck = Math.random();
+            if (luck > 0.75) {
+                platform2add = clone(platform2add);
+                platform2add.x -= 50;
+                i += 1;
+                platform2add.i += i;
+                level_data.push(platform2add);
+            }
+            luck = Math.random();
+            if (luck < 0.25) {
+                platform2add = clone(platform2add);
+                platform2add.x += 50;
+                i += 1;
+                platform2add.i += i;
+                level_data.push(platform2add);
+            }
+            luck = Math.random();
+            if (luck > 0.25) {
+                platform2add = clone(platform2add);
+                platform2add.x = Crafty.viewport.width - platform2add.x;
+                i += 1;
+                platform2add.i += i;
+                level_data.push(platform2add);
+            }
+            i += 1;
         }
     }
     initLevel();
@@ -603,11 +643,11 @@
             y: Crafty.canvas._canvas.height / 2 - 48,
             z: 999
         })
-        .collision([0, 57], [50, 57], [25, 40])
         .origin('center')
         .twoway(4, 7)
         .reel("walk", 450, 0, 0, 7).animate('walk', -1)
         .gravity('Platform')
+        .collision([0, 47], [50, 47], [25, 57])
         .onHit("Star", onHitStar)
         .onHit("Fork", onHitFork)
 
