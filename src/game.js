@@ -13,7 +13,9 @@
         score = 0,
         stars = 0,
         forks = 0,
-        n = 10,
+        cur_platforms = 0,
+        max_platforms = 10,
+        step_platforms = 1,
         isDead = false,
         METERS_DEPTH = 1000,
         meters = METERS_DEPTH,
@@ -33,52 +35,55 @@
     }
 
     function initLevel() {
-        var i = 0, luck, platform2add;
+        var luck, platform2add;
 
         level_data = [{
             x: Crafty.viewport.width / 2 - 50,
-            y: Crafty.viewport.height - 50,
+            y: Crafty.viewport.height - 60,
             w: 50,
-            h: 26
+            h: 26,
+            num: 0,
+            clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
         }];
 
         var vw = (Crafty.viewport.width + 50)
-          , vh = -Crafty.viewport.y + Crafty.viewport.height;
+          , vh = -Crafty.viewport.y + Crafty.viewport.height - 150;
 
-        i = 0;
-        while (i < 5000) {
+        var i = 1, j = 0;
+        while (i < 100) {
             platform2add = {
-                x: -50 + ~~ (Math.random() * vw),
-                y: vh - i * (50 + 20 * Math.random()),
+                x: -100 + ~~ (Math.random() * vw),
+                y: vh - i * 100 + (50 * Math.random()),
                 w: 50,
                 h: 26,
-                num: i
+                num: i,
+                clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
             };
             level_data.push(platform2add);
-            luck = Math.random();
-            if (luck > 0.75) {
-                platform2add = clone(platform2add);
-                platform2add.x -= 50;
-                i += 1;
-                platform2add.i += i;
-                level_data.push(platform2add);
-            }
-            luck = Math.random();
-            if (luck < 0.25) {
-                platform2add = clone(platform2add);
-                platform2add.x += 50;
-                i += 1;
-                platform2add.i += i;
-                level_data.push(platform2add);
-            }
-            luck = Math.random();
-            if (luck > 0.25) {
-                platform2add = clone(platform2add);
-                platform2add.x = Crafty.viewport.width - platform2add.x;
-                i += 1;
-                platform2add.i += i;
-                level_data.push(platform2add);
-            }
+            j = 0;
+            // while(j < 2) {
+            //     luck = Math.random();
+            //     if (luck > 0.75) {
+            //         platform2add = clone(platform2add);
+            //         platform2add.x -= 50;
+            //         i += 1;
+            //         platform2add.i = i;
+            //         level_data.push(platform2add);
+            //     } else if (luck < 0.25) {
+            //         platform2add = clone(platform2add);
+            //         platform2add.x += 50;
+            //         i += 1;
+            //         platform2add.i = i;
+            //         level_data.push(platform2add);
+            //     } else if (luck > 0.25) {
+            //         platform2add = clone(platform2add);
+            //         platform2add.x = Crafty.viewport.width - platform2add.x;
+            //         i += 1;
+            //         platform2add.i = i;
+            //         level_data.push(platform2add);
+            //     }
+            //     j += 1;
+            // }
             i += 1;
         }
     }
@@ -570,8 +575,8 @@
         var octocat = Crafty.e("2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
         .setName("octocat")
         .attr({
-            x: 160,
-            y: Crafty.canvas._canvas.height / 2 - 48,
+            x: Crafty.viewport.width / 2,
+            y: Crafty.viewport.height / 2,
             z: 999
         })
         .origin('center')
@@ -582,8 +587,6 @@
         .animate('stand')
         .gravity('Platform')
         .collision([0, 47], [50, 47], [25, 57])
-        .onHit("Star", onHitStar)
-        .onHit("Fork", onHitFork)
         .onHit("Spikes", onHitSpikes)
 
         octocat.bind("KeyDown", function (e) {
@@ -636,7 +639,7 @@
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
-        Crafty.bind("Pause", function onPause() {
+        Crafty.bind("Pause", function() {
             // Crafty.audio.mute();
             Crafty("BackgroundOverlay").color("#000000");
             Crafty("BackgroundOverlay").alpha = 0.5;
@@ -652,14 +655,14 @@
                 y: Crafty.viewport.height / 2 - Crafty.viewport.y - 64,
                 z: 9999
             }).text("Paused");
-            Crafty.DrawManager.draw();
+            // Crafty.DrawManager.draw();
         });
-        Crafty.bind("Unpause", function onUnpause() {
+        Crafty.bind("Unpause", function() {
             // Crafty.audio.unmute();
             Crafty("BackgroundOverlay").color("#006064");
             Crafty("BackgroundOverlay").alpha = 0.2;
             Crafty("PauseText").destroy();
-            Crafty.DrawManager.draw();
+            // Crafty.DrawManager.draw();
         });
         Crafty.bind("playerdead", function () {
             if (!isDead) {
@@ -704,30 +707,47 @@
 
         // Create the Platform pool, these entities will be recycled throughout the level
         (function initPlatformPool() {
-            var platforms = level_data.slice(1, 10);
-            for(var i in platforms) {
-                var clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
-                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + clr).attr(level_data[i])
+            var platforms = level_data.slice(cur_platforms, max_platforms);
+            for (var i = 0; i < platforms.length; i++) {
+                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + level_data[i].clr).attr(level_data[i])
                 // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
                 .collision();
-            }
+            };
+            cur_platforms = max_platforms - step_platforms;
         })();        
 
         (function (vp) {
-            var _pvy = Crafty.viewport.y,
+            var _pvy = vp.y,
                 _dvy = 0;
-
             function recyclePlatforms(e) {
-                _dvy += vp.y - _pvy;
-                _pvy = vp.y;
-                if(_dvy > -150) {
-                    // if(_dvy > 20 && e.frame % 25 === 0) {
-                    Crafty("Platform").each(function (i) {
-                        _dvy = 0;
-                        var p = this;
-                        if(vp.y + this.y > vp.height) {
-                            // this.y = -Crafty.viewport.y - this.y - i * 100 * (++j);
-                            var d = level_data[n++];
+                _dvy = vp.y - _pvy;
+                if (_dvy * _dvy > 10000) {
+                    _pvy = vp.y;
+                    console.log('distance 50', _dvy, vp.y);
+                    // 
+
+                    if (_dvy > 0) {
+                        cur_platforms += step_platforms;
+                    } else if (_dvy < 0) {
+                        cur_platforms -= step_platforms;
+                    }
+                    var cur = cur_platforms - max_platforms;
+
+                    var platforms = Crafty("Platform");
+                    platforms.each(function (i) {
+                        var d = null;
+                        // if(vp.y + this.y > vp.height) {
+
+                        //     d = level_data[current_platforms++];
+                        // } else if (vp.y - this.y > vp.height) {
+                        //     // console.log('height', vp.y - this.y, this.y , vp.y);
+                        //     // d = level_data[current_platforms - platforms.length];
+                        //     // console.log('poping: ' , current_platforms - platforms.length);
+                        //     // current_platforms--;
+                        // }
+
+                        d = level_data[cur++];
+                        if (d) {
                             this.unbind("TweenEnd");
 
                             if(this._children) {
@@ -736,17 +756,16 @@
                                         this._children[j].destroy();
                                     } else if(this._children[j] instanceof Crafty.polygon) delete this._children[j];
                                 }
-                                this._children = [];
+                                this._children.length = 0; // = [];
                             }
 
-                            // if(this._label)
-                            // this._label.destroy();
                             this.removeComponent("Push");
                             this.removeComponent("Pull");
+                            this.removeComponent(this.clr);
 
-                            this.color("#888");
                             this.alpha = 1;
                             this.attr(d);
+                            this.addComponent(d.clr);
                             this.collision();
 
 
@@ -765,20 +784,20 @@
                             //     // this.unbind("TweenEnd");
                             // });
                             var r = ~~ (10 * (1 + Math.random()));
-                            if(0 === n % r) {
+                            if(0 === cur % r) {
                                 // this.removeComponent("Push", false).addComponent("Push");
                                 // this.removeComponent("Push").addComponent("Push");
                                 this.addComponent("Push");
-                            } else if(!this.has("Push") && 0 === n % (r + 1)) {
+                            } else if(!this.has("Push") && 0 === cur % (r + 1)) {
                                 // this.removeComponent("Pull", false).addComponent("Pull");
                                 // this.removeComponent("Pull").addComponent("Pull");
                                 this.addComponent("Pull");
-                            } else if(0 === n % (r + 2)) {
+                            } else if(0 === cur % (r + 2)) {
                                 Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
                                     x: this.x + (this.w - 48) / 2,
                                     y: this.y - 64
                                 }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("&#xF220");
-                            } else if(0 === n % 2) {
+                            } else if(0 === cur % 2) {
                                 Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
                                     x: this.x + (this.w - 48) / 2,
                                     y: this.y - 64
@@ -789,7 +808,7 @@
                     });
                 }
             }
-            Crafty.bind("EnterFrame", recyclePlatforms);
+            Crafty.bind("ViewportScroll", recyclePlatforms);
         })(Crafty.viewport);
 
         /************************************************************************
