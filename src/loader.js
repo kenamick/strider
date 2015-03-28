@@ -6,16 +6,13 @@
 
         Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
         Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
-        Crafty.viewport.bounds = { min: {x:-100, y: -Infinity}, max: {x:STAGE_WIDTH + 50, y: Infinity} };
+        Crafty.viewport.bounds = { 
+            min: { x:-100, y: -Infinity }, 
+            max: { x: STAGE_WIDTH + 50, y: Infinity } 
+        };
         Crafty.settings.modify("autoPause", true);
 
         Crafty.scene("loading", function () {
-            var imgPath = function (x) {
-                return "assets/images/" + x;
-            };
-            var sndPath = function (x) {
-                return "assets/sounds/" + x;
-            };
             Crafty.background("#fff");
             // Crafty.background("url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff");
             // Crafty.e("2D, DOM, Color, Tween, Delay").attr({
@@ -37,65 +34,69 @@
             //     //     alpha: 1
             //     // }, 50);
             // });
+            Crafty.paths({ audio: "assets/sounds/", images: "assets/images/" });
             var assets = {
-                images: [
-                        'title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 'speaker.png', 'mute.png'
-                    ].map(imgPath),
+                images: ['title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 'speaker.png', 'mute.png'],
                 sprites: {
-                    'assets/images/smoke_jump.png': {
+                    'ui_energy.png': {
+                        tile: 72,
+                        tileh: 19,
+                        map: {HUDEnergy: [0, 0]}
+                    },
+                    'ui_health.png': {
+                        tile: 69,
+                        tileh: 19,
+                        map: {HUDHealth: [0, 0]}
+                    },
+                    'smoke_jump.png': {
                         tile: 64,
                         tileh: 64,
                         map: {SmokeJump: [0, 0]}
                     },
-                    'assets/images/portal.png': {
-                        tile: 192,
-                        tileh: 192,
-                        map: {Portal: [0, 0]}
-                    },
-                    'assets/images/platform.png': {
+                    'platform.png': {
                         tile: 50,
                         tileh: 26,
                         map: {PlatformBlue: [0, 0], PlatformGreen: [1, 0]}
                     },
-                    'assets/images/platform_big.png': {
+                    'platform_big.png': {
                         tile: 150,
                         tileh: 26,
                         map: {PlatformBlueBig: [0, 0], PlatformGreenBig: [0, 1]}
                     },                    
-                    'assets/images/gunner.png': {
+                    'gunner.png': {
                         tile: 50,
                         tileh: 57,
                         map: {Gunner: [0, 0]}
                     },
-                    'assets/images/spikes.png': {
+                    'spikes.png': {
                         tile: 50,
                         tileh: 50,
                         map: {Spikes01: [0, 0], Spikes02: [1, 0]}
                     },
-                    'assets/images/bloodanim.png': {
+                    'bloodanim.png': {
                         tile: 76,
                         tileh: 45,
                         map: {Splatter: [0, 0]}
                     },
-                    'assets/images/spaceship.png': {
+                    'spaceship.png': {
                         tile: 88,
                         tileh: 86,
                         map: {Spaceship: [0, 0]}
                     },
-                   'assets/images/spaceship_engine.png': {
+                   'spaceship_engine.png': {
                         tile: 18,
                         tileh: 18,
                         map: {SpaceshipEngine: [0, 0]}
-                    }                    
+                    }
                 },
                 audio: {
-                    jump: ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
-                    push: ["push.mp3", "push.ogg", "push.wav"].map(sndPath),
-                    pull: ["pull.mp3", "pull.ogg", "pull.wav"].map(sndPath),
-                    fork: ["fork.mp3", "fork.ogg", "fork.wav"].map(sndPath),
-                    star: ["star.mp3", "star.ogg", "star.wav"].map(sndPath),
-                    dead: ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
-                    click: ["click.mp3", "click.ogg", "click.wav"].map(sndPath)                    
+                    jump: ["jump.mp3", "jump.ogg", "jump.wav"],
+                    push: ["push.mp3", "push.ogg", "push.wav"],
+                    pull: ["pull.mp3", "pull.ogg", "pull.wav"],
+                    fork: ["fork.mp3", "fork.ogg", "fork.wav"],
+                    star: ["star.mp3", "star.ogg", "star.wav"],
+                    dead: ["dead.mp3", "dead.ogg", "dead.wav"],
+                    click: ["click.mp3", "click.ogg", "click.wav"]                    
                 }
             };
             Crafty.load(assets, function() {
