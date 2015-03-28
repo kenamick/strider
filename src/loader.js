@@ -58,6 +58,11 @@
                         tileh: 26,
                         map: {PlatformBlue: [0, 0], PlatformGreen: [1, 0]}
                     },
+                    'assets/images/platform_big.png': {
+                        tile: 150,
+                        tileh: 26,
+                        map: {PlatformBlueBig: [0, 0], PlatformGreenBig: [0, 1]}
+                    },                    
                     'assets/images/gunner.png': {
                         tile: 50,
                         tileh: 57,

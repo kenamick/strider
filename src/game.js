@@ -51,16 +51,27 @@
 
         var i = 1, j = 0;
         while (i < 100) {
-            platform2add = {
-                x: -100 + ~~ (Math.random() * vw),
-                y: vh - i * 100 + (50 * Math.random()),
-                w: 50,
-                h: 26,
-                num: i,
-                clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
-            };
+            if (i % 5 === 0) {
+                platform2add = {
+                    x: -100 + ~~ (Math.random() * vw),
+                    y: vh - i * 100 + (50 * Math.random()),
+                    w: 150,
+                    h: 26,
+                    num: i,
+                    clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig'
+                };
+            } else {
+                platform2add = {
+                    x: -100 + ~~ (Math.random() * vw),
+                    y: vh - i * 100 + (50 * Math.random()),
+                    w: 50,
+                    h: 26,
+                    num: i,
+                    clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
+                };
+            }
             level_data.push(platform2add);
-            j = 0;
+            // j = 0;
             // while(j < 2) {
             //     luck = Math.random();
             //     if (luck > 0.75) {
