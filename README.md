@@ -1,10 +1,14 @@
-Octocat Jump
-============
+Escape from Efriador V
+========================
 
-Playable on the [gh-pages branch](http://ogoshen.github.com/game-off-2012/)
+[game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
 
-<img src="http://i.imgur.com/rCRrx.png" style="border:0;">
-<img src="http://i.imgur.com/QOGtr.png" style="border:0;">
+This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012) game. 
+I already have a [game-off-2012](https://github.com/petarov/game-off-2012) repository and I could not fork his repo directly.
+
+
+TODO: Add furhter infos
+
 
 About
 -----
@@ -31,11 +35,3 @@ Font Diner's [Chewy](http://www.google.com/webfonts/specimen/Chewy).
 And Github's @bryanveloso, @jonrohan, @jsncostello, @kneath, and @cameronmcefee for the [Octicons](https://github.com/styleguide/css/7.0) font.  
 
 Any other assets were either photomanipulated with GIMP or synthesize with SFXR.
-
-To do:
-------
-* Game doesn't restart when you die, have to refresh the page.
-* There's a clone chasing you, but I haven't figured how to deal with that yet... maybe raise an issue or sync to get rid of it...
-* Split the .js, follow Crafty's boilerplate
-* Scoreboard
-* Level editor

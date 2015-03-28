@@ -1,10 +1,10 @@
 {
-  "name": "Second Legion",
+  "name": "Escape from Efriador V",
   "version": "0.0.1",
   "authors": [
     "Petar Petrov"
   ],
-  "description": "JumpNRun Game",
+  "description": "2D platform game",
   "main": "src/game.js",
   "license": "MIT",
   "private": true,
