@@ -55,7 +55,7 @@
                     },
                     'assets/images/platform.png': {
                         tile: 50,
-                        tileh: 25,
+                        tileh: 26,
                         map: {PlatformBlue: [0, 0], PlatformGreen: [1, 0]}
                     },
                     'assets/images/gunner.png': {

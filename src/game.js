@@ -42,15 +42,15 @@
             h: 26
         }];
 
-        var vw = (Crafty.viewport.width - 50)
+        var vw = (Crafty.viewport.width + 50)
           , vh = -Crafty.viewport.y + Crafty.viewport.height;
 
         i = 0;
         while (i < 5000) {
             platform2add = {
-                x: ~~ (Math.random() * vw),
-                y: vh - i * 75,
-                w: 50, //+ 75 * Math.random(),
+                x: -50 + ~~ (Math.random() * vw),
+                y: vh - i * (50 + 20 * Math.random()),
+                w: 50,
                 h: 26,
                 num: i
             };
@@ -576,7 +576,10 @@
         })
         .origin('center')
         .twoway(4, 7)
-        .reel("walk", playerAnimSpeed, 0, 0, 7).animate('walk', -1)
+        .reel('walk_right', playerAnimSpeed, 0, 0, 7)
+        .reel('walk_left', playerAnimSpeed, 0, 1, 7)
+        .reel('stand', 450, [ [0, 3] ])
+        .animate('stand')
         .gravity('Platform')
         .collision([0, 47], [50, 47], [25, 57])
         .onHit("Star", onHitStar)
@@ -590,6 +593,18 @@
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;
+                
+            } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
+                this.animate('walk_right', -1);
+            } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
+                this.animate('walk_left', -1);
+            }
+        });
+        octocat.bind("KeyUp", function (e) {
+            if ((e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+                this.pauseAnimation();
+            } else {
+                this.animate('stand');
             }
         });
 
