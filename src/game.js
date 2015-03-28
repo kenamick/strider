@@ -724,7 +724,6 @@
                 if (_dvy * _dvy > 10000) {
                     _pvy = vp.y;
                     console.log('distance 50', _dvy, vp.y);
-                    // 
 
                     if (_dvy > 0) {
                         cur_platforms += step_platforms;
@@ -735,18 +734,7 @@
 
                     var platforms = Crafty("Platform");
                     platforms.each(function (i) {
-                        var d = null;
-                        // if(vp.y + this.y > vp.height) {
-
-                        //     d = level_data[current_platforms++];
-                        // } else if (vp.y - this.y > vp.height) {
-                        //     // console.log('height', vp.y - this.y, this.y , vp.y);
-                        //     // d = level_data[current_platforms - platforms.length];
-                        //     // console.log('poping: ' , current_platforms - platforms.length);
-                        //     // current_platforms--;
-                        // }
-
-                        d = level_data[cur++];
+                        var d = level_data[cur++];
                         if (d) {
                             this.unbind("TweenEnd");
 
@@ -859,9 +847,8 @@
         }
 
         function updateSpeaker() {
-            this.x = Crafty.viewport.width - 64;
+            this.x = Crafty.viewport.width - Crafty.viewport._x - 64;
             this.y = -Crafty.viewport.y + 10;
-
         }
         Crafty.e("2D, DOM, SFX, Image, Mouse").attr({
             x: Crafty.viewport.width - 64,
@@ -869,7 +856,9 @@
             w: 48,
             h: 48,
             z: 9999
-        }).css('cursor', 'pointer').image("assets/images/speaker.png").bind("EnterFrame", updateSpeaker)
+        }).css('cursor', 'pointer')
+        .image("assets/images/speaker.png")
+        .bind("EnterFrame", updateSpeaker)
         // .areaMap([0,0], [50,0], [50,50], [0,50])
         .bind('MouseOver', function () {
             this.alpha = 0.8;
