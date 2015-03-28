@@ -6,7 +6,7 @@
 
         Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
         Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
-        Crafty.viewport.bounds = { min: {x:-100, y: -Infinity}, max: {x:STAGE_WIDTH + 50, y: Infinity} };
+        Crafty.viewport.bounds = { min: {x:-100, y: -Infinity}, max: {x:STAGE_WIDTH + 50, y: STAGE_HEIGHT} };
         Crafty.settings.modify("autoPause", true);
 
         Crafty.scene("loading", function () {
@@ -62,6 +62,16 @@
                         tile: 50,
                         tileh: 57,
                         map: {Gunner: [0, 0]}
+                    },
+                    'assets/images/spikes.png': {
+                        tile: 50,
+                        tileh: 50,
+                        map: {Spikes01: [0, 0], Spikes02: [1, 0]}
+                    },
+                    'assets/images/bloodanim.png': {
+                        tile: 76,
+                        tileh: 45,
+                        map: {Splatter: [0, 0]}
                     }
                 },
                 audio: {

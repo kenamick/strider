@@ -14,7 +14,11 @@
         stars = 0,
         forks = 0,
         n = 10,
-        isDead = false;
+        isDead = false,
+        METERS_DEPTH = 1000,
+        meters = METERS_DEPTH,
+        playerAnimSpeed = 450,
+        generalAnimSpeed = 450;
 
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
@@ -522,6 +526,10 @@
         }
     }
 
+    function onHitSpikes(e) {
+        Crafty.trigger('playerdead');
+    }
+
     function initState() {
         Crafty.background("none");
         Crafty.viewport.y = 0;
@@ -530,10 +538,16 @@
         isDead = false;
     }
 
-    var animSpeed = 5;
+    /************************************************************************
+     * Main scene
+     */       
 
     Crafty.scene("main", function () {
         initState();
+
+        /************************************************************************
+         * Create entities
+         */        
 
         var bg = Crafty.e("2D, Canvas, Image, Background").attr({
             x: -100,
@@ -562,11 +576,12 @@
         })
         .origin('center')
         .twoway(4, 7)
-        .reel("walk", 450, 0, 0, 7).animate('walk', -1)
+        .reel("walk", playerAnimSpeed, 0, 0, 7).animate('walk', -1)
         .gravity('Platform')
         .collision([0, 47], [50, 47], [25, 57])
         .onHit("Star", onHitStar)
         .onHit("Fork", onHitFork)
+        .onHit("Spikes", onHitSpikes)
 
         octocat.bind("KeyDown", function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
@@ -580,10 +595,20 @@
 
         Crafty.viewport.follow(octocat, 0, 0);
 
-        // var ol = [{
-        //     x: octocat.x,
-        //     y: octocat.y
-        // }];
+        for (var i = 0; i < 11; i++) {
+            var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
+            Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
+            .attr({
+                x: -100 + i * 50,
+                y: Crafty.viewport.height - 50,
+                w: 50,
+                h: 50
+            });
+        }
+
+        /************************************************************************
+         * Bindings
+         */
 
         function scrollViewport(e) {
             // if(isDead) {
@@ -596,7 +621,6 @@
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
-
         Crafty.bind("Pause", function onPause() {
             // Crafty.audio.mute();
             Crafty("BackgroundOverlay").color("#000000");
@@ -622,6 +646,57 @@
             Crafty("PauseText").destroy();
             Crafty.DrawManager.draw();
         });
+        Crafty.bind("playerdead", function () {
+            if (!isDead) {
+                isDead = true;
+                Crafty.audio.play('dead', 1, 0.2);
+
+                Crafty.e("2D, Canvas, Splatter, SpriteAnimation")
+                .origin('center')
+                .attr({
+                    x: octocat.x,
+                    y: octocat.y + 25
+                })
+                .bind('AnimationEnd', function() {
+                    this.destroy();
+                })
+                .reel('play', generalAnimSpeed, 0, 0, 6).animate('play');
+
+                octocat.destroy();
+
+                setTimeout(function () {
+                    Crafty.scene('dead');
+                }, 1000);
+            }
+        });
+
+        (function (vp) {
+            function updateOctocat(e) {
+                var y = this.y;
+                // this.animate('walk', 5, - 1);
+                // Crafty.viewport.scroll('y', Crafty.viewport.height/2 - octocat.y);
+                // isDead = Crafty.viewport.y + this.y > Crafty.canvas._canvas.height;
+                isDead = isDead || this._enabled && (vp.y + y > vp.height);
+                if(isDead) {
+                    Crafty.unbind("EnterFrame", scrollViewport);
+                    this.unbind('EnterFrame', updateOctocat);
+                    Crafty.trigger('playerdead');
+                    return;
+                }
+            }
+            octocat.bind("EnterFrame", updateOctocat);
+        })(Crafty.viewport);
+
+        // Create the Platform pool, these entities will be recycled throughout the level
+        (function initPlatformPool() {
+            var platforms = level_data.slice(1, 10);
+            for(var i in platforms) {
+                var clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
+                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + clr).attr(level_data[i])
+                // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
+                .collision();
+            }
+        })();        
 
         (function (vp) {
             var _pvy = Crafty.viewport.y,
@@ -702,64 +777,26 @@
             Crafty.bind("EnterFrame", recyclePlatforms);
         })(Crafty.viewport);
 
-        (function (vp) {
-            function updateOctocat(e) {
-                var y = this.y;
-                // this.animate('walk', 5, - 1);
-                // Crafty.viewport.scroll('y', Crafty.viewport.height/2 - octocat.y);
-                // isDead = Crafty.viewport.y + this.y > Crafty.canvas._canvas.height;
-                isDead = this._enabled && (vp.y + y > vp.height);
-                if(isDead) {
-                    // Crafty.scene('dead');
-                    Crafty.audio.play('dead', 1, 0.2);
-                    Crafty.unbind("EnterFrame", scrollViewport);
-                    this.unbind('EnterFrame', updateOctocat);
-                    setTimeout(function () {
-                        Crafty.scene('dead');
-                    }, 750);
-                    return;
-                }
-
-                // if(this._oldpos.y > y) {
-                //     this._oldpos.y = y;
-                //     if(this._enabled) vp.y = Math.max(vp.y, vp.height / 2 - y - 200);
-                // }
-            }
-            octocat.bind("EnterFrame", updateOctocat);
-        })(Crafty.viewport);
-
-        // Create the Platform pool, these entities will be recycled throughout the level
-        (function initPlatformPool() {
-            var platforms = level_data.slice(1, 10);
-            for(var i in platforms) {
-                var clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
-                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + clr).attr(level_data[i])
-                // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
-                .collision();
-            }
-        })();
-
-
-
-        function _updateScore() {
-            score = Math.max(score, ~~ ((Crafty.viewport.height - Crafty("Player").y) * 0.1 - 1));
-            return score;
-        }
+        /************************************************************************
+         * Update UI stuff
+         */
 
         function updateScore() {
-            this.y = -Crafty.viewport.y;
-            this.text(_updateScore);
+            this.x = 15 - Crafty.viewport._x;
+            this.y = 5 - Crafty.viewport.y;
+            meters = METERS_DEPTH - ~~((Crafty.viewport.height - octocat.y) * 0.1 - 1);
+            this.text(meters + ' m.');
         }
-        Crafty.e("2D, DOM, Text, Score").attr({
-            x: 10,
+        Crafty.e("2D, DOM, Text").attr({
+            x: 15,
+            w: 50,
             z: 9999
         }).css({
-            "font": "48px Chewy, Impact",
-            "color": "#fff",
-            "text-align": "left",
+            //"font": "48px Chewy, Impact",
+            'color': '#fff',
+            // 'text-align': 'left',
             'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
         }).bind("EnterFrame", updateScore);
-
 
         (function () {
             var _stars = -1;
@@ -809,6 +846,9 @@
         });
     });
 
+    /************************************************************************
+     * Game End
+     */
    Crafty.scene("dead", function initDead() {
         // Crafty.background("#fff");
         Crafty.viewport.y = 0;
