@@ -19,7 +19,7 @@
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
             return obj;
-        var temp = obj.constructor(); // changed
+        var temp = obj.constructor();
         for(var key in obj) {
             if(obj.hasOwnProperty(key)) {
                 temp[key] = clone(obj[key]);
@@ -38,14 +38,14 @@
             h: 26
         }];
 
-        var vw = (Crafty.viewport.width - 100)
+        var vw = (Crafty.viewport.width - 50)
           , vh = -Crafty.viewport.y + Crafty.viewport.height;
 
         i = 0;
         while (i < 5000) {
             platform2add = {
                 x: ~~ (Math.random() * vw),
-                y: vh - i * 100,
+                y: vh - i * 75,
                 w: 50, //+ 75 * Math.random(),
                 h: 26,
                 num: i
@@ -280,89 +280,6 @@
             this._enabled = false;
             return this;
         }
-    });
-
-    Crafty.scene("dead", function initDead() {
-        // Crafty.background("#fff");
-        Crafty.viewport.y = 0;
-        var s = 0,
-            total = 0;
-        Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
-
-        function starCounter(e) {
-            // if(0 === e.frame % 2)
-            {
-                // Crafty.audio.play('star', 1, 0.5);
-                this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">&#xF22A</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
-
-                if(++s > stars) {
-                    this.unbind("EnterFrame");
-
-                    total = (s - 1) * 10 + score;
-                    Crafty.e("2D, DOM, HTML").attr({
-                        x: 0,
-                        y: 144,
-                        w: Crafty.viewport.width
-                    }).replace('<div style="text-align: center; font: 48px Chewy, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
-                    return;
-                }
-            }
-        }
-
-        Crafty.e("2D, DOM, Text, Score")
-        // .attr({x: 0, y: 0, w: Crafty.viewport.width, h: Crafty.viewport.height / 2})
-        .attr({
-            x: 0,
-            y: 20,
-            w: Crafty.viewport.width
-        }).css({
-            // "width": Crafty.viewport.width + "px",
-            "font": "48px Chewy, Impact",
-            "line-height": "100%",
-            "color": "#222",
-            "text-align": "center",
-            'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-        })
-        // .text("Your Score:\n" + score);
-        .bind("EnterFrame", function (e) {
-            this.text("Height = " + s);
-
-            // Crafty.audio.play('click', 1, 0.1);
-            if(s >= score) {
-                s = 0;
-                this.unbind("EnterFrame");
-                setTimeout(function () {
-                    Crafty.e("2D, DOM, HTML").attr({
-                        x: 0,
-                        y: 64,
-                        w: Crafty.viewport.width
-                    }).bind("EnterFrame", starCounter);
-                }, 250);
-            }
-            s += ~~ (s + (score - s) / score);
-            s = Math.min(s, score);
-        });
-
-        var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
-        for(var i=0; i<10; i++) {
-            // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
-            var $row = ('<tr><td>Name</td><td>Score</td></tr>');
-            $tbl.append($row);
-        }
-        Crafty.e("HTML, ScoreBoard")
-        .attr({x:20, y:250, w:Crafty.viewport.width - 40})
-        .css({
-            'color': '#000',
-            'border': '2px solid #000',
-            'borderRadius': '8px'
-            // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
-        })
-        .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
-        console.log([$tbl, $tbl.html()]);
-
-        // // setTimeout(function() {
-        // //     Crafty.scene("main");
-        // // }, 3000);
     });
 
     function onHitStar(e) {
@@ -615,28 +532,28 @@
 
     var animSpeed = 5;
 
-    Crafty.scene("main", function mainScene() {
+    Crafty.scene("main", function () {
         initState();
 
         var bg = Crafty.e("2D, Canvas, Image, Background").attr({
-            x: 0,
+            x: -100,
             y: 0,
             z: -4,
-            w: Crafty.viewport.width,
+            w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
         }).image("assets/images/wall01.png", "repeat");
         // }).image(R.BG_PNG, "repeat");
 
         var bgovr = Crafty.e("2D, DOM, BackgroundOverlay, Color, Delay").attr({
-            x: 0,
+            x: -100,
             y: 0,
             z: -1,
-            w: Crafty.viewport.width,
+            w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height,
             alpha: 0.2
         }).color("#006064");
 
-        var octocat = Crafty.e("2D, DOM, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
+        var octocat = Crafty.e("2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
         .setName("octocat")
         .attr({
             x: 160,
@@ -659,27 +576,27 @@
                 this._gy = 0;
                 this._canJumpAgain = false;
             }
-        });        
+        });
 
-        var ol = [{
-            x: octocat.x,
-            y: octocat.y
-        }];
+        Crafty.viewport.follow(octocat, 0, 0);
+
+        // var ol = [{
+        //     x: octocat.x,
+        //     y: octocat.y
+        // }];
 
         function scrollViewport(e) {
             // if(isDead) {
             //     Crafty.unbind("EnterFrame", scrollViewport);
             //     return;
             // }
-            Crafty.viewport.y += SCROLL_SPEED;
-            // Crafty("Background").y -= ~~(.5 * SCROLL_SPEED / dt);
+            // Crafty.viewport.y += SCROLL_SPEED;
             bg.y = -Crafty.viewport.y;
             bgovr.y = -Crafty.viewport.y;
-
-            // Crafty("Background").y -= (.5 * SCROLL_SPEED / dt);
         }
         Crafty.bind("EnterFrame", scrollViewport);
-        // })(bg, bgovr, Crafty.viewport);
+        
+
         Crafty.bind("Pause", function onPause() {
             // Crafty.audio.mute();
             Crafty("BackgroundOverlay").color("#000000");
@@ -713,7 +630,7 @@
             function recyclePlatforms(e) {
                 _dvy += vp.y - _pvy;
                 _pvy = vp.y;
-                if(_dvy > 20) {
+                if(_dvy > -150) {
                     // if(_dvy > 20 && e.frame % 25 === 0) {
                     Crafty("Platform").each(function (i) {
                         _dvy = 0;
@@ -813,26 +730,12 @@
 
         // Create the Platform pool, these entities will be recycled throughout the level
         (function initPlatformPool() {
-            var i, css = {
-                'border': '2px solid rgba(0, 0, 0, .2)',
-                'borderRadius': '8px',
-                'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
-            };
-            for(i in level_data.slice(1, 10)) {
+            var platforms = level_data.slice(1, 10);
+            for(var i in platforms) {
                 var clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
                 Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + clr).attr(level_data[i])
-                // .color("#c2aa48")
-                //.color("#FF00FF8")
                 // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
-                .collision(); //.css(css);
-                // if (0 === i % (10 + ~~ (Math.random() * 10))) {
-                //     // var e = Crafty.e("2D, DOM, Color, Pickup, Tween, Delay").attr({x: p.x + (100-24)/2, y: p.y - 24, w:24, h:24}).color("#FF00FF");
-                //     var e = Crafty.e("2D, DOM, Image, Pickup, Tween, Delay").attr({
-                //         x: p.x + (100 - 24) / 2,
-                //         y: p.y - 40
-                //     }).image('fork.png');
-                //     p.attach(e);
-                // }
+                .collision();
             }
         })();
 
@@ -904,6 +807,89 @@
             this.alpha = 1;
             this.unbind('MouseDown', toggleSFX);
         });
+    });
+
+   Crafty.scene("dead", function initDead() {
+        // Crafty.background("#fff");
+        Crafty.viewport.y = 0;
+        var s = 0,
+            total = 0;
+        Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
+
+        function starCounter(e) {
+            // if(0 === e.frame % 2)
+            {
+                // Crafty.audio.play('star', 1, 0.5);
+                this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">&#xF22A</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
+
+                if(++s > stars) {
+                    this.unbind("EnterFrame");
+
+                    total = (s - 1) * 10 + score;
+                    Crafty.e("2D, DOM, HTML").attr({
+                        x: 0,
+                        y: 144,
+                        w: Crafty.viewport.width
+                    }).replace('<div style="text-align: center; font: 48px Chewy, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
+                    return;
+                }
+            }
+        }
+
+        Crafty.e("2D, DOM, Text, Score")
+        // .attr({x: 0, y: 0, w: Crafty.viewport.width, h: Crafty.viewport.height / 2})
+        .attr({
+            x: 0,
+            y: 20,
+            w: Crafty.viewport.width
+        }).css({
+            // "width": Crafty.viewport.width + "px",
+            "font": "48px Chewy, Impact",
+            "line-height": "100%",
+            "color": "#222",
+            "text-align": "center",
+            'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+        })
+        // .text("Your Score:\n" + score);
+        .bind("EnterFrame", function (e) {
+            this.text("Height = " + s);
+
+            // Crafty.audio.play('click', 1, 0.1);
+            if(s >= score) {
+                s = 0;
+                this.unbind("EnterFrame");
+                setTimeout(function () {
+                    Crafty.e("2D, DOM, HTML").attr({
+                        x: 0,
+                        y: 64,
+                        w: Crafty.viewport.width
+                    }).bind("EnterFrame", starCounter);
+                }, 250);
+            }
+            s += ~~ (s + (score - s) / score);
+            s = Math.min(s, score);
+        });
+
+        var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
+        for(var i=0; i<10; i++) {
+            // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
+            var $row = ('<tr><td>Name</td><td>Score</td></tr>');
+            $tbl.append($row);
+        }
+        Crafty.e("HTML, ScoreBoard")
+        .attr({x:20, y:250, w:Crafty.viewport.width - 40})
+        .css({
+            'color': '#000',
+            'border': '2px solid #000',
+            'borderRadius': '8px'
+            // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
+        })
+        .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
+        console.log([$tbl, $tbl.html()]);
+
+        // // setTimeout(function() {
+        // //     Crafty.scene("main");
+        // // }, 3000);
     });
 
     Crafty.scene("loading");
