@@ -16,7 +16,6 @@
             var sndPath = function (x) {
                 return "assets/sounds/" + x;
             };
-            // Crafty.background("#000");
             Crafty.background("#fff");
             // Crafty.background("url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff");
             // Crafty.e("2D, DOM, Color, Tween, Delay").attr({
@@ -40,7 +39,7 @@
             // });
             var assets = {
                 images: [
-                        'title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'speaker.png', 'mute.png'
+                        'title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 'speaker.png', 'mute.png'
                     ].map(imgPath),
                 sprites: {
                     'assets/images/smoke_jump.png': {
@@ -77,7 +76,17 @@
                         tile: 76,
                         tileh: 45,
                         map: {Splatter: [0, 0]}
-                    }
+                    },
+                    'assets/images/spaceship.png': {
+                        tile: 88,
+                        tileh: 86,
+                        map: {Spaceship: [0, 0]}
+                    },
+                   'assets/images/spaceship_engine.png': {
+                        tile: 18,
+                        tileh: 18,
+                        map: {SpaceshipEngine: [0, 0]}
+                    }                    
                 },
                 audio: {
                     jump: ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),

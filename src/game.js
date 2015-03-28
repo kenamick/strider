@@ -9,18 +9,25 @@
     var SCROLL_SPEED = 1,
         GRAVITY = 1,
         SFX = true,
-        level_data = [],
+        
         score = 0,
         stars = 0,
         forks = 0,
+        isDead = false,
+        level_data = [],
         cur_platforms = 0,
         max_platforms = 10,
         step_platforms = 1,
-        isDead = false,
-        METERS_DEPTH = 1000,
+        METERS_DEPTH = 300,
+        METERS_DEPTH_2 = METERS_DEPTH * 0.5,
+        METERS_DEPTH_3 = METERS_DEPTH * 0.25,
         meters = METERS_DEPTH,
+        total_platforms = METERS_DEPTH / 10 - 1,
         playerAnimSpeed = 450,
-        generalAnimSpeed = 450;
+        generalAnimSpeed = 450,
+        playerSpeed = 4,
+        playerJump = 17,
+        ship = null;
 
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
@@ -50,7 +57,7 @@
           , vh = -Crafty.viewport.y + Crafty.viewport.height - 150;
 
         var i = 1, j = 0;
-        while (i < 100) {
+        while (i < total_platforms) {
             if (i % 5 === 0) {
                 platform2add = {
                     x: -100 + ~~ (Math.random() * vw),
@@ -97,7 +104,17 @@
             // }
             i += 1;
         }
-    }
+        // last top platform
+        level_data.push({
+            x: Crafty.viewport.width / 2 - 150 / 2,
+            y: vh - i * 100 + (50 * Math.random()),
+            w: 150,
+            h: 26,
+            num: i,
+            clr: 'PlatformBlueBig',
+            goal: true
+        }); 
+    }    
     initLevel();
 
     /**
@@ -546,6 +563,10 @@
         Crafty.trigger('playerdead');
     }
 
+    function onHitSpaceship(e) {
+        Crafty.trigger('playerwin');
+    }
+
     function initState() {
         Crafty.background("none");
         Crafty.viewport.y = 0;
@@ -572,8 +593,20 @@
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
         }).image("assets/images/wall01.png", "repeat");
-        // }).image(R.BG_PNG, "repeat");
-
+        var bg1 = Crafty.e("2D, Canvas, Image, Background2").attr({
+            x: -100,
+            y: 0,
+            z: -4,
+            w: Crafty.viewport.width + 150,
+            h: Crafty.viewport.height
+        }).image("assets/images/backgrounds.png", "repeat");
+        var bg2 = Crafty.e("2D, Canvas, Image, Background").attr({
+            x: -100,
+            y: 0,
+            z: -4,
+            w: Crafty.viewport.width + 150,
+            h: Crafty.viewport.height
+        }).image("assets/images/starsky.png", "repeat");        
         var bgovr = Crafty.e("2D, DOM, BackgroundOverlay, Color, Delay").attr({
             x: -100,
             y: 0,
@@ -591,7 +624,7 @@
             z: 999
         })
         .origin('center')
-        .twoway(4, 7)
+        .twoway(playerSpeed, playerJump)
         .reel('walk_right', playerAnimSpeed, 0, 0, 7)
         .reel('walk_left', playerAnimSpeed, 0, 1, 7)
         .reel('stand', 450, [ [0, 3] ])
@@ -599,6 +632,7 @@
         .gravity('Platform')
         .collision([0, 47], [50, 47], [25, 57])
         .onHit("Spikes", onHitSpikes)
+        .onHit("Spaceship", onHitSpaceship)
 
         octocat.bind("KeyDown", function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
@@ -640,12 +674,13 @@
          */
 
         function scrollViewport(e) {
-            // if(isDead) {
-            //     Crafty.unbind("EnterFrame", scrollViewport);
-            //     return;
-            // }
-            // Crafty.viewport.y += SCROLL_SPEED;
-            bg.y = -Crafty.viewport.y;
+            if (meters < METERS_DEPTH_3) {
+                bg2.y = -Crafty.viewport.y;
+            } else if (meters < METERS_DEPTH_2) {
+                bg1.y = -Crafty.viewport.y;
+            } else {
+                bg.y = -Crafty.viewport.y;
+            }
             bgovr.y = -Crafty.viewport.y;
         }
         Crafty.bind("EnterFrame", scrollViewport);
@@ -690,13 +725,44 @@
                     this.destroy();
                 })
                 .reel('play', generalAnimSpeed, 0, 0, 6).animate('play');
-
+                // die Strider ...
                 octocat.destroy();
-
                 setTimeout(function () {
                     Crafty.scene('dead');
                 }, 1000);
             }
+        });
+        Crafty.bind("playerwin", function () {
+            // good bye Strider
+            octocat.destroy();
+            // fly away ...
+            ship.bind('EnterFrame', function() {
+                this._acc += 0.0125;
+                this._acc = Math.min(this._acc, 5);
+                this.y -= this._acc;
+            });            
+            Crafty.viewport.follow(ship, 0, 0);
+            // engines
+            Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+                x: ship.x + 41,
+                y: ship.y + 80,
+                z: -3
+            })
+            .reel('play', 1500, 0, 0, 6).animate('play')
+            .bind('EnterFrame', function() {
+                this.x = ship.x + 41;
+                this.y = ship.y + 78;
+            });
+            Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+                x: ship.x + 28,
+                y: ship.y + 80,
+                z: -3
+            })
+            .reel('play', 1350, 0, 0, 6).animate('play')
+            .bind('EnterFrame', function() {
+                this.x = ship.x + 28;
+                this.y = ship.y + 78;
+            });   
         });
 
         (function (vp) {
@@ -783,7 +849,18 @@
                             //     // this.unbind("TweenEnd");
                             // });
                             var r = ~~ (10 * (1 + Math.random()));
-                            if(0 === cur % r) {
+                            if (d.goal) {
+                                ship = Crafty.e("2D, Canvas, Spaceship, Collision, SpriteAnimation").attr({
+                                    x: d.x + 50,
+                                    y: d.y - 86,
+                                    z: -3,
+                                    _acc: 0.125
+                                })
+                                .collision();                          
+                                // quit
+                                Crafty.unbind("ViewportScroll", recyclePlatforms);
+                                return;
+                            } else if(0 === cur % r) {
                                 // this.removeComponent("Push", false).addComponent("Push");
                                 // this.removeComponent("Push").addComponent("Push");
                                 this.addComponent("Push");
