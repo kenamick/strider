@@ -743,26 +743,34 @@
             });            
             Crafty.viewport.follow(ship, 0, 0);
             // engines
-            Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+            var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
                 x: ship.x + 41,
                 y: ship.y + 80,
                 z: -3
             })
+            .reel('play2', 1500, 3, 0, 3)
             .reel('play', 1500, 0, 0, 6).animate('play')
             .bind('EnterFrame', function() {
                 this.x = ship.x + 41;
                 this.y = ship.y + 78;
+            })
+            .bind('AnimationEnd', function(reel) {
+                this.animate('play2', -1);
             });
-            Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+            var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
                 x: ship.x + 28,
                 y: ship.y + 80,
                 z: -3
             })
-            .reel('play', 1350, 0, 0, 6).animate('play')
+            .reel('play2', 1500, 3, 0, 3)
+            .reel('play', 1500, 0, 0, 6).animate('play')
             .bind('EnterFrame', function() {
                 this.x = ship.x + 28;
                 this.y = ship.y + 78;
-            });   
+            })
+            .bind('AnimationEnd', function(reel) {
+                this.animate('play2', -1);
+            });            
         });
 
         (function (vp) {
