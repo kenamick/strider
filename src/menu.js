@@ -10,6 +10,9 @@
 (function($, Crafty) {
     $(document).ready(function () {
         
+        /************************************************************************
+         * Game Into Menu
+         */
         Crafty.scene("intro", function initIntro() {
             Crafty.background("#fff");
 
@@ -82,7 +85,19 @@
                     });
                 }, 500);
             });
-        });        
+        });
+
+        /************************************************************************
+         * Game End Menu
+         */
+       Crafty.scene("dead", function initDead() {
+            // Crafty.background("#fff");
+            Crafty.viewport.y = 0;
+            var s = 0,
+                total = 0;
+            Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
+
+        });
 
     }); //eof-ready
 })(jQuery, Crafty);

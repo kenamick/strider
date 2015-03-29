@@ -98,6 +98,16 @@
                         tile: 18,
                         tileh: 18,
                         map: {SpaceshipEngine: [0, 0]}
+                    },
+                   'flares.png': {
+                        tile: 18,
+                        tileh: 17,
+                        map: {Flares: [0, 0]}
+                    },
+                    'powerups.png': {
+                        tile: 19,
+                        tileh: 19,
+                        map: {HealthRed: [0, 1], HealthGray: [1, 1], EnergyOrange: [0, 0], EnergyBlue: [3, 0]}
                     }
                 },
                 audio: {

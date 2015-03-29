@@ -14,19 +14,28 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
+        
         METERS_DEPTH = 300,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
         METERS_DEPTH_3 = METERS_DEPTH * 0.25,
         meters = METERS_DEPTH,
         total_platforms = METERS_DEPTH / 10 - 1,
+        
+        MAX_POWERUPS = total_platforms / 2,
+        POWERUP_ENERGY = 1,
+        POWERUP_HEALTH = 2,
+        MAX_ENERGY = 49,
+        MAX_HEALTH = 4,
+
         playerAnimSpeed = 450,
         generalAnimSpeed = 450,
-        MAX_ENERGY = 49,
+
         ship = null,
         HUDEnergy = null,
         HUDHealth = null,
         // level vars
         level_data = [],
+        powerups_data = [],
         cur_platforms = 0,
         max_platforms = 10,
         step_platforms = 1,
@@ -76,7 +85,8 @@
                     w: 150,
                     h: 26,
                     num: i,
-                    clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig'
+                    clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig',
+                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH,
                 };
             } else {
                 platform2add = {
@@ -85,7 +95,8 @@
                     w: 50,
                     h: 26,
                     num: i,
-                    clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
+                    clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen',
+                    powerup: false
                 };
             }
             level_data.push(platform2add);
@@ -127,6 +138,14 @@
         }); 
     }    
     initLevel();
+
+    function initState() {
+        Crafty.background("none");
+        Crafty.viewport.y = 0;
+        score = 0;
+        stars = 0;
+        isDead = false;
+    }    
 
     /**
      * Octicons font component
@@ -379,91 +398,13 @@
         entity.bind("EnterFrame", updateStar);
     }
 
-    function onHitFork(a) {
-        var e = a[0].obj,
-            octocat = Crafty("Player"),
-            bg = Crafty("Background"),
-            bgovr = Crafty("BackgroundOverlay");
-        // e.removeComponent("Pickup", false);
-        e.removeComponent("Pickup");
-        e.removeComponent("Fork");
-        e.destroy();
-
-        forks++;
-
-        if(SFX) Crafty.audio.play("fork", 1, 0.5);
-
-        this.disableControls();
-
-        Crafty.e("2D, DOM, Portal, SpriteAnimation").reel("portal", 5, 0, 0, 10).animate("portal", 0).attr({
-            x: this.x - 48,
-            y: this.y - 48,
-            w: 192,
-            h: 192
-        });
-
-        // octocat.delay(octocat.enableControls, 500);
-
-        function colorBg() {
-            bgovr.color("#fff");
-        }
-
-        function revertBg() {
-            bgovr.color("#006064");
-        }
-
-        function blinkRepeatedly() {
-            var i = 0;
-            for(; i<15; i+=2) {
-                setTimeout(colorBg, 50 * i);
-                setTimeout(revertBg, 50 * (i+1));
-            }
-        }
-        blinkRepeatedly();
-
-        octocat.tween({
-            alpha: 0
-        }, 20);
-
-        octocat.delay(function () {
-            blinkRepeatedly();
-
-            octocat.tween({
-                alpha: 1
-            }, 20);
-
-            var p = level_data[n - 1];
-            this.x = p.x;
-            this.y = p.y - octocat.h / 2;
-            this._speed.y = Math.min(-1, -this._speed.y);
-
-            octocat.enableControls();
-            // octocat.unbind("EnterFrame", f);
-            Crafty.e("2D, DOM, Portal, SpriteAnimation").reel("portal", 5, 0, 0, 10).animate("portal", 0).attr({
-                x: this.x - 48,
-                y: this.y - 48,
-                w: 192,
-                h: 192
-            }).bind("AnimationEnd", function () {
-                this.destroy();
-                // Crafty.e("2D, DOM, Text, PauseText").css({
-                //     // "width": Crafty.viewport.width + "px",
-                //     "font": "64px Chewy",
-                //     "color": "#fff",
-                //     "text-align": "center",
-                //     'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
-                // }).attr({
-                //     x: Math.max(0, Math.min(Crafty.viewport.x, this.x)),
-                //     y: this.y,
-                //     z: 9999
-                // }).text("Forked");
-            });
-
-        }, 1000);
-    }
-
     function onHitPlatform(e) {
-
+            // Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
+            //     x: this.x + 16,
+            //     y: this.y - 8,
+            //     w: 64,
+            //     h: 64
+            // }).reel("Smoke", 450, 0, 0, 10).animate('Smoke', 0).bind("AnimationEnd", this.destroy);
         return;
 
         var c = e[0],
@@ -523,21 +464,27 @@
             }
         }
     }
-
     function onHitSpikes(e) {
         Crafty.trigger('playerdead');
     }
-
     function onHitSpaceship(e) {
         Crafty.trigger('playerwin');
     }
-
-    function initState() {
-        Crafty.background("none");
-        Crafty.viewport.y = 0;
-        score = 0;
-        stars = 0;
-        isDead = false;
+    function onHitHealth(e) {
+        if (e[0] && e[0].obj && e[0].obj.visible) {
+            var obj = e[0].obj;
+            obj.visible = false;
+            playerHealth += 1;
+            Crafty.trigger('playerupdatehealth');            
+        }
+    }
+    function onHitEnergy(e) {
+        if (e[0] && e[0].obj && e[0].obj.visible) {
+            var obj = e[0].obj;
+            obj.visible = false;
+            playerEnergy += ~~(MAX_ENERGY * 0.25);
+            Crafty.trigger('playerupdatejuice');
+        }
     }
 
     /************************************************************************
@@ -596,9 +543,9 @@
         var octocat = Crafty.e("2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
         .setName("octocat")
         .attr({
-            x: Crafty.viewport.width / 2,
+            x: Crafty.viewport.width / 2 - 50,
             y: Crafty.viewport.height / 2,
-            z: 999
+            z: 990
         })
         .origin('center')
         .twoway(playerSpeed, playerJump)
@@ -609,8 +556,10 @@
         .gravity('Platform')
         .gravityConst(GRAVITY)
         .collision([0, 47], [50, 47], [25, 57])
-        .onHit("Spikes", onHitSpikes)
-        .onHit("Spaceship", onHitSpaceship)
+        .onHit('Spikes', onHitSpikes)
+        .onHit('Spaceship', onHitSpaceship)
+        .onHit('HealthRed', onHitHealth)
+        .onHit('EnergyOrange', onHitEnergy);
 
         octocat.bind("KeyDown", function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
@@ -619,11 +568,14 @@
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;
-                
             } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
                 this.animate('walk_right', -1);
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.animate('walk_left', -1);
+            } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z) {
+                Crafty.trigger('playershoot');
+                Crafty.trigger('playerupdatejuice');
+                console.log('hello');
             }
         });
         octocat.bind("KeyUp", function (e) {
@@ -632,18 +584,38 @@
             } else {
                 this.animate('stand');
             }
-            // TEST
-            if ((e.key === Crafty.keys.X)) {
+            // TEST ////////
+            if (e.key === Crafty.keys.O) {
                 playerHealth -= 1;
                 Crafty.trigger('playerupdatehealth');
             }
-            if ((e.key === Crafty.keys.Y)) {
-                playerEnergy -= 1;
-                Crafty.trigger('playerupdatejuice');
-            }            
+            if (e.key === Crafty.keys.P) {
+                playerHealth += 1;
+                Crafty.trigger('playerupdatehealth');
+                // playerEnergy -= 1;
+                // Crafty.trigger('playerupdatejuice');
+            }    
+            /////////        
         });
 
         Crafty.viewport.follow(octocat, 0, 0);
+
+        var shootflare = Crafty.e("2D, Canvas, SpriteAnimation, Flares")
+        .attr({
+            x: 0, y: 0,
+            z: 991,
+            visible: false,
+            alpha: 0.90
+        })
+        .origin('center')
+        .reel('flare01', generalAnimSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
+        .bind('EnterFrame', function() {
+            this.x = octocat._x + 24;
+            this.y = octocat._y + 24;
+        })
+        .bind('AnimationEnd', function() {
+            this.visible = false;
+        })
 
         for (var i = 0; i < 11; i++) {
             var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
@@ -657,7 +629,7 @@
         }
 
         /************************************************************************
-         * Bindings
+         * Bindings & Events
          */
 
         function scrollViewport(e) {
@@ -767,8 +739,13 @@
             if (!HUDHealth)
                 return;
 
-            playerHealth = Math.min(playerHealth, 4);
-            HUDHealth.removeComponent('HUDHealth4, HUDHealth3, HUDHealth2, HUDHealth1, HUDHealth0');
+            playerHealth = Math.min(playerHealth, MAX_HEALTH);
+            playerHealth = Math.max(playerHealth, 0);
+            HUDHealth.removeComponent('HUDHealth4')
+                .removeComponent('HUDHealth3')
+                .removeComponent('HUDHealth2')
+                .removeComponent('HUDHealth0')
+                .removeComponent('HUDHealth4');
             switch(playerHealth) {
                 case 4: HUDHealth.addComponent('HUDHealth4'); break;
                 case 3: HUDHealth.addComponent('HUDHealth3'); break;
@@ -776,6 +753,7 @@
                 case 1: HUDHealth.addComponent('HUDHealth1'); break;
                 default: HUDHealth.addComponent('HUDHealth0'); break;
             }
+            HUDHealth.trigger('NewComponent');
         });
         Crafty.bind("playerupdatejuice", function () {
             if (!HUDEnergy)
@@ -784,7 +762,16 @@
             playerEnergy = Math.max(playerEnergy, 0);
             playerEnergy = Math.min(playerEnergy, 49);
             HUDEnergy.trigger('Invalidate');
-        });        
+        });
+        Crafty.bind("playershoot", function() {
+            playerEnergy -= 1;
+            shootflare.visible = true;
+            shootflare.animate('flare01');
+        });
+ 
+        /************************************************************************
+         * Behaviors and Monitoring
+         */
 
         (function (vp) {
             function updateOctocat(e) {
@@ -844,17 +831,15 @@
                                 }
                                 this._children.length = 0; // = [];
                             }
-                            //TODO: kill ship, if it had any
 
-                            this.removeComponent("Push");
-                            this.removeComponent("Pull");
+                            //TODO: kill ship, if it had any
                             this.removeComponent(this.clr);
+
 
                             this.alpha = 1;
                             this.attr(d);
                             this.addComponent(d.clr);
                             this.collision();
-
 
                             // this.attr(d);
                             // this.alpha = 1;
@@ -879,8 +864,6 @@
                                     _acc: 0.125
                                 })
                                 .collision();
-                            // } else if(0 === cur % r) {
-                            //     this.addComponent("Push");
                             // } else if(!this.has("Push") && 0 === cur % (r + 1)) {
                             //     this.addComponent("Pull");
                             // } else if(0 === cur % (r + 2)) {
@@ -894,6 +877,17 @@
                             //         y: this.y - 64
                             //     }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("&#xF22A"); // star
                             }
+
+                            if (d.powerup && !d.powerupAdded) {
+                                console.log(this.w);
+                                addPowerup({
+                                    x: this.x + (Math.random() * (this.w - 20)), 
+                                    y: this.y,
+                                    type: d.powerup
+                                });
+                                d.powerupAdded = true;
+                            }
+
                             this.trigger("Recycled");
                         }
                     });
@@ -902,8 +896,35 @@
             Crafty.bind("ViewportScroll", recyclePlatforms);
         })(Crafty.viewport);
 
+        // Create the Platform pool, these entities will be recycled throughout the level
+        (function initPowerupsPool() {
+            for (var i = 0; i < MAX_POWERUPS; i++) {
+                var pwup = Crafty.e("2D, Canvas, Powerup, Collision")
+                .attr({
+                    x: 0, y: 0,
+                    z: 899,
+                    visible: false,
+                    type: ''
+                })
+                .collision();
+                powerups_data.push(pwup);
+            };
+        })();
+        function addPowerup(data) {
+            for (var i = 0; i < powerups_data.length; i++) {
+                if (!powerups_data[i].visible) {
+                    powerups_data[i].x = data.x;
+                    powerups_data[i].y = data.y - 19;
+                    powerups_data[i].removeComponent('EnergyOrange, HealthRed');
+                    powerups_data[i].addComponent(data.type === POWERUP_HEALTH ? 'HealthRed' : 'EnergyOrange')
+                    powerups_data[i].visible = true;
+                    return powerups_data[i];
+                }
+            }              
+        }
+
         /************************************************************************
-         * Update UI stuff
+         * HUD & UI Stuff
          */
 
         function updateHUD() {
@@ -940,7 +961,6 @@
         }).bind('Draw', function(e) {
             var ctx = e.ctx;
             var xpos = 19 + MAX_ENERGY - (MAX_ENERGY - playerEnergy);
-            console.log('pos', xpos, e.pos._x);
             ctx.beginPath();
             ctx.rect(e.pos._x + xpos, e.pos._y + 4, (MAX_ENERGY - playerEnergy), 11);
             ctx.fillStyle = 'black';
@@ -1002,92 +1022,6 @@
             this.unbind('MouseDown', toggleMUSIC);
         });
    
-    });
-
-    /************************************************************************
-     * Game End
-     */
-   Crafty.scene("dead", function initDead() {
-        // Crafty.background("#fff");
-        Crafty.viewport.y = 0;
-        var s = 0,
-            total = 0;
-        Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
-
-        function starCounter(e) {
-            // if(0 === e.frame % 2)
-            {
-                // Crafty.audio.play('star', 1, 0.5);
-                this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">&#xF22A</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
-
-                if(++s > stars) {
-                    this.unbind("EnterFrame");
-
-                    total = (s - 1) * 10 + score;
-                    Crafty.e("2D, DOM, HTML").attr({
-                        x: 0,
-                        y: 144,
-                        w: Crafty.viewport.width
-                    }).replace('<div style="text-align: center; font: 48px Chewy, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
-                    return;
-                }
-            }
-        }
-
-        Crafty.e("2D, DOM, Text, Score")
-        // .attr({x: 0, y: 0, w: Crafty.viewport.width, h: Crafty.viewport.height / 2})
-        .attr({
-            x: 0,
-            y: 20,
-            w: Crafty.viewport.width
-        }).css({
-            // "width": Crafty.viewport.width + "px",
-            "font": "48px Chewy, Impact",
-            "line-height": "100%",
-            "color": "#222",
-            "text-align": "center",
-            'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-        })
-        // .text("Your Score:\n" + score);
-        .bind("EnterFrame", function (e) {
-            this.text("Height = " + s);
-
-            // Crafty.audio.play('click', 1, 0.1);
-            if(s >= score) {
-                s = 0;
-                this.unbind("EnterFrame");
-                setTimeout(function () {
-                    Crafty.e("2D, DOM, HTML").attr({
-                        x: 0,
-                        y: 64,
-                        w: Crafty.viewport.width
-                    }).bind("EnterFrame", starCounter);
-                }, 250);
-            }
-            s += ~~ (s + (score - s) / score);
-            s = Math.min(s, score);
-        });
-
-        var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
-        for(var i=0; i<10; i++) {
-            // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
-            var $row = ('<tr><td>Name</td><td>Score</td></tr>');
-            $tbl.append($row);
-        }
-        Crafty.e("HTML, ScoreBoard")
-        .attr({x:20, y:250, w:Crafty.viewport.width - 40})
-        .css({
-            'color': '#000',
-            'border': '2px solid #000',
-            'borderRadius': '8px'
-            // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
-        })
-        .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
-        console.log([$tbl, $tbl.html()]);
-
-        // // setTimeout(function() {
-        // //     Crafty.scene("main");
-        // // }, 3000);
     });
 
     Crafty.scene("loading");
