@@ -9,6 +9,7 @@
     var SCROLL_SPEED = 1,
         GRAVITY = 1,
         SFX = true,
+        enableFPS = true,
         
         score = 0,
         stars = 0,
@@ -27,7 +28,9 @@
         generalAnimSpeed = 450,
         playerSpeed = 4,
         playerJump = 17,
-        ship = null;
+        ship = null,
+        HUDEnergy = null,
+        HUDHealth = null;
 
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
@@ -584,7 +587,19 @@
 
         /************************************************************************
          * Create entities
-         */        
+         */
+        if (enableFPS) {
+            // Crafty.e("2D, DOM, FPS, Text").attr({x: 50, y: 60, maxValues:10})
+            // .css({
+            //     "font": "96px Chewy, Impact",
+            //     "color": "#fff",
+            //     "text-align": "center",
+            //     'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
+            // })
+            // .bind("MeasureRenderTime", function(fps) {
+            //     this.text(fps);
+            // }).text('test');
+        }
 
         var bg = Crafty.e("2D, Canvas, Image, Background").attr({
             x: -100,
@@ -682,6 +697,7 @@
                 bg.y = -Crafty.viewport.y;
             }
             bgovr.y = -Crafty.viewport.y;
+            console.log('siye: ' + Crafty("2D").length);
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
@@ -733,8 +749,11 @@
             }
         });
         Crafty.bind("playerwin", function () {
+            // Crafty.unbind("ViewportScroll", recyclePlatforms);
             // good bye Strider
             octocat.destroy();
+            HUDHealth.destroy();
+            HUDEnergy.destroy();
             // fly away ...
             ship.bind('EnterFrame', function() {
                 this._acc += 0.0125;
@@ -831,6 +850,7 @@
                                 }
                                 this._children.length = 0; // = [];
                             }
+                            //TODO: kill ship, if it had any
 
                             this.removeComponent("Push");
                             this.removeComponent("Pull");
@@ -864,28 +884,21 @@
                                     z: -3,
                                     _acc: 0.125
                                 })
-                                .collision();                          
-                                // quit
-                                Crafty.unbind("ViewportScroll", recyclePlatforms);
-                                return;
-                            } else if(0 === cur % r) {
-                                // this.removeComponent("Push", false).addComponent("Push");
-                                // this.removeComponent("Push").addComponent("Push");
-                                this.addComponent("Push");
-                            } else if(!this.has("Push") && 0 === cur % (r + 1)) {
-                                // this.removeComponent("Pull", false).addComponent("Pull");
-                                // this.removeComponent("Pull").addComponent("Pull");
-                                this.addComponent("Pull");
-                            } else if(0 === cur % (r + 2)) {
-                                Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
-                                    x: this.x + (this.w - 48) / 2,
-                                    y: this.y - 64
-                                }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("&#xF220");
-                            } else if(0 === cur % 2) {
-                                Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
-                                    x: this.x + (this.w - 48) / 2,
-                                    y: this.y - 64
-                                }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("&#xF22A"); // star
+                                .collision();
+                            // } else if(0 === cur % r) {
+                            //     this.addComponent("Push");
+                            // } else if(!this.has("Push") && 0 === cur % (r + 1)) {
+                            //     this.addComponent("Pull");
+                            // } else if(0 === cur % (r + 2)) {
+                            //     Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
+                            //         x: this.x + (this.w - 48) / 2,
+                            //         y: this.y - 64
+                            //     }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("&#xF220");
+                            // } else if(0 === cur % 2) {
+                            //     Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
+                            //         x: this.x + (this.w - 48) / 2,
+                            //         y: this.y - 64
+                            //     }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("&#xF22A"); // star
                             }
                             this.trigger("Recycled");
                         }
@@ -899,14 +912,14 @@
          * Update UI stuff
          */
 
-        function updateScore() {
-            this.x = 15 - Crafty.viewport._x;
-            this.y = 5 - Crafty.viewport.y;
+        function updateHUD() {
+            this.x = 5 - Crafty.viewport.x;
+            this.y = 25 - Crafty.viewport.y;
             meters = METERS_DEPTH - ~~((Crafty.viewport.height - octocat.y) * 0.1 - 1);
             this.text(meters + ' m.');
         }
         Crafty.e("2D, DOM, Text").attr({
-            x: 15,
+            x: 5,
             w: 50,
             z: 9999
         }).css({
@@ -914,37 +927,34 @@
             'color': '#fff',
             // 'text-align': 'left',
             'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-        }).bind("EnterFrame", updateScore);
+        }).bind("EnterFrame", updateHUD);
 
-        (function () {
-            var _stars = -1;
+        HUDHealth = Crafty.e("2D, Canvas, HUDHealth").attr({
+            x: 5,
+            z: 9999
+        }).bind("EnterFrame", function() {
+            this.x = 5 - Crafty.viewport.x;
+            this.y = 1 - Crafty.viewport.y;
+        });
 
-            function updateStars(e) {
-                // if (_stars != stars) {
-                //     this.replace('<div id="stars" style="position: relative; top: 0px; transition: all 4s"><span id="star" style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 rgba(0,0,0,0.2),1px -1px 0 rgba(0,0,0,0.2),-1px 1px 0 rgba(0,0,0,0.2),1px 1px 0 rgba(0,0,0,0.2);">&#xF22A</span><span style="font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + stars + '</span></div>');
-                //     _stars = stars;
-                // }
-                this.x = Crafty.viewport.width / 2 - 48;
-                this.y = -Crafty.viewport.y - 16;
-            }
-            Crafty.e("HTML, Stars, Tween, Delay").attr({
-                x: this.x + 34,
-                y: this.y - 64,
-                w: 200,
-                z: 9999
-            }).bind("EnterFrame", updateStars);
-        })();
-
+        HUDEnergy = Crafty.e("2D, Canvas, HUDEnergy").attr({
+            x: 75,
+            z: 9999
+        }).bind("EnterFrame", function() {
+            this.x = 75 - Crafty.viewport.x;
+            this.y = 1 - Crafty.viewport.y;
+        });  
 
         function toggleSFX(e) {
-            if(e.mouseButton !== Crafty.mouseButtons.LEFT) return;
+            if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
+                return;
             SFX = !SFX;
             Crafty("SFX").image('assets/images/' + (SFX ? 'speaker.png' : 'mute.png'));
         }
 
         function updateSpeaker() {
-            this.x = Crafty.viewport.width - Crafty.viewport._x - 64;
-            this.y = -Crafty.viewport.y + 10;
+            this.x = Crafty.viewport.width - Crafty.viewport.x - 56;
+            this.y = Crafty.viewport.height - 52 - Crafty.viewport.y;
         }
         Crafty.e("2D, DOM, SFX, Image, Mouse").attr({
             x: Crafty.viewport.width - 64,
