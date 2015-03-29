@@ -1,3 +1,12 @@
+/**
+ * Strider
+ * Github Game-Off 2015 Entry
+ * by Petar Petrov / github.com/petarov
+ *
+ * (A fork of) Octocat Jump
+ * A Github Game Off 2012 Entry
+ * @copyright Omer Goshen <gershon@goosemoose.com>
+ */
 (function($, Crafty) {
     $(document).ready(function () {
         var STAGE_WIDTH = 400,
@@ -10,6 +19,7 @@
             min: { x:-100, y: -Infinity }, 
             max: { x: STAGE_WIDTH + 50, y: Infinity } 
         };
+        // Crafty.viewport.clampToEntities = true;
         Crafty.settings.modify("autoPause", true);
 
         Crafty.scene("loading", function () {
@@ -46,7 +56,7 @@
                     'ui_health.png': {
                         tile: 69,
                         tileh: 19,
-                        map: {HUDHealth: [0, 0]}
+                        map: {HUDHealth4: [0, 0], HUDHealth3: [0, 1], HUDHealth2: [0, 2], HUDHealth1: [0, 3], HUDHealth0: [0, 4]}
                     },
                     'smoke_jump.png': {
                         tile: 64,

@@ -1,3 +1,12 @@
+/**
+ * Strider
+ * Github Game-Off 2015 Entry
+ * by Petar Petrov / github.com/petarov
+ *
+ * (A fork of) Octocat Jump
+ * A Github Game Off 2012 Entry
+ * @copyright Omer Goshen <gershon@goosemoose.com>
+ */
 (function($, Crafty) {
     $(document).ready(function () {
         

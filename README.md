@@ -1,4 +1,4 @@
-.o0 Escape from Efriador V 0o.
+.o0 Strider 0o.
 ===============================
 
 [game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.

@@ -1,24 +1,18 @@
 /**
- * Octocat Jump
+ * Strider
+ * Github Game-Off 2015 Entry
+ * by Petar Petrov / github.com/petarov
+ *
+ * (A fork of) Octocat Jump
  * A Github Game Off 2012 Entry
  * @copyright Omer Goshen <gershon@goosemoose.com>
  */
 (function octocatJump($, Crafty) {
     $(document).ready(function () {
 
-    var SCROLL_SPEED = 1,
-        GRAVITY = 1,
+    var GRAVITY = 1,
         SFX = true,
         enableFPS = true,
-        
-        score = 0,
-        stars = 0,
-        forks = 0,
-        isDead = false,
-        level_data = [],
-        cur_platforms = 0,
-        max_platforms = 10,
-        step_platforms = 1,
         METERS_DEPTH = 300,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
         METERS_DEPTH_3 = METERS_DEPTH * 0.25,
@@ -26,11 +20,24 @@
         total_platforms = METERS_DEPTH / 10 - 1,
         playerAnimSpeed = 450,
         generalAnimSpeed = 450,
-        playerSpeed = 4,
-        playerJump = 17,
+        MAX_ENERGY = 49,
         ship = null,
         HUDEnergy = null,
-        HUDHealth = null;
+        HUDHealth = null,
+        // level vars
+        level_data = [],
+        cur_platforms = 0,
+        max_platforms = 10,
+        step_platforms = 1,
+        // player vars
+        playerSpeed = 4,
+        playerJump = 17,
+        playerHealth = 4,
+        playerEnergy = 49,
+        isDead = false
+        //
+        ;
+
 
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
@@ -220,52 +227,6 @@
 
         init: function () {
             this.requires("2D, Keyboard");
-
-            this._accel = new Crafty.math.Vector2D();
-            this._speed = new Crafty.math.Vector2D();
-            this._oldpos = new Crafty.math.Vector2D();
-
-            this.bind("KeyDown", function (e) {
-                switch(e.keyCode) {
-                    case Crafty.keys.SPACE:
-                        var clone = Crafty("OctoClone");
-                        var p = this.pos();
-                        this.x = clone.x;
-                        this.y = clone.y;
-                        clone.x = p._x;
-                        clone.y = p._y;
-                        break;
-                case Crafty.keys.P:
-                    Crafty.pause();
-                    break;
-                case Crafty.keys.LEFT_ARROW:
-                    this._accel.x = -this.ACCEL;
-                    // this._accel.x = Math.max(this._accel.x - this.ACCEL, -this.ACCEL);
-                    this.flip();
-                    break;
-                case Crafty.keys.RIGHT_ARROW:
-                    this._accel.x = +this.ACCEL;
-                    // this._accel.x = Math.min(this._accel.x + this.ACCEL, this.ACCEL);
-                    this.unflip();
-                    break;
-                }
-            });
-
-            this.bind("KeyUp", function (e) {
-                switch(e.keyCode) {
-                    // case Crafty.keys.LEFT_ARROW:
-                    //     this._accel.x = Math.min(this._accel.x + this.ACCEL, this.ACCEL);
-                    //     break;
-                    // case Crafty.keys.RIGHT_ARROW:
-                    //     this._accel.x = Math.max(this._accel.x - this.ACCEL, -this.ACCEL);
-                    //     break;
-                case Crafty.keys.LEFT_ARROW:
-                case Crafty.keys.RIGHT_ARROW:
-                    this._accel.x = 0;
-                    break;
-                }
-            });
-
             this.bind("EnterFrame", this._enterframe);
         },
 
@@ -622,7 +583,7 @@
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
         }).image("assets/images/starsky.png", "repeat");        
-        var bgovr = Crafty.e("2D, DOM, BackgroundOverlay, Color, Delay").attr({
+        var bgovr = Crafty.e("2D, Canvas, BackgroundOverlay, Color, Delay").attr({
             x: -100,
             y: 0,
             z: -1,
@@ -645,6 +606,7 @@
         .reel('stand', 450, [ [0, 3] ])
         .animate('stand')
         .gravity('Platform')
+        .gravityConst(GRAVITY)
         .collision([0, 47], [50, 47], [25, 57])
         .onHit("Spikes", onHitSpikes)
         .onHit("Spaceship", onHitSpaceship)
@@ -669,6 +631,15 @@
             } else {
                 this.animate('stand');
             }
+            // TEST
+            if ((e.key === Crafty.keys.X)) {
+                playerHealth -= 1;
+                Crafty.trigger('playerupdatehealth');
+            }
+            if ((e.key === Crafty.keys.Y)) {
+                playerEnergy -= 1;
+                Crafty.trigger('playerupdatejuice');
+            }            
         });
 
         Crafty.viewport.follow(octocat, 0, 0);
@@ -697,7 +668,7 @@
                 bg.y = -Crafty.viewport.y;
             }
             bgovr.y = -Crafty.viewport.y;
-            console.log('siye: ' + Crafty("2D").length);
+            // console.log('size: ' + Crafty("2D").length);
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
@@ -791,6 +762,28 @@
                 this.animate('play2', -1);
             });            
         });
+        Crafty.bind("playerupdatehealth", function () {
+            if (!HUDHealth)
+                return;
+
+            playerHealth = Math.min(playerHealth, 4);
+            HUDHealth.removeComponent('HUDHealth4, HUDHealth3, HUDHealth2, HUDHealth1, HUDHealth0');
+            switch(playerHealth) {
+                case 4: HUDHealth.addComponent('HUDHealth4'); break;
+                case 3: HUDHealth.addComponent('HUDHealth3'); break;
+                case 2: HUDHealth.addComponent('HUDHealth2'); break;
+                case 1: HUDHealth.addComponent('HUDHealth1'); break;
+                default: HUDHealth.addComponent('HUDHealth0'); break;
+            }
+        });
+        Crafty.bind("playerupdatejuice", function () {
+            if (!HUDEnergy)
+                return;
+
+            playerEnergy = Math.max(playerEnergy, 0);
+            playerEnergy = Math.min(playerEnergy, 49);
+            HUDEnergy.trigger('Invalidate');
+        });        
 
         (function (vp) {
             function updateOctocat(e) {
@@ -913,8 +906,8 @@
          */
 
         function updateHUD() {
-            this.x = 5 - Crafty.viewport.x;
-            this.y = 25 - Crafty.viewport.y;
+            this.x = Crafty.viewport.width - Crafty.viewport.x - 48;
+            this.y = 5 - Crafty.viewport.y;
             meters = METERS_DEPTH - ~~((Crafty.viewport.height - octocat.y) * 0.1 - 1);
             this.text(meters + ' m.');
         }
@@ -929,21 +922,32 @@
             'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
         }).bind("EnterFrame", updateHUD);
 
-        HUDHealth = Crafty.e("2D, Canvas, HUDHealth").attr({
+        HUDHealth = Crafty.e("2D, Canvas, HUDHealth4").attr({
             x: 5,
             z: 9999
-        }).bind("EnterFrame", function() {
+        }).bind('InvalidateViewport', function() {
             this.x = 5 - Crafty.viewport.x;
-            this.y = 1 - Crafty.viewport.y;
+            this.y = ~~(2 - Crafty.viewport.y);
         });
 
         HUDEnergy = Crafty.e("2D, Canvas, HUDEnergy").attr({
             x: 75,
             z: 9999
-        }).bind("EnterFrame", function() {
+        }).bind('InvalidateViewport', function() {
             this.x = 75 - Crafty.viewport.x;
-            this.y = 1 - Crafty.viewport.y;
-        });  
+            this.y = ~~(2 - Crafty.viewport.y);
+        }).bind('Draw', function(e) {
+            var ctx = e.ctx;
+            var xpos = 19 + MAX_ENERGY - (MAX_ENERGY - playerEnergy);
+            console.log('pos', xpos, e.pos._x);
+            ctx.beginPath();
+            ctx.rect(e.pos._x + xpos, e.pos._y + 4, (MAX_ENERGY - playerEnergy), 11);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            // ctx.lineWidth = 1;
+            // ctx.strokeStyle = 'none';      
+            // ctx.stroke(); 
+        });
 
         function toggleSFX(e) {
             if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
@@ -964,7 +968,7 @@
             z: 9999
         }).css('cursor', 'pointer')
         .image("assets/images/speaker.png")
-        .bind("EnterFrame", updateSpeaker)
+        .bind('InvalidateViewport', updateSpeaker)
         // .areaMap([0,0], [50,0], [50,50], [0,50])
         .bind('MouseOver', function () {
             this.alpha = 0.8;
