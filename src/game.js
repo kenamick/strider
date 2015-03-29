@@ -33,6 +33,7 @@
         ship = null,
         HUDEnergy = null,
         HUDHealth = null,
+        SmokeAnim = null,
         // level vars
         level_data = [],
         powerups_data = [],
@@ -235,74 +236,6 @@
         }
     });
 
-    Crafty.c("PlayerControls", {
-        _accel: new Crafty.math.Vector2D(),
-        _speed: new Crafty.math.Vector2D(),
-        _oldpos: new Crafty.math.Vector2D(),
-        _enabled: true,
-        ACCEL: 2,
-        MAX_SPEED: 5,
-        JUMP_HEIGHT: 22,
-        PUSH_HEIGHT: 32,
-
-        init: function () {
-            this.requires("2D, Keyboard");
-            this.bind("EnterFrame", this._enterframe);
-        },
-
-        _enterframe: function () {
-            if(!this._enabled) return;
-
-            if(0 === this._accel.x) {
-                // this._speed.x *= 1 - Math.exp(-2);
-                this._speed.x *= 0.8646647167633873;
-            }
-
-            this._speed.x += this._accel.x;
-            this._speed.y += this._accel.y + GRAVITY;
-
-            this._speed.x = Math.max(-this.MAX_SPEED, Math.min(this._speed.x, this.MAX_SPEED));
-
-            this._oldpos.x = this.x;
-            this._oldpos.y = this.y;
-
-            // var dr = {
-            //     x: this.x - this._speed.x,
-            //     y: this.y - this._speed.y
-            // };
-            // this.trigger('Moved', dr);
-            if(0 !== this._speed.x) {
-                this.x += this._speed.x;
-                // this.trigger('Moved', {
-                //     x: this.x - this._speed.x,
-                //     y: this.y
-                // });
-            }
-
-            if(0 !== this._speed.y) {
-                this.y += this._speed.y;
-                // this.trigger('Moved', dr);
-                // this.trigger('Moved', {
-                //     x: this.x,
-                //     y: this.y - this._speed.y
-                // });
-            }
-
-            if(this.x < -this.w) this.x += Crafty.viewport.width + this.w;
-            if(this.x > Crafty.viewport.width) this.x = -this.w;
-
-        },
-
-        enableControls: function () {
-            this._enabled = true;
-            return this;
-        },
-        disableControls: function () {
-            this._enabled = false;
-            return this;
-        }
-    });
-
     function onHitStar(e) {
         var entity = e[0].obj,
             bgovr = Crafty("BackgroundOverlay");
@@ -475,7 +408,8 @@
             var obj = e[0].obj;
             obj.visible = false;
             playerHealth += 1;
-            Crafty.trigger('playerupdatehealth');            
+            Crafty.trigger('playerupdatehealth');
+            Crafty.trigger('playsmokeanim');
         }
     }
     function onHitEnergy(e) {
@@ -484,6 +418,7 @@
             obj.visible = false;
             playerEnergy += ~~(MAX_ENERGY * 0.25);
             Crafty.trigger('playerupdatejuice');
+            Crafty.trigger('playsmokeanim');
         }
     }
 
@@ -768,6 +703,13 @@
             shootflare.visible = true;
             shootflare.animate('flare01');
         });
+        Crafty.bind('playsmokeanim', function(data) {
+            SmokeAnim.x = octocat.x;
+            SmokeAnim.y = octocat.y;
+            SmokeAnim.visible = true;
+            SmokeAnim.animate('smoke');
+            console.log('play');
+        });
  
         /************************************************************************
          * Behaviors and Monitoring
@@ -922,6 +864,19 @@
                 }
             }              
         }
+
+        // all purpose smoke animation
+        SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
+        .origin('center').attr({
+            x: this.x + 16,
+            y: this.y - 8,
+            w: 64,
+            h: 64,
+            visible: false
+        }).reel('smoke', generalAnimSpeed, 0, 0, 10)
+        .bind('AnimationEnd', function() {
+            this.visible = false;
+        });        
 
         /************************************************************************
          * HUD & UI Stuff
