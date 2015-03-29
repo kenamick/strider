@@ -12,6 +12,7 @@
 
     var GRAVITY = 1,
         SFX = true,
+        MUSIC = true,
         enableFPS = true,
         METERS_DEPTH = 300,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -953,23 +954,20 @@
             if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
                 return;
             SFX = !SFX;
-            Crafty("SFX").image('assets/images/' + (SFX ? 'speaker.png' : 'mute.png'));
-        }
-
-        function updateSpeaker() {
-            this.x = Crafty.viewport.width - Crafty.viewport.x - 56;
-            this.y = Crafty.viewport.height - 52 - Crafty.viewport.y;
+            Crafty("SFX").image('assets/images/' + (SFX ? 'audioOn.png' : 'audioOff.png'));
         }
         Crafty.e("2D, DOM, SFX, Image, Mouse").attr({
-            x: Crafty.viewport.width - 64,
+            x: Crafty.viewport.width - 52,
             y: -Crafty.viewport.y + 10,
             w: 48,
             h: 48,
             z: 9999
         }).css('cursor', 'pointer')
-        .image("assets/images/speaker.png")
-        .bind('InvalidateViewport', updateSpeaker)
-        // .areaMap([0,0], [50,0], [50,50], [0,50])
+        .image("assets/images/audioOn.png")
+        .bind('InvalidateViewport', function() {
+            this.x = Crafty.viewport.width - Crafty.viewport.x - 52;
+            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;            
+        })
         .bind('MouseOver', function () {
             this.alpha = 0.8;
             this.bind('MouseDown', toggleSFX);
@@ -977,6 +975,33 @@
             this.alpha = 1;
             this.unbind('MouseDown', toggleSFX);
         });
+
+        function toggleMUSIC(e) {
+            if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
+                return;
+            MUSIC = !MUSIC;
+            Crafty("MUSIC").image('assets/images/' + (MUSIC ? 'musicOn.png' : 'musicOff.png'));
+        }
+        Crafty.e("2D, DOM, MUSIC, Image, Mouse").attr({
+            x: Crafty.viewport.width - 94,
+            y: -Crafty.viewport.y + 10,
+            w: 48,
+            h: 48,
+            z: 9999
+        }).css('cursor', 'pointer')
+        .image("assets/images/musicOn.png")
+        .bind('InvalidateViewport', function() {
+            this.x = Crafty.viewport.width - Crafty.viewport.x - 96;
+            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;            
+        })
+        .bind('MouseOver', function () {
+            this.alpha = 0.8;
+            this.bind('MouseDown', toggleMUSIC);
+        }).bind('MouseOut', function () {
+            this.alpha = 1;
+            this.unbind('MouseDown', toggleMUSIC);
+        });
+   
     });
 
     /************************************************************************

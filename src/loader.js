@@ -46,7 +46,8 @@
             // });
             Crafty.paths({ audio: "assets/sounds/", images: "assets/images/" });
             var assets = {
-                images: ['title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 'speaker.png', 'mute.png'],
+                images: ['title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 
+                    'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
                 sprites: {
                     'ui_energy.png': {
                         tile: 72,
