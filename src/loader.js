@@ -118,6 +118,11 @@
                         tile: 10,
                         tileh: 10,
                         map: {EnemyBullet: [0, 0]}
+                    },
+                    'xhair.png': {
+                        tile: 28,
+                        tileh: 28,
+                        map: {Xhair: [0, 0]}
                     }
                 },
                 audio: {

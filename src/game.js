@@ -52,7 +52,8 @@
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
-        isDead = false
+        isDead = false,
+        playerTargetDist = 40000,
         // enemy vars
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
@@ -569,9 +570,44 @@
         octocat.bind('Moved', function() {
             this.cx = octocat._x + octocat.w / 2;
             this.cy = octocat._y + octocat.h / 2;
+            // adjust crosshair / target
+            xhair.visible = false;
+            var lastDist = 9999999
+                , lastEnemy = null
+                , lastEnemyX, lastEnemyY;
+            for (var i = 0; i < enemies_data.length; i++) {
+                var enemy = enemies_data[i];
+                if (enemy.visible) {
+                    var ecx = enemy.x + enemy.w / 2
+                      , ecy = enemy.y + enemy.h / 2;
+                    var dist = Crafty.math.squaredDistance(ecx, ecy, this.cx, this.cy);
+                    if (dist < playerTargetDist && dist < lastDist) {
+                        lastDist = dist;
+                        lastEnemyX = ecx;
+                        lastEnemyY = ecy;
+                        lastEnemy = enemy;
+                    }
+                }
+            }
+            if (lastEnemy) {
+                xhair.x = lastEnemyX - xhair.w / 2;
+                xhair.y = lastEnemyY - xhair.h / 2;
+                xhair.visible = true;                
+            }
+            this.targetEnemy = lastEnemy;
         });
 
         Crafty.viewport.follow(octocat, 0, 0);
+
+        var xhair = Crafty.e("2D, Canvas, Xhair")
+        .attr({
+            x: 0,
+            y: 0,
+            z: 999,
+            alpha: 0.75,
+            visible: false
+        })
+        .origin('center');
 
         for (var i = 0; i < 11; i++) {
             var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
@@ -869,7 +905,7 @@
                 powerups_data.push(entity);
             }
             for (i = 0; i < MAX_ENEMIES; i++) {
-                entity = Crafty.e("2D, Canvas, SpriteAnimation")
+                entity = Crafty.e("2D, Canvas, Enemy, SpriteAnimation")
                 .attr({
                     x: 0, y: 0,
                     z: 890,

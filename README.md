@@ -33,6 +33,7 @@ TODO
   * Sprites and animations by [Master484](http://opengameart.org/content/open-gunner-starter-kit).
   * Spaceship sprite by [Stephen Challener (Redshrike)](http://opengameart.org/content/space-ship-building-bits-volume-1).
   * Smoke animation by [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1).
+  * Crosshair sprites by [para](http://opengameart.org/content/64-crosshairs-pack).
 
 Assets edited with GIMP.
 
