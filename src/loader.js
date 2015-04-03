@@ -123,6 +123,16 @@
                         tile: 28,
                         tileh: 28,
                         map: {Xhair: [0, 0]}
+                    },
+                    'explo01.png': {
+                        tile: 34,
+                        tileh: 30,
+                        map: {Explo01: [0, 0]}
+                    },
+                    'explo02.png': {
+                        tile: 33,
+                        tileh: 31,
+                        map: {Explo02: [0, 0]}
                     }
                 },
                 audio: {

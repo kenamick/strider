@@ -36,6 +36,9 @@
         generalAnimSpeed = 450,
         ANIM_GUNFLARE = 1,
         ANIM_PLAYER_GUNFLARE = 2,
+        ANIM_EXPLOSION_01 = 3,
+        ANIM_EXPLOSION_02 = 4,
+        ANIM_HITENEMY = 5,
         // objects
         ship = null,
         HUDEnergy = null,
@@ -52,13 +55,15 @@
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
+        playerDamage = 1;
         isDead = false,
         playerTargetDist = 40000,
         // enemy vars
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
         ENEMY_TURRET_SHOOTDELAY = 3000,
-        ENEMY_TURRET_SHOOTRANGE = 176400, // 300px
+        ENEMY_TURRET_SHOOTRANGE = 176400, // 420px
+        ENEMY_TURRET_HP = 10,
         BULLET_LIVE = 5000,
         BULLET_SPEED = 3,
         enemies_data = [],
@@ -183,170 +188,6 @@
             // .text("&#xF220");
         }
     });
-
-    Crafty.c("Push", {
-        _label: null,
-        init: function () {
-            this.color("#4F4");
-            this._label = Crafty.e("2D, DOM, Text").attr({
-                x: this.x,
-                y: this.y,
-                w: this.w
-            }).textColor("#ffffff").text("Push").css({
-                "font": "18px Chewy, Arial",
-                "text-align": "center",
-                // 'textShadow': '0px 1px 2px #000'
-                'textShadow': '0px 1px 2px rgba(0,0,0,.5), -1px -1px 0 #484,1px -1px 0 #484,-1px 1px 0 #484,1px 1px 0 #484'
-            });
-            this.attach(this._label);
-        },
-
-        use: function () {
-            // this.removeComponent("Push", false);
-            this._label.destroy();
-            this.tween({
-                alpha: 0
-            }, 25).bind("TweenEnd", function (k) {
-                if('alpha' !== k) {
-                    return;
-                }
-                this.color("#888");
-                // this.removeComponent("Push", false);
-                this.removeComponent("Push");
-            });
-            return this;
-        }
-    });
-
-    Crafty.c("Pull", {
-        _label: null,
-        init: function () {
-            this.color("#F44");
-            this._label = Crafty.e("2D, DOM, Text").attr({
-                x: this.x,
-                y: this.y,
-                w: this.w
-            }).textColor("#ffffff").text("Pull").css({
-                "font": "18px Chewy, Arial",
-                "text-align": "center",
-                // 'textShadow': '0px 1px 2px #000'
-                'textShadow': '0px 1px 2px rgba(0,0,0,.5), -1px -1px 0 #844,1px -1px 0 #844,-1px 1px 0 #844,1px 1px 0 #844'
-            });
-            this.attach(this._label);
-        },
-
-        use: function () {
-            // this.removeComponent("Pull", false);
-            this._label.destroy();
-
-            this.tween({
-                alpha: 0
-            }, 25).bind("TweenEnd", function (k) {
-                if('alpha' !== k) {
-                    return;
-                }
-                this.color("#888");
-                // this.removeComponent("Pull", false);
-                this.removeComponent("Pull");
-            });
-            return this;
-        }
-    });
-
-    function onHitStar(e) {
-        var entity = e[0].obj,
-            bgovr = Crafty("BackgroundOverlay");
-        // e.removeComponent("Pickup", false);
-        bgovr.color("#ffff00").delay(function () {
-            this.color("#006064");
-        }, 150);
-
-        entity._origin.x = 24;
-        entity._origin.y = 42;
-        entity.z = 999;
-
-
-        if(SFX) Crafty.audio.play('star', 1, 0.5);
-
-        entity.removeComponent("Pickup");
-        entity.removeComponent("Star", true);
-        // entity.removeComponent("Star", false);
-        var t0 = Crafty.frame(),
-            // x0 = entity.x,
-            // y0 = entity.y,
-            t = e.frame - t0,
-            s = 10;
-
-        /**
-         * unitstep
-         */
-        var u = function (t) {
-                // return t < 0 ? 0 : 1;
-                return ~~ (t > 0);
-            };
-        var _frame = Crafty.frame();
-        // var _pos = new Crafty.math.Vector2D(entity.x, entity.y);
-
-        function updateStar(e) {
-            var Vector2D = Crafty.math.Vector2D,
-                dest = new Vector2D(Crafty.viewport.x + 150, -Crafty.viewport.y - 16),
-                src = new Vector2D(this.x, this.y),
-                d = src.distance(dest),
-                v = dest.subtract(src);
-
-            if(d <= 10) {
-                this.unbind("EnterFrame");
-                stars++;
-                Crafty("Stars").replace('<div id="stars" style="position: relative; top: 0px;"><span id="star" style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px #fc0, -1px -1px 0 #fc0,1px -1px 0 rgba(0,0,0,0.2),-1px 1px 0 rgba(0,0,0,0.2),1px 1px 0 rgba(0,0,0,0.2);">&#xF22A</span><span style="font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + stars + '</span></div>');
-                $("#stars").animate({
-                    'top': '+=10px',
-                    'zoom': 1.02
-                }, 75).delay(50).animate({
-                    'top': '-=10px',
-                    'zoom': 1
-                }, 75);
-                $("#stars>span:first").animate({
-                    'top': '+=10px',
-                    'zoom': 1.05
-                }, 75).delay(75).animate({
-                    'top': '-=12px',
-                    'zoom': 1
-                }, 100);605
-
-                this.destroy();
-
-                // this.tween({
-                //     // rotation: 0,
-                //     alpha: 0
-                // }, 25).bind("TweenEnd", function (k) {
-                //     if(k === 'alpha') {
-                //         // $("#stars").animate({zoom: 1.5}, 150).delay(50).animate({zoom: 1}, 150);
-                //         this.destroy();
-                //     }
-                // });
-            }
-
-            v.normalize();
-            v.scale(s, s);
-
-            // apply some kind of back easing...
-            var df = e.frame - _frame;
-            var k = u(df - 25);
-            // var r = src.distance(_pos);
-            // var q = Math.max(0, Math.min(100, r)) / 100;
-            // v.y = k * v.y + 100 * Math.exp(-6*q) * (1 - k);
-            // v.y = k * v.y + -0.5 * v.y * q * (1-k);
-            v.y = k * v.y - 0.1 * v.y * (1 - k);
-
-            var f = e.frame % 8;
-            // this.alpha = ~~ (f < 5);
-            this.alpha = 1 - u(f - 5);
-
-            this.x += v.x;
-            this.y += v.y;
-        }
-        entity.bind("EnterFrame", updateStar);
-    }
 
     function onHitPlatform(e) {
             // Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
@@ -543,9 +384,20 @@
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.animate('walk_left', -1);
             } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z) {
+                // --- kill't with fire
                 Crafty.trigger('playershoot');
                 Crafty.trigger('playerupdatejuice');
-                console.log('hello');
+                if (octocat.targetEnemy) {
+                    var target = octocat.targetEnemy;
+                    target.hp -= playerDamage;
+                    if (target.hp < 0) {
+                        target.trigger('Kill');
+                        addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
+                        octocat.trigger('Moved'); // update target
+                    } else {
+                        addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
+                    }
+                }
             }
         });
         octocat.bind("KeyUp", function (e) {
@@ -922,7 +774,8 @@
                     z: 892,
                     visible: false,
                     direction: 0,
-                    speed: BULLET_SPEED
+                    speed: BULLET_SPEED,
+                    hp: 0
                 })
                 .reel('shoot', generalAnimSpeed, 0, 0, 2);
                 // .collision();
@@ -977,6 +830,7 @@
                     entity.unbind('EnterFrame');
                     // events
                     if (type === ENEMY_TURRET) {
+                        entity.hp = ENEMY_TURRET_HP;
                         entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
                         entity.bind('AnimationEnd', function (reel) {
                             // console.log('new bullet');
@@ -993,12 +847,12 @@
                         entity.shootFn = function() {
                             var ecx = entity.x + entity.w / 2
                               , ecy = entity.y + entity.h / 2;
-                              console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
+                              // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
                             if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < ENEMY_TURRET_SHOOTRANGE) {
                                 entity.animate('shoot');
                             }
-                        };
-                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn.bind(entity), ENEMY_TURRET_SHOOTDELAY, -1);
+                        }.bind(entity);
+                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
                         entity.bind('Kill', function () {
                             this.shootTimer.cancelDelay(entity.shootFn);
                             this.visible = false;
@@ -1081,6 +935,18 @@
                         entity.alpha = 0.9;
                         entity.addComponent('Flares')
                         .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]]);
+                    } else if (type === ANIM_EXPLOSION_01) {
+                        entity.alpha = 0.9;
+                        entity.addComponent('Explo01')
+                        .reel('play', generalAnimSpeed, 0, 0, 6);
+                    } else if (type === ANIM_EXPLOSION_02) {
+                        entity.alpha = 0.9;
+                        entity.addComponent('Explo02')
+                        .reel('play', generalAnimSpeed, 0, 0, 6);                        
+                    } else if (type === ANIM_HITENEMY) {
+                        entity.alpha = 0.75;
+                        entity.addComponent('Explo02')
+                        .reel('play', animSpeed, 0, 0, 6);
                     } else {
                         throw "wrong anim type - " + type;
                     }
