@@ -319,38 +319,39 @@
             // }).text('test');
         }
 
-        var bg = Crafty.e("2D, Canvas, Image, Background").attr({
+        var bg = Crafty.e('2D, Canvas, Image, Background').attr({
             x: -100,
             y: 0,
             z: -4,
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
-        }).image("assets/images/wall01.png", "repeat");
-        var bg1 = Crafty.e("2D, Canvas, Image, Background2").attr({
+        }).image('assets/images/wall01.png', 'repeat');
+        var bg1 = Crafty.e('2D, Canvas, Image, Background2').attr({
             x: -100,
             y: 0,
             z: -4,
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
-        }).image("assets/images/backgrounds.png", "repeat");
-        var bg2 = Crafty.e("2D, Canvas, Image, Background").attr({
+        }).image('assets/images/backgrounds.png', 'repeat');
+        var bg2 = Crafty.e('2D, Canvas, Image, Background').attr({
             x: -100,
             y: 0,
             z: -4,
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
-        }).image("assets/images/starsky.png", "repeat");        
-        var bgovr = Crafty.e("2D, Canvas, BackgroundOverlay, Color, Delay").attr({
+        }).image('assets/images/starsky.png', 'repeat');        
+        var bgovr = Crafty.e('2D, Canvas, BackgroundOverlay, Color, Delay').attr({
             x: -100,
             y: 0,
             z: -1,
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height,
-            alpha: 0.2
-        }).color("#006064");
+            alpha: 0.2,
+            direction: 'right'
+        }).color('#006064');
 
-        var octocat = Crafty.e("2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway")
-        .setName("octocat")
+        var octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway')
+        .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
             y: Crafty.viewport.height / 2,
@@ -360,8 +361,9 @@
         .twoway(playerSpeed, playerJump)
         .reel('walk_right', playerAnimSpeed, 0, 0, 7)
         .reel('walk_left', playerAnimSpeed, 0, 1, 7)
-        .reel('stand', 450, [ [0, 3] ])
-        .animate('stand')
+        .reel('stand_left', 450, [ [5, 3] ])
+        .reel('stand_right', 450, [ [0, 3] ])
+        .animate('stand_left')
         .gravity('Platform')
         .gravityConst(GRAVITY)
         .collision([12, 18], [12, 47], [25, 57], [38, 47], [38, 18], [25, 10])
@@ -372,18 +374,22 @@
 
         if (debug) octocat.addComponent('WiredHitBox');
 
-        octocat.bind("KeyDown", function (e) {
+        octocat.bind('KeyDown', function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+                // this.animate(this.direction === 'right' ? 'walk_right' : 'walk_left');
                 this._canJumpAgain = true;
             } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;
+                // this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left');
             } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
                 this.animate('walk_right', -1);
+                this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.animate('walk_left', -1);
-            } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z) {
+                this.direction = 'left';
+            } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z || e.key === Crafty.keys.X) {
                 // --- kill't with fire
                 Crafty.trigger('playershoot');
                 Crafty.trigger('playerupdatejuice');
@@ -400,11 +406,11 @@
                 }
             }
         });
-        octocat.bind("KeyUp", function (e) {
+        octocat.bind('KeyUp', function (e) {
             if ((e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
                 this.pauseAnimation();
-            } else {
-                this.animate('stand');
+            } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D || e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
+                this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left');
             }
             // TEST ////////
             if (e.key === Crafty.keys.O) {
