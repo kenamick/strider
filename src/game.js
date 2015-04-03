@@ -927,6 +927,7 @@
                     // setup
                     entity.x = x;
                     entity.y = y;
+                    entity.origin('center');
                     entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
                     entity.addComponent(component);
                     entity.unbind('Kill');
@@ -939,8 +940,13 @@
                             // console.log('new bullet');
                             var ecx = entity.x + entity.w / 2
                               , ecy = entity.y + entity.h / 2;
-                            addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
+                            if (this.direction === 'left') {
+                                ecx += 24;
+                            } else {
+                                ecx -= 24;
+                            }
                             addBullet(ecx, ecy, octocat.x + octocat.w / 2, octocat.y + octocat.h / 2);
+                            addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
                         });
                         entity.shootFn = function() {
                             entity.animate('shoot');
@@ -952,10 +958,14 @@
                             entity.unbind('EnterFrame');
                         });
                         entity.bind('EnterFrame', function() {
+                            var ecx = entity.x + entity.w / 2
+                              , ecy = entity.y + entity.h / 2;
                             if (this.x < octocat.x) {
-                                this.flip();
+                                this.flip('X');
+                                this.direction = 'left';
                             } else if (this.x > octocat.x) {
-                                this.flip();
+                                this.unflip();
+                                this.direction = 'right';
                             }
                         });
                     }
@@ -1021,7 +1031,7 @@
                             this.y = octocat._y + 24;
                         });
                     } else if (type === ANIM_GUNFLARE) {
-                        entity.alpha = 0.75;
+                        entity.alpha = 0.9;
                         entity.addComponent('Flares')
                         .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]]);
                     } else {
