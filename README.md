@@ -17,7 +17,7 @@ Good luck!
 Make your way to the top by using:
 
   * Arrow keys or `WASD` keys to move and jump on platforms.
-  * X, Z or Y - Shoot at the nearest enemy. Your TR-15 is fully automatic. Just point to the enemy and it will do the aiming for you.
+  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your TR-15 is fully automatic. Just point to the enemy and it will do the aiming for you.
 
 ## Supported Browsers
 
@@ -25,7 +25,7 @@ TODO
 
 ## Open Source Libraries
 
-  * [Crafty](http://craftyjs.com)
+  * [Crafty](http://craftyjs.com) - An amazing Javascript/HTML5 Game engine.
 
 ## Credits
 ### Game Art
