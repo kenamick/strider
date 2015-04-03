@@ -634,8 +634,8 @@
                 Crafty.e("2D, Canvas, Splatter, SpriteAnimation")
                 .origin('center')
                 .attr({
-                    x: octocat.x,
-                    y: octocat.y + 25
+                    x: octocat.cx - 40,
+                    y: octocat.cy - 22
                 })
                 .bind('AnimationEnd', function() {
                     this.destroy();
