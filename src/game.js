@@ -14,6 +14,7 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
+        debug = true,
         
         METERS_DEPTH = 300,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -519,11 +520,13 @@
         .animate('stand')
         .gravity('Platform')
         .gravityConst(GRAVITY)
-        .collision([0, 47], [50, 47], [25, 57])
+        .collision([12, 18], [12, 47], [25, 57], [38, 47], [38, 18], [25, 10])
         .onHit('Spikes', onHitSpikes)
         .onHit('Spaceship', onHitSpaceship)
         .onHit('HealthRed', onHitHealth)
         .onHit('EnergyOrange', onHitEnergy);
+
+        if (debug) octocat.addComponent('WiredHitBox');
 
         octocat.bind("KeyDown", function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
@@ -927,6 +930,8 @@
                     entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
                     entity.addComponent(component);
                     entity.unbind('Kill');
+                    entity.unbind('AnimationEnd');
+                    entity.unbind('EnterFrame');
                     // events
                     if (type === ENEMY_TURRET) {
                         entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
@@ -944,7 +949,14 @@
                         entity.bind('Kill', function () {
                             this.shootTimer.cancelDelay(entity.shootFn);
                             this.visible = false;
-
+                            entity.unbind('EnterFrame');
+                        });
+                        entity.bind('EnterFrame', function() {
+                            if (this.x < octocat.x) {
+                                this.flip();
+                            } else if (this.x > octocat.x) {
+                                this.flip();
+                            }
                         });
                     }
                     // go, go, go ....
