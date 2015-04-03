@@ -444,7 +444,6 @@
         // if (bullet) {
             // bullet.trigger('Kill');
             playerHealth -= 1;
-            console.log(playerHealth);
             Crafty.trigger('playerupdatehealth');
             if (playerHealth < 0) {
                 Crafty.trigger('playerdead');
@@ -834,11 +833,7 @@
 
                             if (d.powerup && !d.powerupAdded) {
                                 console.log(this.w);
-                                addPowerup({
-                                    x: this.x + (Math.random() * (this.w - 20)), 
-                                    y: this.y,
-                                    type: d.powerup
-                                });
+                                addPowerup(d.powerup, this.x + (Math.random() * (this.w - 20)), this.y);
                                 d.powerupAdded = true;
                             }
 
@@ -903,55 +898,50 @@
                 anims_data.push(entity);                
             }
         })();
-        function addPowerup(data) {
+        function addPowerup(type, x, y) {
             for (var i = 0; i < powerups_data.length; i++) {
                 if (!powerups_data[i].visible) {
-                    powerups_data[i].x = data.x;
-                    powerups_data[i].y = data.y - 19;
+                    powerups_data[i].x = x;
+                    powerups_data[i].y = y - 19;
                     powerups_data[i].removeComponent('EnergyOrange, HealthRed');
-                    powerups_data[i].addComponent(data.type === POWERUP_HEALTH ? 'HealthRed' : 'EnergyOrange')
+                    powerups_data[i].addComponent(type === POWERUP_HEALTH ? 'HealthRed' : 'EnergyOrange')
                     powerups_data[i].visible = true;
                     return powerups_data[i];
                 }
             }              
         }
-        function addEnemy(data) {
+        function addEnemy(type, x, y) {
             var component;
-            if (data.type === ENEMY_TURRET) {
-                data.y -= 50;
+            if (type === ENEMY_TURRET) {
+                y -= 50;
                 component = 'EnemyTurretLeft';
-            } else if (data.type === ENEMY_DRONE) {
+            } else if (type === ENEMY_DRONE) {
                 //TODO
             }
             for (var i = 0; i < enemies_data.length; i++) {
                 var entity = enemies_data[i];
                 if (!entity.visible) {
                     // setup
-                    entity.x = data.x;
-                    entity.y = data.y;
+                    entity.x = x;
+                    entity.y = y;
                     entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
                     entity.addComponent(component);
                     entity.unbind('Kill');
                     // events
-                    if (data.type === ENEMY_TURRET) {
+                    if (type === ENEMY_TURRET) {
                         entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
                         entity.bind('AnimationEnd', function (reel) {
                             // console.log('new bullet');
                             var ecx = entity.x + entity.w / 2
                               , ecy = entity.y + entity.h / 2;
                             addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
-                            addBullet({
-                                x: ecx,
-                                y: ecy,
-                                dx: octocat.x + octocat.w / 2,
-                                dy: octocat.y + octocat.h / 2
-                            });
+                            addBullet(ecx, ecy, octocat.x + octocat.w / 2, octocat.y + octocat.h / 2);
                         });
                         entity.shootFn = function() {
                             entity.animate('shoot');
                         };
                         entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
-                        entity.bind('Kill', function (data) {
+                        entity.bind('Kill', function () {
                             this.shootTimer.cancelDelay(entity.shootFn);
                             this.visible = false;
 
@@ -963,14 +953,14 @@
                 }
             }   
         }
-        function addBullet(data) {
+        function addBullet(x, y, dx, dy) {
             for (var i = 0; i < bullets_data.length; i++) {
                 var entity = bullets_data[i];
                 if (!entity.visible) {
                     // setup
-                    entity.x = data.x;
-                    entity.y = data.y;
-                    entity.direction = Math.atan2(data.dy - entity.y, data.dx - entity.x);
+                    entity.x = x;
+                    entity.y = y;
+                    entity.direction = Math.atan2(dy - y, dx - x);
                     entity.unbind('Kill');
                     entity.unbind('HitOn');
                     // events
@@ -990,7 +980,7 @@
                         }
                     }.bind(entity), BULLET_LIVE, 0);
                     entity.checkHits('Gunner');
-                    entity.uniqueBind('HitOn', function (data) {
+                    entity.uniqueBind('HitOn', function () {
                         entity.trigger('Kill');
                         onHitBullet();
                     });
@@ -1037,7 +1027,7 @@
             }
         }
 
-        addEnemy({x: 0, y: 100, type: ENEMY_TURRET});
+        addEnemy(ENEMY_TURRET, 0, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
