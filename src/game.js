@@ -28,10 +28,14 @@
         POWERUP_HEALTH = 2,
         MAX_ENERGY = 49,
         MAX_HEALTH = 4,
-
+        // animations        
+        MAX_ANIMATIONS = 10,
+        anims_data = [],
         playerAnimSpeed = 450,
         generalAnimSpeed = 450,
-
+        ANIM_GUNFLARE = 1,
+        ANIM_PLAYER_GUNFLARE = 2,
+        // objects
         ship = null,
         HUDEnergy = null,
         HUDHealth = null,
@@ -561,23 +565,6 @@
 
         Crafty.viewport.follow(octocat, 0, 0);
 
-        var shootflare = Crafty.e("2D, Canvas, SpriteAnimation, Flares")
-        .attr({
-            x: 0, y: 0,
-            z: 991,
-            visible: false,
-            alpha: 0.90
-        })
-        .origin('center')
-        .reel('flare01', generalAnimSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
-        .bind('EnterFrame', function() {
-            this.x = octocat._x + 24;
-            this.y = octocat._y + 24;
-        })
-        .bind('AnimationEnd', function() {
-            this.visible = false;
-        })
-
         for (var i = 0; i < 11; i++) {
             var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
             Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
@@ -726,8 +713,7 @@
         });
         Crafty.bind("playershoot", function() {
             playerEnergy -= 1;
-            shootflare.visible = true;
-            shootflare.animate('flare01');
+            addAnimation(ANIM_PLAYER_GUNFLARE);
         });
         Crafty.bind('playsmokeanim', function(data) {
             SmokeAnim.x = octocat.x;
@@ -902,6 +888,20 @@
                 // .collision();
                 bullets_data.push(entity);
             }
+            for (i = 0; i < MAX_ANIMATIONS; i++) {
+                entity = Crafty.e("2D, Canvas, SpriteAnimation")
+                .attr({
+                    x: 0, y: 0,
+                    z: 991,
+                    visible: false,
+                    alpha: 0.90
+                })
+                .origin('center')
+                .bind('AnimationEnd', function() {
+                    this.visible = false;
+                });                
+                anims_data.push(entity);                
+            }
         })();
         function addPowerup(data) {
             for (var i = 0; i < powerups_data.length; i++) {
@@ -926,21 +926,25 @@
             for (var i = 0; i < enemies_data.length; i++) {
                 var entity = enemies_data[i];
                 if (!entity.visible) {
+                    // setup
                     entity.x = data.x;
                     entity.y = data.y;
                     entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
-                    entity.addComponent(component)
-
+                    entity.addComponent(component);
+                    entity.unbind('Kill');
+                    // events
                     if (data.type === ENEMY_TURRET) {
                         entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
                         entity.bind('AnimationEnd', function (reel) {
-                            console.log('new bullet');
-                            //TODO
+                            // console.log('new bullet');
+                            var ecx = entity.x + entity.w / 2
+                              , ecy = entity.y + entity.h / 2;
+                            addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
                             addBullet({
-                                x: entity.x,
-                                y: entity.y,
-                                dx: octocat.x,
-                                dy: octocat.y
+                                x: ecx,
+                                y: ecy,
+                                dx: octocat.x + octocat.w / 2,
+                                dy: octocat.y + octocat.h / 2
                             });
                         });
                         entity.shootFn = function() {
@@ -953,6 +957,7 @@
 
                         });
                     }
+                    // go, go, go ....
                     entity.visible = true;
                     return entity;
                 }
@@ -962,38 +967,72 @@
             for (var i = 0; i < bullets_data.length; i++) {
                 var entity = bullets_data[i];
                 if (!entity.visible) {
+                    // setup
                     entity.x = data.x;
                     entity.y = data.y;
                     entity.direction = Math.atan2(data.dy - entity.y, data.dx - entity.x);
-                    //TODO: types
-                    entity.animate('shoot', -1);
+                    entity.unbind('Kill');
+                    entity.unbind('HitOn');
+                    // events
                     entity.bind('EnterFrame', function() {
                         this.x += Math.cos(this.direction) * this.speed;
                         this.y += Math.sin(this.direction) * this.speed;
                     });
                     entity.bind('Kill', function () {
-                        console.log('bullet die');
-                        this.ignoreHits('Gunner');
+                        // console.log('bullet die');
                         this.unbind('EnterFrame');
+                        this.ignoreHits();
                         this.visible = false;
                     });
-                    // Crafty.e('Delay').delay(function() {
-                    //     if (this.visible) {
-                    //         this.trigger('Kill');
-                    //     }
-                    // }.bind(entity), BULLET_LIVE, 0);
-                    // go, go, go ....
-                    entity.visible = true;
+                    Crafty.e('Delay').delay(function() {
+                        if (this.visible) {
+                            this.trigger('Kill');
+                        }
+                    }.bind(entity), BULLET_LIVE, 0);
                     entity.checkHits('Gunner');
-                    entity.bind('HitOn', function (data) {
-                        // entity.trigger('Kill');
-                        this.ignoreHits('Gunner');
-                        this.unbind('EnterFrame');
-                        this.visible = false;
-
+                    entity.uniqueBind('HitOn', function (data) {
+                        entity.trigger('Kill');
                         onHitBullet();
                     });
+                    // go, go, go ....
+                    entity.visible = true;
+                    entity.animate('shoot', -1);
                     return entity;
+                }
+            }
+        }
+        function addAnimation(type, x, y) {
+            var animSpeed = ~~(generalAnimSpeed / 2);
+            for (var i = 0; i < anims_data.length; i++) {
+                var entity = anims_data[i];
+                if (!entity.visible) {
+                    // reset
+                    entity.unbind('EnterFrame');
+                    entity.removeComponent('Flares');
+                    // setup
+                    if (type === ANIM_PLAYER_GUNFLARE) {
+                        entity.alpha = 0.9;
+                        entity.addComponent('Flares')
+                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
+                        .bind('EnterFrame', function() {
+                            this.x = octocat._x + 24;
+                            this.y = octocat._y + 24;
+                        });
+                    } else if (type === ANIM_GUNFLARE) {
+                        entity.alpha = 0.75;
+                        entity.addComponent('Flares')
+                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]]);
+                    } else {
+                        throw "wrong anim type - " + type;
+                    }
+                    if (typeof x !== 'undefined') {
+                        entity.x = x - entity.w / 2;
+                        entity.y = y - entity.h / 2;
+                    }                    
+                    // go, go, go ....
+                    entity.visible = true;
+                    entity.animate('play');
+                    return;
                 }
             }
         }
