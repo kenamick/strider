@@ -57,7 +57,9 @@
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
         ENEMY_TURRET_SHOOTDELAY = 3000,
+        ENEMY_TURRET_SHOOTRANGE = 176400, // 300px
         BULLET_LIVE = 5000,
+        BULLET_SPEED = 3,
         enemies_data = [],
         bullets_data = []
         // 
@@ -101,7 +103,7 @@
                     h: 26,
                     num: i,
                     clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig',
-                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH,
+                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH
                 };
             } else {
                 platform2add = {
@@ -564,6 +566,10 @@
             }    
             /////////        
         });
+        octocat.bind('Moved', function() {
+            this.cx = octocat._x + octocat.w / 2;
+            this.cy = octocat._y + octocat.h / 2;
+        });
 
         Crafty.viewport.follow(octocat, 0, 0);
 
@@ -880,7 +886,7 @@
                     z: 892,
                     visible: false,
                     direction: 0,
-                    speed: 3
+                    speed: BULLET_SPEED
                 })
                 .reel('shoot', generalAnimSpeed, 0, 0, 2);
                 // .collision();
@@ -945,13 +951,18 @@
                             } else {
                                 ecx -= 24;
                             }
-                            addBullet(ecx, ecy, octocat.x + octocat.w / 2, octocat.y + octocat.h / 2);
+                            addBullet(ecx, ecy, octocat.cx, octocat.cy);
                             addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
                         });
                         entity.shootFn = function() {
-                            entity.animate('shoot');
+                            var ecx = entity.x + entity.w / 2
+                              , ecy = entity.y + entity.h / 2;
+                              console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
+                            if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < ENEMY_TURRET_SHOOTRANGE) {
+                                entity.animate('shoot');
+                            }
                         };
-                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
+                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn.bind(entity), ENEMY_TURRET_SHOOTDELAY, -1);
                         entity.bind('Kill', function () {
                             this.shootTimer.cancelDelay(entity.shootFn);
                             this.visible = false;
