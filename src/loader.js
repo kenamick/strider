@@ -108,16 +108,23 @@
                         tile: 19,
                         tileh: 19,
                         map: {HealthRed: [0, 1], HealthGray: [1, 1], EnergyOrange: [0, 0], EnergyBlue: [3, 0]}
+                    },
+                    'enemy_turret.png': {
+                        tile: 50,
+                        tileh: 50,
+                        map: {EnemyTurretLeft: [0, 0], EnemyTurretRight: [0, 1]}
+                    },
+                    'enemy_bullet.png': {
+                        tile: 10,
+                        tileh: 10,
+                        map: {EnemyBullet: [0, 0]}
                     }
                 },
                 audio: {
                     jump: ["jump.mp3", "jump.ogg", "jump.wav"],
                     push: ["push.mp3", "push.ogg", "push.wav"],
-                    pull: ["pull.mp3", "pull.ogg", "pull.wav"],
-                    fork: ["fork.mp3", "fork.ogg", "fork.wav"],
                     star: ["star.mp3", "star.ogg", "star.wav"],
-                    dead: ["dead.mp3", "dead.ogg", "dead.wav"],
-                    click: ["click.mp3", "click.ogg", "click.wav"]                    
+                    dead: ["dead.mp3", "dead.ogg", "dead.wav"]
                 }
             };
             Crafty.load(assets, function() {

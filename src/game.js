@@ -22,6 +22,8 @@
         total_platforms = METERS_DEPTH / 10 - 1,
         
         MAX_POWERUPS = total_platforms / 2,
+        MAX_ENEMIES = total_platforms / 2,
+        MAX_BULLETS = MAX_ENEMIES / 4,
         POWERUP_ENERGY = 1,
         POWERUP_HEALTH = 2,
         MAX_ENERGY = 49,
@@ -46,7 +48,14 @@
         playerHealth = 4,
         playerEnergy = 49,
         isDead = false
-        //
+        // enemy vars
+        ENEMY_TURRET = 1,
+        ENEMY_DRONE = 2,
+        ENEMY_TURRET_SHOOTDELAY = 3000,
+        BULLET_LIVE = 5000,
+        enemies_data = [],
+        bullets_data = []
+        // 
         ;
 
 
@@ -421,12 +430,29 @@
             Crafty.trigger('playsmokeanim');
         }
     }
+    function onHitBullet(bullet) {
+        // var bullet;
+        // if (typeof e === 'object') {
+        //     bullet = e;
+        // } else if (e[0] && e[0].obj) {
+        //     bullet = e[0].obj;
+        // }
+        // if (bullet) {
+            // bullet.trigger('Kill');
+            playerHealth -= 1;
+            console.log(playerHealth);
+            Crafty.trigger('playerupdatehealth');
+            if (playerHealth < 0) {
+                Crafty.trigger('playerdead');
+            }
+        // }
+    }
 
     /************************************************************************
      * Main scene
      */       
 
-    Crafty.scene("main", function () {
+    Crafty.scene('main', function () {
         initState();
 
         /************************************************************************
@@ -675,7 +701,7 @@
                 return;
 
             playerHealth = Math.min(playerHealth, MAX_HEALTH);
-            playerHealth = Math.max(playerHealth, 0);
+            playerHealth = Math.max(playerHealth, -1);
             HUDHealth.removeComponent('HUDHealth4')
                 .removeComponent('HUDHealth3')
                 .removeComponent('HUDHealth2')
@@ -798,7 +824,7 @@
                             //     // this.unbind("TweenEnd");
                             // });
                             var r = ~~ (10 * (1 + Math.random()));
-                            if (d.goal) {
+                            if (d.goal && !ship) {
                                 ship = Crafty.e("2D, Canvas, Spaceship, Collision, SpriteAnimation").attr({
                                     x: d.x + 50,
                                     y: d.y - 86,
@@ -838,10 +864,11 @@
             Crafty.bind("ViewportScroll", recyclePlatforms);
         })(Crafty.viewport);
 
-        // Create the Platform pool, these entities will be recycled throughout the level
-        (function initPowerupsPool() {
-            for (var i = 0; i < MAX_POWERUPS; i++) {
-                var pwup = Crafty.e("2D, Canvas, Powerup, Collision")
+        // Create entities pools
+        (function initEntitiesPool() {
+            var i, entity;
+            for (i = 0; i < MAX_POWERUPS; i++) {
+                entity = Crafty.e("2D, Canvas, Powerup, Collision")
                 .attr({
                     x: 0, y: 0,
                     z: 899,
@@ -849,8 +876,32 @@
                     type: ''
                 })
                 .collision();
-                powerups_data.push(pwup);
-            };
+                powerups_data.push(entity);
+            }
+            for (i = 0; i < MAX_ENEMIES; i++) {
+                entity = Crafty.e("2D, Canvas, SpriteAnimation")
+                .attr({
+                    x: 0, y: 0,
+                    z: 890,
+                    visible: false,
+                    type: ''
+                })
+                // .collision();
+                enemies_data.push(entity);
+            }
+            for (i = 0; i < MAX_BULLETS; i++) {
+                entity = Crafty.e("2D, Canvas, EnemyBullet, Collision, SpriteAnimation")
+                .attr({
+                    x: 0, y: 0,
+                    z: 892,
+                    visible: false,
+                    direction: 0,
+                    speed: 3
+                })
+                .reel('shoot', generalAnimSpeed, 0, 0, 2);
+                // .collision();
+                bullets_data.push(entity);
+            }
         })();
         function addPowerup(data) {
             for (var i = 0; i < powerups_data.length; i++) {
@@ -864,6 +915,90 @@
                 }
             }              
         }
+        function addEnemy(data) {
+            var component;
+            if (data.type === ENEMY_TURRET) {
+                data.y -= 50;
+                component = 'EnemyTurretLeft';
+            } else if (data.type === ENEMY_DRONE) {
+                //TODO
+            }
+            for (var i = 0; i < enemies_data.length; i++) {
+                var entity = enemies_data[i];
+                if (!entity.visible) {
+                    entity.x = data.x;
+                    entity.y = data.y;
+                    entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
+                    entity.addComponent(component)
+
+                    if (data.type === ENEMY_TURRET) {
+                        entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
+                        entity.bind('AnimationEnd', function (reel) {
+                            console.log('new bullet');
+                            //TODO
+                            addBullet({
+                                x: entity.x,
+                                y: entity.y,
+                                dx: octocat.x,
+                                dy: octocat.y
+                            });
+                        });
+                        entity.shootFn = function() {
+                            entity.animate('shoot');
+                        };
+                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
+                        entity.bind('Kill', function (data) {
+                            this.shootTimer.cancelDelay(entity.shootFn);
+                            this.visible = false;
+
+                        });
+                    }
+                    entity.visible = true;
+                    return entity;
+                }
+            }   
+        }
+        function addBullet(data) {
+            for (var i = 0; i < bullets_data.length; i++) {
+                var entity = bullets_data[i];
+                if (!entity.visible) {
+                    entity.x = data.x;
+                    entity.y = data.y;
+                    entity.direction = Math.atan2(data.dy - entity.y, data.dx - entity.x);
+                    //TODO: types
+                    entity.animate('shoot', -1);
+                    entity.bind('EnterFrame', function() {
+                        this.x += Math.cos(this.direction) * this.speed;
+                        this.y += Math.sin(this.direction) * this.speed;
+                    });
+                    entity.bind('Kill', function () {
+                        console.log('bullet die');
+                        this.ignoreHits('Gunner');
+                        this.unbind('EnterFrame');
+                        this.visible = false;
+                    });
+                    // Crafty.e('Delay').delay(function() {
+                    //     if (this.visible) {
+                    //         this.trigger('Kill');
+                    //     }
+                    // }.bind(entity), BULLET_LIVE, 0);
+                    // go, go, go ....
+                    entity.visible = true;
+                    entity.checkHits('Gunner');
+                    entity.bind('HitOn', function (data) {
+                        // entity.trigger('Kill');
+                        this.ignoreHits('Gunner');
+                        this.unbind('EnterFrame');
+                        this.visible = false;
+
+                        onHitBullet();
+                    });
+                    return entity;
+                }
+            }
+        }
+
+        addEnemy({x: 0, y: 100, type: ENEMY_TURRET});
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
@@ -876,7 +1011,7 @@
         }).reel('smoke', generalAnimSpeed, 0, 0, 10)
         .bind('AnimationEnd', function() {
             this.visible = false;
-        });        
+        });
 
         /************************************************************************
          * HUD & UI Stuff
