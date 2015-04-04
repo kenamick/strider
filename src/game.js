@@ -462,6 +462,10 @@
                     this.animate('walk_right', 10);
                 }
             } else {
+                var reel = this.getReel();
+                if (!reel.id.startsWith('shoot')) { // what a hack ladies & gentleme
+                    this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
+                }
                 // if (!this.isPlaying('stand_left') && !this.isPlaying('stand_right')) {
                 //     this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
                 // }
