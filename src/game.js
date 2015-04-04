@@ -37,8 +37,9 @@
         ANIM_GUNFLARE = 1,
         ANIM_PLAYER_GUNFLARE = 2,
         ANIM_EXPLOSION_01 = 3,
-        ANIM_EXPLOSION_02 = 4,
-        ANIM_HITENEMY = 5,
+        ANIM_EXPLOSION_BLUE = 4,
+        ANIM_EXPLOSION_02 = 5,
+        ANIM_HITENEMY = 6,
         // objects
         ship = null,
         HUDEnergy = null,
@@ -63,7 +64,7 @@
         ENEMY_DRONE = 2,
         ENEMY_TURRET_SHOOTDELAY = 3000,
         ENEMY_TURRET_SHOOTRANGE = 176400, // 420px
-        ENEMY_TURRET_HP = 100, //TODO
+        ENEMY_TURRET_HP = 10, //TODO
         BULLET_LIVE = 5000,
         BULLET_SPEED = 3,
         enemies_data = [],
@@ -1091,10 +1092,10 @@
                         entity.alpha = 0.9;
                         entity.addComponent('Flares')
                         .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]]);
-                    } else if (type === ANIM_EXPLOSION_01) {
+                    } else if (type === ANIM_EXPLOSION_01 || type === ANIM_EXPLOSION_BLUE) {
                         entity.alpha = 0.9;
                         entity.addComponent('Explo01')
-                        .reel('play', generalAnimSpeed, 0, 0, 6);
+                        .reel('play', generalAnimSpeed, 0, type === ANIM_EXPLOSION_BLUE ? 1 : 0, 6);
                     } else if (type === ANIM_EXPLOSION_02) {
                         entity.alpha = 0.9;
                         entity.addComponent('Explo02')
