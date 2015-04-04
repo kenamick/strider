@@ -57,13 +57,13 @@
         playerEnergy = 49,
         playerDamage = 1;
         isDead = false,
-        playerTargetDist = 40000,
+        playerTargetDist = 150000, // 40000, //TODO
         // enemy vars
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
         ENEMY_TURRET_SHOOTDELAY = 3000,
         ENEMY_TURRET_SHOOTRANGE = 176400, // 420px
-        ENEMY_TURRET_HP = 10,
+        ENEMY_TURRET_HP = 100, //TODO
         BULLET_LIVE = 5000,
         BULLET_SPEED = 3,
         enemies_data = [],
@@ -311,6 +311,15 @@
     Crafty.scene('main', function () {
         initState();
 
+        var pi = Math.PI
+          , pi_6 = Math.PI / 6
+          , pi_4 = Math.PI / 4
+          , pi_3 = Math.PI / 3
+          , pi_2 = Math.PI / 2
+          , pi_23 = 2 * Math.PI / 3
+          , pi_34 = 3 * Math.PI / 4
+          , pi_56 = 5 * Math.PI / 6;
+
         /************************************************************************
          * Create entities
          */
@@ -369,8 +378,24 @@
         .twoway(playerSpeed, playerJump)
         .reel('walk_right', playerAnimSpeed, 0, 0, 7)
         .reel('walk_left', playerAnimSpeed, 0, 1, 7)
-        .reel('stand_left', 450, [ [5, 3] ])
-        .reel('stand_right', 450, [ [0, 3] ])
+        .reel('shoot_left', playerAnimSpeed, 0, 1, 1)
+        .reel('shoot_right', playerAnimSpeed, 0, 0, 1)
+        .reel('stand_left', playerAnimSpeed, [ [5, 3] ])
+        .reel('stand_right', playerAnimSpeed, [ [0, 3] ])
+        // aim
+        .reel('shoot_n_e', playerAnimSpeed, 2, 2, 1)
+        .reel('shoot_n_w', playerAnimSpeed, 3, 2, 1)
+        .reel('shoot_ne', playerAnimSpeed, 1, 2, 1)
+        .reel('shoot_nw', playerAnimSpeed, 4, 2, 1)
+        .reel('shoot_w_n', playerAnimSpeed, 5, 2, 1)
+        .reel('shoot_e_n', playerAnimSpeed, 0, 2, 1)
+        // aim
+        .reel('shoot_s_e', playerAnimSpeed, 2, 3, 1)
+        .reel('shoot_s_w', playerAnimSpeed, 3, 3, 1)
+        .reel('shoot_se', playerAnimSpeed, 1, 3, 1)
+        .reel('shoot_sw', playerAnimSpeed, 4, 3, 1)
+        .reel('shoot_w_s', playerAnimSpeed, 5, 3, 1)
+        .reel('shoot_e_s', playerAnimSpeed, 0, 3, 1)
         .animate('stand_left')
         .gravity('Platform')
         .gravityConst(GRAVITY)
@@ -395,8 +420,8 @@
                 this.direction = 'left';
             } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z || e.key === Crafty.keys.X) {
                 // --- kill't with fire
-                Crafty.trigger('playershoot');
                 Crafty.trigger('playerupdatejuice');
+                this.trigger('Shoot');
                 if (octocat.targetEnemy) {
                     var target = octocat.targetEnemy;
                     target.hp -= playerDamage;
@@ -437,9 +462,9 @@
                     this.animate('walk_right', 10);
                 }
             } else {
-                if (!this.isPlaying('stand_left') && !this.isPlaying('stand_right')) {
-                    this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
-                }
+                // if (!this.isPlaying('stand_left') && !this.isPlaying('stand_right')) {
+                //     this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
+                // }
             }
         });
         octocat.bind('Moved', function() {
@@ -470,6 +495,87 @@
                 xhair.visible = true;                
             }
             this.targetEnemy = lastEnemy;
+        });
+        octocat.bind('Shoot', function() {
+            playerEnergy -= 1;
+            if (octocat.targetEnemy) {
+                var target = octocat.targetEnemy;
+                var ecx = target.x + target.w / 2
+                  , ecy = target.y + target.h / 2
+                  , anim = null
+                  // , phi = Math.atan2(ecy - this.cy, ecx - this.cx);
+                  , phi = Math.atan2(this.cy - ecy, this.cx - ecx)
+                  , px = 0, py = 0;
+
+                // manually adjust shooting anims ...oh my!
+                if (Crafty.math.withinRange(phi, 0, pi_6)) {
+                    anim = 'shoot_w_n';
+                    px = -this.w / 2 + 2;
+                    py = -this.h / 2 + 10;
+                } else if (Crafty.math.withinRange(phi, pi_6, pi_3)) {
+                    anim = 'shoot_nw';
+                    px = -this.w / 2 + 3;
+                    py = -this.h / 2 + 2;
+                } else if (Crafty.math.withinRange(phi, pi_3, pi_23)) {
+                    if (this.direction === 'left') {
+                        anim = 'shoot_n_w';
+                        px = 4;
+                    } else {
+                        anim = 'shoot_n_e';
+                        px = -4;
+                    }
+                    py = -this.h / 2;
+                } else if (Crafty.math.withinRange(phi, pi_23, pi_56)) {
+                    anim = 'shoot_ne';
+                    px = this.w / 2 - 6;
+                    py = -this.h / 2 + 5;
+                } else if (Crafty.math.withinRange(phi, pi_56, pi)) {
+                    anim = 'shoot_e_n';
+                    px = this.w / 2 - 4;
+                    py = -this.h / 2 + 12;
+                } else if (Crafty.math.withinRange(phi, -pi_6, 0)) {
+                    anim = 'shoot_w_s';
+                    px = -this.w / 2;
+                    py = 11;
+                } else if (Crafty.math.withinRange(phi, -pi_3, -pi_6)) {
+                    anim = 'shoot_sw';
+                    px = -this.w / 2 + 3;
+                    py = this.h / 2 - 9;
+                } else if (Crafty.math.withinRange(phi, -pi_23, -pi_3)) {
+                    if (this.direction === 'left') {
+                        anim = 'shoot_s_w';
+                        px = 7;
+                    } else {
+                        anim = 'shoot_s_e';
+                        px = -7;
+                    }
+                    py = this.h / 2 - 4;
+                } else if (Crafty.math.withinRange(phi, -pi_56, -pi_23)) {
+                    anim = 'shoot_se';
+                    px = this.w / 2 - 5;
+                    py = this.h / 2 - 8;
+                } else if (Crafty.math.withinRange(phi, -pi, -pi_56)) {
+                    anim = 'shoot_e_s';
+                    px = this.w / 2 - 4;
+                    py = 9;
+                }
+                if (anim) {
+                    this.animate(anim);
+                    addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
+                }
+                debug('animation: ', anim);
+            } else {
+                if (this.direction === 'left') {
+                    anim = 'shoot_left';
+                    px = -this.w / 2;
+                } else {
+                    anim = 'shoot_right';
+                    px = this.w / 2;
+                }
+                py = -2;
+                addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
+                this.animate(anim);
+            }
         });
 
         Crafty.viewport.follow(octocat, 0, 0);
@@ -629,10 +735,10 @@
             playerEnergy = Math.min(playerEnergy, 49);
             HUDEnergy.trigger('Invalidate');
         });
-        Crafty.bind("playershoot", function() {
-            playerEnergy -= 1;
-            addAnimation(ANIM_PLAYER_GUNFLARE);
-        });
+        // Crafty.bind("playershoot", function() {
+        //     playerEnergy -= 1;
+        //     addAnimation(ANIM_PLAYER_GUNFLARE);
+        // });
         Crafty.bind('playsmokeanim', function(data) {
             SmokeAnim.x = octocat.x;
             SmokeAnim.y = octocat.y;
@@ -942,14 +1048,18 @@
                     // reset
                     entity.unbind('EnterFrame');
                     entity.removeComponent('Flares');
+                    entity.removeComponent('Explo01');
+                    entity.removeComponent('Explo02');
                     // setup
                     if (type === ANIM_PLAYER_GUNFLARE) {
+                        x = x || 0;
+                        y = y || 0;
                         entity.alpha = 0.9;
                         entity.addComponent('Flares')
                         .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
                         .bind('EnterFrame', function() {
-                            this.x = octocat._x + 24;
-                            this.y = octocat._y + 24;
+                            this.x = octocat.cx - 9 + x;
+                            this.y = octocat.cy - 9 + y;
                         });
                     } else if (type === ANIM_GUNFLARE) {
                         entity.alpha = 0.9;
@@ -982,7 +1092,7 @@
             }
         }
 
-        addEnemy(ENEMY_TURRET, 0, 100);
+        addEnemy(ENEMY_TURRET, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
