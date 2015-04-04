@@ -435,6 +435,9 @@
             ///////// 
         });
         octocat.bind('EnterFrame', function() {
+            this.cx = octocat._x + octocat.w / 2;
+            this.cy = octocat._y + octocat.h / 2;
+
             if (this.isDown(Crafty.keys.W) || this.isDown(Crafty.keys.UP_ARROW)) { // && !this.isDown(Crafty.keys.LEFT_ARROW)) {
                 this.pauseAnimation();
             } 
@@ -450,19 +453,8 @@
                 if (!this.isShooting) {
                     this.isShooting = true;
                     // --- kill't with fire
-                    Crafty.trigger('playerupdatejuice');
                     this.trigger('Shoot');
-                    if (octocat.targetEnemy) {
-                        var target = octocat.targetEnemy;
-                        target.hp -= playerDamage;
-                        if (target.hp < 0) {
-                            target.trigger('Kill');
-                            addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
-                            octocat.trigger('Moved'); // update target
-                        } else {
-                            addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
-                        }
-                    }
+                    Crafty.trigger('playerupdatejuice');
                 }
             } else {
                 this.isShooting = false;
@@ -476,8 +468,6 @@
             }
         });
         octocat.bind('Moved', function() {
-            this.cx = octocat._x + octocat.w / 2;
-            this.cy = octocat._y + octocat.h / 2;
             // adjust crosshair / target
             xhair.visible = false;
             var lastDist = 9999999
@@ -506,14 +496,27 @@
         });
         octocat.bind('Shoot', function() {
             playerEnergy -= 1;
+            if (playerEnergy <= 0) {
+                // no ammo
+                return;
+            }
             if (octocat.targetEnemy) {
-                var target = octocat.targetEnemy;
-                var ecx = target.x + target.w / 2
+                var target = octocat.targetEnemy
+                  , ecx = target.x + target.w / 2
                   , ecy = target.y + target.h / 2
                   , anim = null
                   // , phi = Math.atan2(ecy - this.cy, ecx - this.cx);
                   , phi = Math.atan2(this.cy - ecy, this.cx - ecx)
                   , px = 0, py = 0;
+
+                target.hp -= playerDamage;
+                if (target.hp < 0) {
+                    target.trigger('Kill');
+                    addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
+                    octocat.trigger('Moved'); // update target
+                } else {
+                    addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
+                }
 
                 // manually adjust shooting anims ...oh my!
                 if (Crafty.math.withinRange(phi, 0, pi_6)) {
