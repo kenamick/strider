@@ -288,6 +288,7 @@
         }
     }
     function onHitBullet(bullet) {
+        var bgovr = Crafty("BackgroundOverlay");
         // var bullet;
         // if (typeof e === 'object') {
         //     bullet = e;
@@ -299,7 +300,12 @@
             playerHealth -= 1;
             Crafty.trigger('playerupdatehealth');
             if (playerHealth < 0) {
+                bgovr.color("#ff0000");
                 Crafty.trigger('playerdead');
+            } else {
+                bgovr.color("#ff0000").delay(function () {
+                    this.color("#006064");
+                }, 500);                
             }
         // }
     }
