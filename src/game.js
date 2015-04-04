@@ -418,21 +418,6 @@
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.direction = 'left';
-            } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z || e.key === Crafty.keys.X) {
-                // --- kill't with fire
-                Crafty.trigger('playerupdatejuice');
-                this.trigger('Shoot');
-                if (octocat.targetEnemy) {
-                    var target = octocat.targetEnemy;
-                    target.hp -= playerDamage;
-                    if (target.hp < 0) {
-                        target.trigger('Kill');
-                        addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
-                        octocat.trigger('Moved'); // update target
-                    } else {
-                        addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
-                    }
-                }
             }
         });
         octocat.bind('KeyUp', function (e) {
@@ -461,7 +446,26 @@
                 if (!this.isPlaying('walk_right')) {
                     this.animate('walk_right', 10);
                 }
+            } else if (this.isDown(Crafty.keys.Y) || this.isDown(Crafty.keys.Z) || this.isDown(Crafty.keys.X)) {
+                if (!this.isShooting) {
+                    this.isShooting = true;
+                    // --- kill't with fire
+                    Crafty.trigger('playerupdatejuice');
+                    this.trigger('Shoot');
+                    if (octocat.targetEnemy) {
+                        var target = octocat.targetEnemy;
+                        target.hp -= playerDamage;
+                        if (target.hp < 0) {
+                            target.trigger('Kill');
+                            addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
+                            octocat.trigger('Moved'); // update target
+                        } else {
+                            addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
+                        }
+                    }
+                }
             } else {
+                this.isShooting = false;
                 var reel = this.getReel();
                 if (!reel.id.startsWith('shoot')) { // what a hack ladies & gentleme
                     this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
