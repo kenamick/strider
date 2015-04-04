@@ -119,6 +119,13 @@
                         tileh: 10,
                         map: {EnemyBullet: [0, 0]}
                     },
+                    'enemy_drone.png': {
+                        tile: 50,
+                        tileh: 50,
+                        paddingX: 1,
+                        paddingY: 1,
+                        map: {EnemyDroneSouth: [0, 0], EnemyDroneWest: [2, 0], EnemyDroneNorth: [0, 1], EnemyDroneEast: [2, 1]}
+                    },
                     'xhair.png': {
                         tile: 46,
                         tileh: 46,

@@ -961,13 +961,14 @@
                 }
             }              
         }
-        function addEnemy(type, x, y) {
+        function addEnemy(type, x, y, subtype) {
             var component;
             if (type === ENEMY_TURRET) {
                 y -= 50;
                 component = 'EnemyTurretLeft';
             } else if (type === ENEMY_DRONE) {
                 //TODO
+                component = 'EnemyDroneNorth';
             }
             for (var i = 0; i < enemies_data.length; i++) {
                 var entity = enemies_data[i];
@@ -975,12 +976,17 @@
                     // setup
                     entity.x = x;
                     entity.y = y;
-                    entity.origin('center');
-                    entity.removeComponent('EnemyTurretLeft, EnemyTurretRight');
+                    entity.removeComponent('EnemyTurretLeft');
+                    entity.removeComponent('EnemyTurretRight');
+                    entity.removeComponent('EnemyDroneNorth');
+                    entity.removeComponent('EnemyDroneSouth');
+                    entity.removeComponent('EnemyDroneWest');
+                    entity.removeComponent('EnemyDroneEast');
                     entity.addComponent(component);
                     entity.unbind('Kill');
                     entity.unbind('AnimationEnd');
-                    entity.unbind('EnterFrame');
+                    entity.unbind('EnterFrame')
+                    entity.origin('center');;
                     // events
                     if (type === ENEMY_TURRET) {
                         entity.hp = ENEMY_TURRET_HP;
@@ -1012,14 +1018,26 @@
                             entity.unbind('EnterFrame');
                         });
                         entity.bind('EnterFrame', function() {
-                            var ecx = entity.x + entity.w / 2
-                              , ecy = entity.y + entity.h / 2;
-                            if (this.x < octocat.x) {
+                            var ecx = this.x + this.w / 2
+                              , ecy = this.y + this.h / 2;
+                            if (ecx < octocat.cx) {
                                 this.flip('X');
                                 this.direction = 'left';
-                            } else if (this.x > octocat.x) {
+                            } else if (ecx > octocat.cx) {
                                 this.unflip();
                                 this.direction = 'right';
+                            }
+                        });
+                    } else if (type === ENEMY_DRONE) {
+                        entity.hp = ENEMY_TURRET_HP; //TODO
+                        entity.reel('move', generalAnimSpeed, 0, 0, 2);
+                        entity.bind('EnterFrame', function() {
+                            var ecx = this.x + this.w / 2
+                              , ecy = this.y + this.h / 2;
+                            if (ecx < octocat.cx) {
+                                this.x += 0.25;
+                            } else if (ecx > octocat.cx) {
+                                this.x -= 0.25;
                             }
                         });
                     }
@@ -1095,7 +1113,7 @@
                     } else if (type === ANIM_EXPLOSION_01 || type === ANIM_EXPLOSION_BLUE) {
                         entity.alpha = 0.9;
                         entity.addComponent('Explo01')
-                        .reel('play', generalAnimSpeed, 0, type === ANIM_EXPLOSION_BLUE ? 1 : 0, 6);
+                        .reel('play', generalAnimSpeed, 0, (type === ANIM_EXPLOSION_BLUE ? 1 : 0), 6);
                     } else if (type === ANIM_EXPLOSION_02) {
                         entity.alpha = 0.9;
                         entity.addComponent('Explo02')
@@ -1119,7 +1137,8 @@
             }
         }
 
-        addEnemy(ENEMY_TURRET, 150, 100);
+        // addEnemy(ENEMY_TURRET, 150, 100);
+        addEnemy(ENEMY_DRONE, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
