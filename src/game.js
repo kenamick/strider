@@ -71,7 +71,6 @@
         // 
         ;
 
-
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
             return obj;
@@ -376,18 +375,14 @@
 
         octocat.bind('KeyDown', function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
-                // this.animate(this.direction === 'right' ? 'walk_right' : 'walk_left');
                 this._canJumpAgain = true;
             } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;
-                // this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left');
             } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
-                this.animate('walk_right', -1);
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
-                this.animate('walk_left', -1);
                 this.direction = 'left';
             } else if (e.key === Crafty.keys.Y || e.key === Crafty.keys.Z || e.key === Crafty.keys.X) {
                 // --- kill't with fire
@@ -407,11 +402,6 @@
             }
         });
         octocat.bind('KeyUp', function (e) {
-            if ((e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
-                this.pauseAnimation();
-            } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D || e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
-                this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left');
-            }
             // TEST ////////
             if (e.key === Crafty.keys.O) {
                 playerHealth -= 1;
@@ -423,7 +413,25 @@
                 // playerEnergy -= 1;
                 // Crafty.trigger('playerupdatejuice');
             }    
-            /////////        
+            ///////// 
+        });
+        octocat.bind('EnterFrame', function() {
+            if (this.isDown(Crafty.keys.W) || this.isDown(Crafty.keys.UP_ARROW)) { // && !this.isDown(Crafty.keys.LEFT_ARROW)) {
+                this.pauseAnimation();
+            } 
+            if (this.isDown(Crafty.keys.LEFT_ARROW)) {
+                if (!this.isPlaying('walk_left')) {
+                    this.animate('walk_left', 10);
+                }
+            } else if (this.isDown(Crafty.keys.RIGHT_ARROW)) {
+                if (!this.isPlaying('walk_right')) {
+                    this.animate('walk_right', 10);
+                }
+            } else {
+                if (!this.isPlaying('stand_left') && !this.isPlaying('stand_right')) {
+                    this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
+                }
+            }
         });
         octocat.bind('Moved', function() {
             this.cx = octocat._x + octocat.w / 2;
