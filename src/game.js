@@ -14,7 +14,7 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        debug = true,
+        isDebug = true,
         
         METERS_DEPTH = 300,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -82,6 +82,15 @@
         }
         return temp;
     }
+    function debug() {
+        if (isDebug) {
+            if (arguments.length > 1) {
+                console.log(arguments);
+            } else {
+                console.log(arguments[0]);
+            }
+        }
+    }    
 
     function initLevel() {
         var luck, platform2add;
@@ -371,7 +380,7 @@
         .onHit('HealthRed', onHitHealth)
         .onHit('EnergyOrange', onHitEnergy);
 
-        if (debug) octocat.addComponent('WiredHitBox');
+        if (isDebug) octocat.addComponent('WiredHitBox');
 
         octocat.bind('KeyDown', function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
@@ -499,7 +508,6 @@
                 bg.y = -Crafty.viewport.y;
             }
             bgovr.y = -Crafty.viewport.y;
-            // console.log('size: ' + Crafty("2D").length);
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
@@ -630,7 +638,6 @@
             SmokeAnim.y = octocat.y;
             SmokeAnim.visible = true;
             SmokeAnim.animate('smoke');
-            console.log('play');
         });
  
         /************************************************************************
@@ -672,7 +679,7 @@
                 _dvy = vp.y - _pvy;
                 if (_dvy * _dvy > 10000) {
                     _pvy = vp.y;
-                    console.log('distance 50', _dvy, vp.y);
+                    debug('distance 50', _dvy, vp.y);
 
                     if (_dvy > 0) {
                         cur_platforms += step_platforms;
@@ -743,7 +750,6 @@
                             }
 
                             if (d.powerup && !d.powerupAdded) {
-                                console.log(this.w);
                                 addPowerup(d.powerup, this.x + (Math.random() * (this.w - 20)), this.y);
                                 d.powerupAdded = true;
                             }
