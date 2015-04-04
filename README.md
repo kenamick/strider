@@ -17,7 +17,7 @@ Good luck!
 Make your way to the top by using:
 
   * Arrow keys or `WASD` keys to move and jump on platforms.
-  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *TR-15* rifle is fully automatic. Just point it at the enemy and it will do the aiming for you.
+  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *TR-15* plasma rifle is fully automatic. Just aim it at your target and it will do the rest.
 
 ## Supported Browsers
 
