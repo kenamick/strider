@@ -120,8 +120,8 @@
                         map: {EnemyBullet: [0, 0]}
                     },
                     'xhair.png': {
-                        tile: 28,
-                        tileh: 28,
+                        tile: 46,
+                        tileh: 46,
                         map: {Xhair: [0, 0]}
                     },
                     'explo01.png': {

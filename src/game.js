@@ -591,7 +591,7 @@
 
         Crafty.viewport.follow(octocat, 0, 0);
 
-        var xhair = Crafty.e("2D, Canvas, Xhair")
+        var xhair = Crafty.e("2D, Canvas, Xhair, Tween")
         .attr({
             x: 0,
             y: 0,
@@ -599,8 +599,17 @@
             alpha: 0.75,
             visible: false
         })
-        .origin('center');
+        .origin('center')
+        .bind('TweenEnd', function() {
+            if (this.alpha <= 0.5) {
+                this.tween({alpha: 0.75, y: xhair.y + 10}, 750);
+            } else {
+                this.tween({alpha: 0.5, y: xhair.y - 10}, 750);
+            }
+        })
+        .tween({alpha: 0.5}, 750);
 
+        // something to die for ...
         for (var i = 0; i < 11; i++) {
             var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
             Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
