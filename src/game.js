@@ -16,7 +16,7 @@
         enableFPS = true,
         isDebug = true,
         
-        METERS_DEPTH = 300,
+        METERS_DEPTH = 800,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
         METERS_DEPTH_3 = METERS_DEPTH * 0.25,
         meters = METERS_DEPTH,
@@ -150,7 +150,8 @@
                     h: 26,
                     num: i,
                     clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig',
-                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH
+                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH,
+                    hasTurret: true
                 };
             } else {
                 platform2add = {
@@ -879,7 +880,8 @@
 
         (function (vp) {
             var _pvy = vp.y
-              , _dvy = 0;
+              , _dvy = 0
+              , spawnX, spawnY;
             function recyclePlatforms(e) {
                 _dvy = vp.y - _pvy;
                 if (_dvy * _dvy > 10000) {
@@ -957,6 +959,15 @@
                             if (d.powerup && !d.powerupAdded) {
                                 addPowerup(d.powerup, this.x + (Math.random() * (this.w - 20)), this.y);
                                 d.powerupAdded = true;
+                            }
+                            if (d.hasTurret && !d.turretAdded) {
+                                spawnX = this.x + (Math.random() * (this.w - 50));
+                                addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
+                                // 50% chance to spawn bouns behind turret
+                                if (Math.random() < 0.5) {
+                                    addPowerup(d.powerup, spawnX + 12, this.y);
+                                }
+                                d.turretAdded = true;
                             }
 
                             this.trigger("Recycled");
