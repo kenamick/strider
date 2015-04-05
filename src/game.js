@@ -24,7 +24,7 @@
         
         MAX_POWERUPS = total_platforms / 2,
         MAX_ENEMIES = total_platforms / 2,
-        MAX_BULLETS = MAX_ENEMIES / 4,
+        MAX_BULLETS = MAX_ENEMIES * 2,
         POWERUP_ENERGY = 1,
         POWERUP_HEALTH = 2,
         MAX_ENERGY = 49,
@@ -59,7 +59,7 @@
         playerDamage = 1;
         isDead = false,
         playerTargetDist = 150000, // 40000, //TODO
-        // enemy vars
+        // enemy base vars
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
         ENEMY_DRONE_ADVANCED = 3,
@@ -69,11 +69,13 @@
         ENEMY_HP = 10, //TODO
         BULLET_NORMAL = 1,
         BULLET_BLUE = 2,
-        BULLET_LIVE = 5000,
+        BULLET_LIVE = 3500,
         BULLET_SPEED = 3,
         enemies_data = [],
-        bullets_data = []
-        // 
+        bullets_data = [],
+        SPREAD8 = calcSpread(10, 8),
+        SPREAD8_R = calcSpread(50, 8)
+        //
         ;
 
     function clone(obj) {
@@ -95,7 +97,30 @@
                 console.log(arguments[0]);
             }
         }
-    }    
+    }
+    function calcSpread(range, size) {
+        var x, y
+          , phi  = 0
+          , step = 2 * Math.PI / size
+          , spread = []
+        for (var i = 0; i < size; i++) {
+            x = Math.cos(phi) * range;
+            y = Math.sin(phi) * range;
+            spread.push([x, y]);
+            phi += step;
+        }
+        return spread;
+    }
+    function getSpread(ox, oy, spread) {
+        var result = [];
+        for (var i = 0; i < spread.length; i++) {
+            result.push([ 
+                spread[i][0] + ox,
+                spread[i][1] + oy,
+                ]);
+        }
+        return result;
+    }
 
     function initLevel() {
         var luck, platform2add;
@@ -1012,6 +1037,7 @@
         }
         function addEnemy(type, x, y) {
             var component, accel
+              , spreadBullet = false
               , hp = ENEMY_HP
               , shootDelay = ENEMY_SHOOTDELAY
               , shootRange = ENEMY_SHOOTRANGE;
@@ -1029,6 +1055,14 @@
                 shootDelay = shootDelay * 0.5;
                 shootRange += shootRange * 0.25;
                 type = ENEMY_DRONE;
+            } else if (type === ENEMY_DRONE_DESTROYER) {
+                component = 'EnemyDroneNorth';
+                accel = 0.075;
+                hp *= 3;
+                shootDelay = shootDelay * 0.75;
+                shootRange += shootRange * 0.25;
+                type = ENEMY_DRONE;
+                spreadBullet = true;
             } else {
                 throw 'Unknown enemy type ' + type;
             }
@@ -1117,7 +1151,15 @@
                               , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
                             
                             if (dist < shootRange) {
-                                addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
+                                if (spreadBullet) {
+                                    var spread = getSpread(ecx, ecy, SPREAD8);
+                                    var spread_r = getSpread(ecx, ecy, SPREAD8_R);
+                                    for (var i = 0; i < spread.length; i++) {
+                                        addBullet(BULLET_BLUE, spread[i][0], spread[i][1], spread_r[i][0], spread_r[i][1]);
+                                    }
+                                } else {
+                                    addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
+                                }
                                 addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
                             }
                         }.bind(entity);
@@ -1137,13 +1179,16 @@
                 }
             }   
         }
-        function addBullet(type, x, y, dx, dy) {
+        function addBullet(type, x, y, dx, dy, speed) {
             for (var i = 0; i < bullets_data.length; i++) {
                 var entity = bullets_data[i];
                 if (!entity.visible) {
                     // setup
                     entity.x = x;
                     entity.y = y;
+                    if (speed) {
+                        entity.speed = speed;
+                    }
                     entity.direction = Math.atan2(dy - y, dx - x);
                     entity.unbind('Kill');
                     entity.unbind('HitOn');
@@ -1153,7 +1198,7 @@
                         this.y += Math.sin(this.direction) * this.speed;
                     });
                     entity.bind('Kill', function () {
-                        // console.log('bullet die');
+                        console.log('bullet die');
                         this.unbind('EnterFrame');
                         this.ignoreHits();
                         this.visible = false;
@@ -1233,7 +1278,7 @@
 
         // addEnemy(ENEMY_TURRET, 150, 100);
         // addEnemy(ENEMY_DRONE, 150, 100);
-        // addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
+        addEnemy(ENEMY_DRONE_DESTROYER, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
