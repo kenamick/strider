@@ -62,9 +62,11 @@
         playerTargetDist = 150000, // 40000, //TODO
         // enemy base vars
         ENEMY_TURRET = 1,
-        ENEMY_DRONE = 2,
-        ENEMY_DRONE_ADVANCED = 3,
-        ENEMY_DRONE_DESTROYER = 4,
+        ENEMY_TURRET_ADVANCED = 2,
+        ENEMY_TURRET_DESTROYER = 3,
+        ENEMY_DRONE = 4,
+        ENEMY_DRONE_ADVANCED = 5,
+        ENEMY_DRONE_DESTROYER = 6,
         ENEMY_SHOOTDELAY = 3000,
         ENEMY_SHOOTRANGE = 176400, // 420px
         ENEMY_HP = 10, //TODO
@@ -987,7 +989,9 @@
                     visible: false
                 })
                 .origin('center')
-                .reel('EnemyTurretShoot', generalAnimSpeed, 0, 0, 2)
+                .reel('EnemyTurretGreen', generalAnimSpeed, 0, 0, 2)
+                .reel('EnemyTurretRed', generalAnimSpeed, 0, 1, 2)
+                .reel('EnemyTurretPurple', generalAnimSpeed, 0, 2, 2)
                 .reel('EnemyDrone', generalAnimSpeed, 0, 0, 2)
                 .reel('EnemyDroneAdvanced', generalAnimSpeed, 2, 1, 2)
                 .reel('EnemyDroneDestroyer', generalAnimSpeed, 0, 1, 2);
@@ -1067,33 +1071,54 @@
               , shootRange = ENEMY_SHOOTRANGE
               , reel = null;
 
-            if (type === ENEMY_TURRET) {
-                component = 'EnemyTurretLeft';
-                reel = 'EnemyTurretShoot';
-            } else if (type === ENEMY_DRONE) {
-                component = 'EnemyDrone';
-                accel = 0.025;
-                reel = component;
-            } else if (type === ENEMY_DRONE_ADVANCED) {
-                component = 'EnemyDroneAdvanced';
-                accel = 0.05;
-                hp *= 2;
-                shootDelay = shootDelay * 0.5;
-                shootRange += shootRange * 0.25;
-                type = ENEMY_DRONE;
-                reel = component;
-            } else if (type === ENEMY_DRONE_DESTROYER) {
-                component = 'EnemyDroneDestroyer';
-                accel = 0.075;
-                hp *= 3;
-                shootDelay = shootDelay * 0.75;
-                shootRange += shootRange * 0.25;
-                type = ENEMY_DRONE;
-                spreadBullet = true;
-                reel = component;
-            } else {
-                throw 'Unknown enemy type ' + type;
+            switch(type) {
+                case ENEMY_TURRET:
+                    component = 'EnemyTurretGreen';
+                    reel = component;
+                break;
+                case ENEMY_TURRET_ADVANCED:
+                    type = ENEMY_TURRET;
+                    component = 'EnemyTurretRed';
+                    reel = component;
+                    hp *= 1.5;
+                    shootDelay = shootDelay * 0.75;
+                break;
+                case ENEMY_TURRET_DESTROYER:
+                    type = ENEMY_TURRET;
+                    component = 'EnemyTurretPurple';
+                    reel = component;
+                    hp *= 2;
+                    shootDelay = shootDelay * 0.75;
+                    shootRange += shootRange * 0.25;
+                break;
+                case ENEMY_DRONE:
+                    component = 'EnemyDrone';
+                    accel = 0.025;
+                    reel = component;
+                break;
+                case ENEMY_DRONE_ADVANCED:
+                    type = ENEMY_DRONE;
+                    component = 'EnemyDroneAdvanced';
+                    accel = 0.05;
+                    hp *= 2;
+                    shootDelay = shootDelay * 0.5;
+                    shootRange += shootRange * 0.25;
+                    reel = component;
+                break;
+                case ENEMY_DRONE_DESTROYER:
+                    type = ENEMY_DRONE;
+                    component = 'EnemyDroneDestroyer';
+                    accel = 0.075;
+                    hp *= 3;
+                    shootDelay = shootDelay * 0.75;
+                    shootRange += shootRange * 0.25;
+                    spreadBullet = true;
+                    reel = component;
+                break;
+                default:
+                    throw 'Unknown enemy type ' + type;
             }
+
             for (var i = 0; i < enemies_data.length; i++) {
                 var entity = enemies_data[i];
                 if (!entity.visible) {
@@ -1102,12 +1127,13 @@
                     entity.y = y;
                     entity.hp = hp;
                     entity.EnemyType = type;
-                    entity.removeComponent('EnemyTurretLeft');
-                    // entity.removeComponent('EnemyTurretRight');
+                    entity.EnemyReel = reel;
+                    entity.removeComponent('EnemyTurretGreen');
+                    entity.removeComponent('EnemyTurretRed');
+                    entity.removeComponent('EnemyTurretPurple');
                     entity.removeComponent('EnemyDrone');
                     entity.removeComponent('EnemyDroneAdvanced');
                     entity.removeComponent('EnemyDroneDestroyer');
-                    // entity.removeComponent('EnemyDroneEast');
                     entity.addComponent(component);
                     entity.unbind('Kill');
                     entity.unbind('AnimationEnd');
@@ -1151,7 +1177,7 @@
                               , ecy = this.y + this.h / 2;
                               // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
                             if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < shootRange) {
-                                entity.animate('EnemyTurretShoot');
+                                this.animate(this.EnemyReel);
                             }
                         }.bind(entity);
                     } else if (type === ENEMY_DRONE) {
@@ -1315,9 +1341,9 @@
             }
         }
 
-        // addEnemy(ENEMY_TURRET, 150, 100);
+        addEnemy(ENEMY_TURRET_DESTROYER, 150, 100);
         // addEnemy(ENEMY_DRONE, 150, 100);
-        addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
+        // addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")

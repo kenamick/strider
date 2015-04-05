@@ -119,7 +119,7 @@
                     'enemy_turret.png': {
                         tile: 50,
                         tileh: 26,
-                        map: {EnemyTurretLeft: [0, 0], EnemyTurretRight: [0, 1]}
+                        map: {EnemyTurretGreen: [0, 0], EnemyTurretRed: [0, 1], EnemyTurretPurple: [0, 2]}
                     },
                     'enemy_bullet.png': {
                         tile: 10,
