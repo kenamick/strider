@@ -408,7 +408,7 @@
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
-            y: Crafty.viewport.height / 2,
+            y: Crafty.viewport.height / 2, //level_data[0].y,  // TODO: bug in positioning
             z: 990
         })
         .origin('center')
@@ -671,16 +671,27 @@
         //     this.tween({y: this.dy - 5}, 750);
         // });
 
+        // door
+        Crafty.e("2D, Canvas, SpriteAnimation, DoorAnim")
+        .attr({
+            x: level_data[0].x,
+            y: level_data[0].y - 54,
+            z: octocat.z - 99,
+        })
+        .reel('close', generalAnimSpeed * 3.5, 9, 0, -10)
+        .animate('close');
+
         // something to die for ...
+        var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
         for (var i = 0; i < 11; i++) {
-            var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
-            Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
+            var todie4 = Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
             .attr({
                 x: -100 + i * 50,
-                y: Crafty.viewport.height - 50,
+                y: Crafty.viewport.height - 23,
                 w: 50,
-                h: 50
+                h: 23
             });
+            if (isDebug) todie4.addComponent('WiredHitBox');
         }
 
         /************************************************************************

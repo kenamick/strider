@@ -73,7 +73,14 @@
                         tile: 150,
                         tileh: 26,
                         map: {PlatformBlueBig: [0, 0], PlatformGreenBig: [0, 1]}
-                    },                    
+                    },
+                    'door_anim.png': {
+                        tile: 50,
+                        tileh: 54,
+                        paddingX: 3,
+                        paddingY: 0,
+                        map: {DoorAnim: [0, 0]}
+                    },
                     'gunner.png': {
                         tile: 50,
                         tileh: 57,
@@ -81,7 +88,7 @@
                     },
                     'spikes.png': {
                         tile: 50,
-                        tileh: 50,
+                        tileh: 23,
                         map: {Spikes01: [0, 0], Spikes02: [1, 0]}
                     },
                     'bloodanim.png': {
