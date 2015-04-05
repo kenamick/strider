@@ -959,13 +959,13 @@
                 powerups_data.push(entity);
             }
             for (i = 0; i < MAX_ENEMIES; i++) {
-                entity = Crafty.e("2D, Canvas, Enemy, SpriteAnimation")
+                entity = Crafty.e("2D, Canvas, Enemy, SpriteAnimation, Delay")
                 .attr({
                     x: 0, y: 0,
                     z: 890,
-                    visible: false,
-                    type: ''
+                    visible: false
                 })
+                .origin('center')
                 .reel('EnemyTurretShoot', generalAnimSpeed, 0, 0, 2)
                 .reel('EnemyDrone', generalAnimSpeed, 0, 0, 2)
                 .reel('EnemyDroneAdvanced', generalAnimSpeed, 2, 1, 2)
@@ -973,7 +973,7 @@
                 enemies_data.push(entity);
             }
             for (i = 0; i < MAX_BULLETS; i++) {
-                entity = Crafty.e("2D, Canvas, EnemyBullet, Collision, SpriteAnimation")
+                entity = Crafty.e("2D, Canvas, EnemyBullet, Collision, SpriteAnimation, Delay")
                 .attr({
                     x: 0, y: 0,
                     z: 892,
@@ -1091,7 +1091,9 @@
                     entity.unbind('Kill');
                     entity.unbind('AnimationEnd');
                     entity.unbind('EnterFrame')
-                    entity.origin('center');;
+                    if (entity.shootFn) {
+                        // entity.cancelDelay(entity.shootFn);
+                    }
                     // events
                     if (type === ENEMY_TURRET) {
                         /*
@@ -1152,6 +1154,7 @@
                         entity.animate(reel, -1);
                         // shoot
                         entity.shootFn = function() {
+                            console.log('opa');
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2
                               , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
@@ -1171,11 +1174,12 @@
                         }.bind(entity);
                     }
                     // adjust shoot frequency & die behavior
-                    entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
+                    // entity.delay(entity.shootFn, shootDelay, -1); // wtf does this not work?
+                    entity.shootDleay = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
                     entity.bind('Kill', function () {
                         addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01, 
                             this.x + this.w / 2, this.y + this.h / 2);
-                        this.shootTimer.cancelDelay(entity.shootFn);
+                        entity.shootDleay.cancelDelay(entity.shootFn);
                         this.visible = false;
                         entity.unbind('EnterFrame');
                     });
@@ -1198,6 +1202,9 @@
                     entity.direction = Math.atan2(dy - y, dx - x);
                     entity.unbind('Kill');
                     entity.unbind('HitOn');
+                    if (entity.fn) {
+                        entity.cancelDelay(entity.fn);
+                    }
                     // events
                     entity.bind('EnterFrame', function() {
                         this.x += Math.cos(this.direction) * this.speed;
@@ -1209,11 +1216,12 @@
                         this.ignoreHits();
                         this.visible = false;
                     });
-                    Crafty.e('Delay').delay(function() {
+                    entity.fn = function() {
                         if (this.visible) {
                             this.trigger('Kill');
                         }
-                    }.bind(entity), BULLET_LIVE, 0);
+                    }.bind(entity);
+                    entity.delay(entity.fn, BULLET_LIVE, 0);
                     entity.checkHits('Gunner');
                     entity.uniqueBind('HitOn', function () {
                         entity.trigger('Kill');
