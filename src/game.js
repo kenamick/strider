@@ -56,7 +56,7 @@
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
-        PLAYER_ENERGY_REPLENISH = 3000,
+        PLAYER_ENERGY_REPLENISH = 1500,
         playerDamage = 1;
         isDead = false,
         playerTargetDist = 40000, // 40000, //TODO
@@ -67,7 +67,7 @@
         ENEMY_DRONE = 4,
         ENEMY_DRONE_ADVANCED = 5,
         ENEMY_DRONE_DESTROYER = 6,
-        ENEMY_SHOOTDELAY = 3000,
+        ENEMY_SHOOTDELAY = 2000,
         ENEMY_SHOOTRANGE = 176400, // 420px
         ENEMY_HP = 10, //TODO
         BULLET_NORMAL = 1,
