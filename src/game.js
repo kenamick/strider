@@ -56,6 +56,7 @@
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
+        PLAYER_ENERGY_REPLENISH = 3000,
         playerDamage = 1;
         isDead = false,
         playerTargetDist = 150000, // 40000, //TODO
@@ -98,14 +99,14 @@
             }
         }
     }
-    function calcSpread(range, size) {
+    function calcSpread(r, size) {
         var x, y
           , phi  = 0
           , step = 2 * Math.PI / size
           , spread = []
         for (var i = 0; i < size; i++) {
-            x = Math.cos(phi) * range;
-            y = Math.sin(phi) * range;
+            x = Math.cos(phi) * r;
+            y = Math.sin(phi) * r;
             spread.push([x, y]);
             phi += step;
         }
@@ -123,7 +124,7 @@
     }
 
     function initLevel() {
-        var luck, platform2add;
+        var platform2add;
 
         level_data = [{
             x: Crafty.viewport.width / 2 - 50,
@@ -637,6 +638,11 @@
                 this.animate(anim);
             }
         });
+        octocat.delay(function() {
+            // replenish energy
+            playerEnergy += 1;
+            Crafty.trigger('playerupdatejuice');
+        }, PLAYER_ENERGY_REPLENISH, -1);
 
         Crafty.viewport.follow(octocat, 0, 0);
 
