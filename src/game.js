@@ -62,9 +62,13 @@
         // enemy vars
         ENEMY_TURRET = 1,
         ENEMY_DRONE = 2,
+        ENEMY_DRONE_ADVANCED = 3,
+        ENEMY_DRONE_DESTROYER = 4,
         ENEMY_TURRET_SHOOTDELAY = 3000,
         ENEMY_TURRET_SHOOTRANGE = 176400, // 420px
         ENEMY_TURRET_HP = 10, //TODO
+        BULLET_NORMAL = 1,
+        BULLET_BLUE = 2,
         BULLET_LIVE = 5000,
         BULLET_SPEED = 3,
         enemies_data = [],
@@ -930,7 +934,8 @@
                     speed: BULLET_SPEED,
                     hp: 0
                 })
-                .reel('shoot', generalAnimSpeed, 0, 0, 2);
+                .reel('shoot', generalAnimSpeed, 0, 0, 2)
+                .reel('shootBlue', generalAnimSpeed, 0, 1, 2);
                 // .collision();
                 bullets_data.push(entity);
             }
@@ -962,13 +967,19 @@
             }              
         }
         function addEnemy(type, x, y, subtype) {
-            var component;
+            var component, hp, accel;
             if (type === ENEMY_TURRET) {
                 y -= 50;
                 component = 'EnemyTurretLeft';
+                hp = ENEMY_TURRET_HP;
             } else if (type === ENEMY_DRONE) {
                 //TODO
                 component = 'EnemyDroneNorth';
+                hp = ENEMY_TURRET_HP;
+                speed = 0.75;
+                accel = 0.025;
+            } else {
+                throw 'Unknown enemy type ' + type;
             }
             for (var i = 0; i < enemies_data.length; i++) {
                 var entity = enemies_data[i];
@@ -976,6 +987,7 @@
                     // setup
                     entity.x = x;
                     entity.y = y;
+                    entity.hp = hp;
                     entity.removeComponent('EnemyTurretLeft');
                     entity.removeComponent('EnemyTurretRight');
                     entity.removeComponent('EnemyDroneNorth');
@@ -989,34 +1001,11 @@
                     entity.origin('center');;
                     // events
                     if (type === ENEMY_TURRET) {
-                        entity.hp = ENEMY_TURRET_HP;
+                        /*
+                         *  TURRET
+                         */
                         entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
-                        entity.bind('AnimationEnd', function (reel) {
-                            // console.log('new bullet');
-                            var ecx = entity.x + entity.w / 2
-                              , ecy = entity.y + entity.h / 2;
-                            if (this.direction === 'left') {
-                                ecx += 24;
-                            } else {
-                                ecx -= 24;
-                            }
-                            addBullet(ecx, ecy, octocat.cx, octocat.cy);
-                            addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
-                        });
-                        entity.shootFn = function() {
-                            var ecx = entity.x + entity.w / 2
-                              , ecy = entity.y + entity.h / 2;
-                              // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
-                            if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < ENEMY_TURRET_SHOOTRANGE) {
-                                entity.animate('shoot');
-                            }
-                        }.bind(entity);
-                        entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
-                        entity.bind('Kill', function () {
-                            this.shootTimer.cancelDelay(entity.shootFn);
-                            this.visible = false;
-                            entity.unbind('EnterFrame');
-                        });
+                        // facing
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
@@ -1028,26 +1017,71 @@
                                 this.direction = 'right';
                             }
                         });
+                        // shoot
+                        entity.bind('AnimationEnd', function (reel) {
+                            // console.log('new bullet');
+                            var ecx = entity.x + entity.w / 2
+                              , ecy = entity.y + entity.h / 2;
+                            if (this.direction === 'left') {
+                                ecx += 24;
+                            } else {
+                                ecx -= 24;
+                            }
+                            addBullet(BULLET_NORMAL, ecx, ecy, octocat.cx, octocat.cy);
+                            addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
+                        });
+                        entity.shootFn = function() {
+                            var ecx = this.x + this.w / 2
+                              , ecy = this.y + this.h / 2;
+                              // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
+                            if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < ENEMY_TURRET_SHOOTRANGE) {
+                                entity.animate('shoot');
+                            }
+                        }.bind(entity);
                     } else if (type === ENEMY_DRONE) {
-                        entity.hp = ENEMY_TURRET_HP; //TODO
+                        /*
+                         *  DRONE
+                         */
+                        entity.accel = 0;
+                        entity.z = octocat.z + 1; // in front of gunner
                         entity.reel('move', generalAnimSpeed, 0, 0, 2);
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
-                            if (ecx < octocat.cx) {
-                                this.x += 0.25;
-                            } else if (ecx > octocat.cx) {
-                                this.x -= 0.25;
+                            if (!Crafty.math.withinRange(ecx, octocat.cx - 2, octocat.cx + 2)) {
+                                this.accel += (ecx < octocat.x) ? accel : -accel; //TOOD: cap speed
+                                this.x += this.accel;
+                            } else {
+                                this.accel = 0;
                             }
                         });
+                        entity.animate('move', -1);
+                        // shoot
+                        entity.shootFn = function() {
+                            var ecx = this.x + this.w / 2
+                              , ecy = this.y + this.h / 2
+                              , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
+                            
+                            if (dist < ENEMY_TURRET_SHOOTRANGE) {
+                                addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
+                                addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
+                            }
+                        }.bind(entity);
                     }
+                    // adjust shoot frequency & die behavior
+                    entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
+                    entity.bind('Kill', function () {
+                        this.shootTimer.cancelDelay(entity.shootFn);
+                        this.visible = false;
+                        entity.unbind('EnterFrame');
+                    });
                     // go, go, go ....
                     entity.visible = true;
                     return entity;
                 }
             }   
         }
-        function addBullet(x, y, dx, dy) {
+        function addBullet(type, x, y, dx, dy) {
             for (var i = 0; i < bullets_data.length; i++) {
                 var entity = bullets_data[i];
                 if (!entity.visible) {
@@ -1080,7 +1114,7 @@
                     });
                     // go, go, go ....
                     entity.visible = true;
-                    entity.animate('shoot', -1);
+                    entity.animate(type === BULLET_BLUE ? 'shootBlue' : 'shoot', -1);
                     return entity;
                 }
             }
