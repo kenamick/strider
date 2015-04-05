@@ -136,6 +136,11 @@
                         tileh: 30,
                         map: {Explo01: [0, 0]}
                     },
+                    'explo01.png': {
+                        tile: 34,
+                        tileh: 30,
+                        map: {Explo01Blue: [0, 0]}
+                    },                    
                     'explo02.png': {
                         tile: 33,
                         tileh: 31,

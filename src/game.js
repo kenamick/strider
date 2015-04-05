@@ -64,9 +64,9 @@
         ENEMY_DRONE = 2,
         ENEMY_DRONE_ADVANCED = 3,
         ENEMY_DRONE_DESTROYER = 4,
-        ENEMY_TURRET_SHOOTDELAY = 3000,
-        ENEMY_TURRET_SHOOTRANGE = 176400, // 420px
-        ENEMY_TURRET_HP = 10, //TODO
+        ENEMY_SHOOTDELAY = 3000,
+        ENEMY_SHOOTRANGE = 176400, // 420px
+        ENEMY_HP = 10, //TODO
         BULLET_NORMAL = 1,
         BULLET_BLUE = 2,
         BULLET_LIVE = 5000,
@@ -442,7 +442,13 @@
                 Crafty.trigger('playerupdatehealth');
                 // playerEnergy -= 1;
                 // Crafty.trigger('playerupdatejuice');
-            }    
+            }
+            if (e.key === Crafty.keys.K) {
+                addAnimation(ANIM_EXPLOSION_01, 150, 250);
+            }
+            if (e.key === Crafty.keys.L) {
+                addAnimation(ANIM_EXPLOSION_BLUE, 150, 350);                
+            }
             ///////// 
         });
         octocat.bind('EnterFrame', function() {
@@ -523,7 +529,6 @@
                 target.hp -= playerDamage;
                 if (target.hp < 0) {
                     target.trigger('Kill');
-                    addAnimation(ANIM_EXPLOSION_01, target.x + target.w / 2, target.y + target.h / 2);
                     octocat.trigger('Moved'); // update target
                 } else {
                     addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
@@ -947,10 +952,7 @@
                     visible: false,
                     alpha: 0.90
                 })
-                .origin('center')
-                .bind('AnimationEnd', function() {
-                    this.visible = false;
-                });                
+                .origin('center')            
                 anims_data.push(entity);                
             }
         })();
@@ -966,18 +968,25 @@
                 }
             }              
         }
-        function addEnemy(type, x, y, subtype) {
-            var component, hp, accel;
+        function addEnemy(type, x, y) {
+            var component, accel
+              , hp = ENEMY_HP
+              , shootDelay = ENEMY_SHOOTDELAY
+              , shootRange = ENEMY_SHOOTRANGE;
+
             if (type === ENEMY_TURRET) {
-                y -= 50;
                 component = 'EnemyTurretLeft';
-                hp = ENEMY_TURRET_HP;
+                y -= 50;
             } else if (type === ENEMY_DRONE) {
-                //TODO
                 component = 'EnemyDroneNorth';
-                hp = ENEMY_TURRET_HP;
-                speed = 0.75;
                 accel = 0.025;
+            } else if (type === ENEMY_DRONE_ADVANCED) {
+                component = 'EnemyDroneNorth';
+                accel = 0.05;
+                hp *= 2;
+                shootDelay = shootDelay * 0.5;
+                shootRange += shootRange * 0.25;
+                type = ENEMY_DRONE;
             } else {
                 throw 'Unknown enemy type ' + type;
             }
@@ -988,6 +997,7 @@
                     entity.x = x;
                     entity.y = y;
                     entity.hp = hp;
+                    entity.EnemyType = type;
                     entity.removeComponent('EnemyTurretLeft');
                     entity.removeComponent('EnemyTurretRight');
                     entity.removeComponent('EnemyDroneNorth');
@@ -1034,7 +1044,7 @@
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
                               // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
-                            if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < ENEMY_TURRET_SHOOTRANGE) {
+                            if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < shootRange) {
                                 entity.animate('shoot');
                             }
                         }.bind(entity);
@@ -1062,15 +1072,17 @@
                               , ecy = this.y + this.h / 2
                               , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
                             
-                            if (dist < ENEMY_TURRET_SHOOTRANGE) {
+                            if (dist < shootRange) {
                                 addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
                                 addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
                             }
                         }.bind(entity);
                     }
                     // adjust shoot frequency & die behavior
-                    entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, ENEMY_TURRET_SHOOTDELAY, -1);
+                    entity.shootTimer = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
                     entity.bind('Kill', function () {
+                        addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01, 
+                            this.x + this.w / 2, this.y + this.h / 2);
                         this.shootTimer.cancelDelay(entity.shootFn);
                         this.visible = false;
                         entity.unbind('EnterFrame');
@@ -1124,16 +1136,20 @@
             for (var i = 0; i < anims_data.length; i++) {
                 var entity = anims_data[i];
                 if (!entity.visible) {
+                    entity.visible = true;
+                    console.log('Play ' + type + ' at slot ' + i);
                     // reset
                     entity.unbind('EnterFrame');
-                    entity.removeComponent('Flares');
-                    entity.removeComponent('Explo01');
-                    entity.removeComponent('Explo02');
+                    entity.unbind('AnimationEnd');
+                    entity.removeComponent('Flares', false);
+                    entity.removeComponent('Explo01', false);
+                    entity.removeComponent('Explo02', false);
+                    entity.removeComponent('Explo01Blue', false);
                     // setup
+                    entity.alpha = 0.9;
                     if (type === ANIM_PLAYER_GUNFLARE) {
                         x = x || 0;
                         y = y || 0;
-                        entity.alpha = 0.9;
                         entity.addComponent('Flares')
                         .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
                         .bind('EnterFrame', function() {
@@ -1141,15 +1157,15 @@
                             this.y = octocat.cy - 9 + y;
                         });
                     } else if (type === ANIM_GUNFLARE) {
-                        entity.alpha = 0.9;
                         entity.addComponent('Flares')
-                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]]);
-                    } else if (type === ANIM_EXPLOSION_01 || type === ANIM_EXPLOSION_BLUE) {
-                        entity.alpha = 0.9;
+                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0] ]);
+                    } else if (type === ANIM_EXPLOSION_01) {
                         entity.addComponent('Explo01')
-                        .reel('play', generalAnimSpeed, 0, (type === ANIM_EXPLOSION_BLUE ? 1 : 0), 6);
+                        .reel('play', generalAnimSpeed, 0, 0, 6);
+                    } else if (type === ANIM_EXPLOSION_BLUE) {
+                        entity.addComponent('Explo01Blue')
+                        .reel('play', generalAnimSpeed, 0, 1, 6);
                     } else if (type === ANIM_EXPLOSION_02) {
-                        entity.alpha = 0.9;
                         entity.addComponent('Explo02')
                         .reel('play', generalAnimSpeed, 0, 0, 6);                        
                     } else if (type === ANIM_HITENEMY) {
@@ -1162,9 +1178,11 @@
                     if (typeof x !== 'undefined') {
                         entity.x = x - entity.w / 2;
                         entity.y = y - entity.h / 2;
-                    }                    
+                    }
+                    entity.bind('AnimationEnd', function() {
+                        this.visible = false;
+                    });                    
                     // go, go, go ....
-                    entity.visible = true;
                     entity.animate('play');
                     return;
                 }
@@ -1172,7 +1190,8 @@
         }
 
         // addEnemy(ENEMY_TURRET, 150, 100);
-        addEnemy(ENEMY_DRONE, 150, 100);
+        // addEnemy(ENEMY_DRONE, 150, 100);
+        addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
