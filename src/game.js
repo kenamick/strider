@@ -1161,12 +1161,17 @@
                         entity.w = 50; entity.h = 50;
                         entity.accel = 0;
                         entity.z = octocat.z + 1; // in front of gunner
-                        // entity.reel('move', generalAnimSpeed, 0, 0, 2);
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
                             if (!Crafty.math.withinRange(ecx, octocat.cx - 2, octocat.cx + 2)) {
-                                this.accel += (ecx < octocat.x) ? accel : -accel; //TOOD: cap speed
+                                if (ecx < octocat.x) {
+                                    this.accel += accel;
+                                    this.accel = Math.min(this.accel, 8);
+                                } else {
+                                    this.accel -= accel;
+                                    this.accel = Math.max(this.accel, -8);
+                                }
                                 this.x += this.accel;
                             } else {
                                 this.accel = 0;
