@@ -944,16 +944,43 @@
                 // .collision();
                 bullets_data.push(entity);
             }
-            for (i = 0; i < MAX_ANIMATIONS; i++) {
-                entity = Crafty.e("2D, Canvas, SpriteAnimation")
+            for (i = 0; i < MAX_ANIMATIONS / 3; i++) {
+                entity = Crafty.e("2D, Canvas, SpriteAnimation, Flares")
                 .attr({
                     x: 0, y: 0,
                     z: 991,
                     visible: false,
                     alpha: 0.90
                 })
-                .origin('center')            
-                anims_data.push(entity);                
+                .reel('player_gunflare', generalAnimSpeed / 2, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
+                .reel('gunflare', generalAnimSpeed / 2, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
+                .origin('center');
+                anims_data.push(entity);
+                //
+                entity = Crafty.e("2D, Canvas, SpriteAnimation, ExplosionsYB")
+                .attr({
+                    x: 0, y: 0,
+                    z: 991,
+                    visible: false,
+                    alpha: 0.90
+                })
+                .reel('explo01', generalAnimSpeed, 0, 0, 6)
+                .reel('exploBlue', generalAnimSpeed, 0, 1, 6)
+                .origin('center')
+                .animate('explo01');
+                anims_data.push(entity);
+                //
+                entity = Crafty.e("2D, Canvas, SpriteAnimation, ExplosionHit")
+                .attr({
+                    x: 0, y: 0,
+                    z: 991,
+                    visible: false,
+                    alpha: 0.90
+                })
+                .reel('explo02', generalAnimSpeed, 0, 0, 6)
+                .reel('exploHitEnemy', generalAnimSpeed / 2, 0, 0, 6)
+                .origin('center');
+                anims_data.push(entity);
             }
         })();
         function addPowerup(type, x, y) {
@@ -1133,45 +1160,44 @@
         }
         function addAnimation(type, x, y) {
             var animSpeed = ~~(generalAnimSpeed / 2);
+            var component;
+            switch(type) {
+                case ANIM_PLAYER_GUNFLARE: component = 'Flares'; break;
+                case ANIM_GUNFLARE: component = 'Flares'; break;
+                case ANIM_EXPLOSION_01: component = 'ExplosionsYB'; break;
+                case ANIM_EXPLOSION_BLUE: component = 'ExplosionsYB'; break;
+                case ANIM_EXPLOSION_02: component = 'ExplosionHit'; break;
+                case ANIM_HITENEMY: component = 'ExplosionHit'; break;
+            }
             for (var i = 0; i < anims_data.length; i++) {
                 var entity = anims_data[i];
-                if (!entity.visible) {
+                if (!entity.visible && entity.has(component)) {
                     entity.visible = true;
-                    console.log('Play ' + type + ' at slot ' + i);
+                    // console.log('Play ' + type + ' at slot ' + i);
                     // reset
                     entity.unbind('EnterFrame');
                     entity.unbind('AnimationEnd');
-                    entity.removeComponent('Flares', false);
-                    entity.removeComponent('Explo01', false);
-                    entity.removeComponent('Explo02', false);
-                    entity.removeComponent('Explo01Blue', false);
                     // setup
                     entity.alpha = 0.9;
                     if (type === ANIM_PLAYER_GUNFLARE) {
                         x = x || 0;
                         y = y || 0;
-                        entity.addComponent('Flares')
-                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0]])
-                        .bind('EnterFrame', function() {
+                        entity.bind('EnterFrame', function() {
                             this.x = octocat.cx - 9 + x;
                             this.y = octocat.cy - 9 + y;
                         });
+                        entity.animate('player_gunflare');
                     } else if (type === ANIM_GUNFLARE) {
-                        entity.addComponent('Flares')
-                        .reel('play', animSpeed, [ [2, 0], [1, 0], [0, 0], [3, 1], [1, 0], [0, 0] ]);
+                        entity.animate('gunflare');
                     } else if (type === ANIM_EXPLOSION_01) {
-                        entity.addComponent('Explo01')
-                        .reel('play', generalAnimSpeed, 0, 0, 6);
+                        entity.animate('explo01');
                     } else if (type === ANIM_EXPLOSION_BLUE) {
-                        entity.addComponent('Explo01Blue')
-                        .reel('play', generalAnimSpeed, 0, 1, 6);
+                        entity.animate('exploBlue');
                     } else if (type === ANIM_EXPLOSION_02) {
-                        entity.addComponent('Explo02')
-                        .reel('play', generalAnimSpeed, 0, 0, 6);                        
+                        entity.animate('explo02');
                     } else if (type === ANIM_HITENEMY) {
                         entity.alpha = 0.75;
-                        entity.addComponent('Explo02')
-                        .reel('play', animSpeed, 0, 0, 6);
+                        entity.animate('exploHitEnemy');
                     } else {
                         throw "wrong anim type - " + type;
                     }
@@ -1181,9 +1207,8 @@
                     }
                     entity.bind('AnimationEnd', function() {
                         this.visible = false;
-                    });                    
+                    });
                     // go, go, go ....
-                    entity.animate('play');
                     return;
                 }
             }
