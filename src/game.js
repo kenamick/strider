@@ -1322,16 +1322,21 @@
             for (var i = 0; i < anims_data.length; i++) {
                 var entity = anims_data[i];
                 if (!entity.visible && entity.has(component)) {
-                    entity.visible = true;
                     // console.log('Play ' + type + ' at slot ' + i);
                     // reset
                     entity.unbind('EnterFrame');
                     entity.unbind('AnimationEnd');
                     // setup
                     entity.alpha = 0.9;
+                    if (typeof x !== 'undefined') {
+                        entity.x = x - entity.w / 2;
+                        entity.y = y - entity.h / 2;
+                    }
                     if (type === ANIM_PLAYER_GUNFLARE) {
                         x = x || 0;
                         y = y || 0;
+                        entity.x = octocat.cx - 9 + x;
+                        entity.y = octocat.cy - 9 + y;
                         entity.bind('EnterFrame', function() {
                             this.x = octocat.cx - 9 + x;
                             this.y = octocat.cy - 9 + y;
@@ -1351,14 +1356,12 @@
                     } else {
                         throw "wrong anim type - " + type;
                     }
-                    if (typeof x !== 'undefined') {
-                        entity.x = x - entity.w / 2;
-                        entity.y = y - entity.h / 2;
-                    }
                     entity.bind('AnimationEnd', function() {
                         this.visible = false;
+                        this.unbind('EnterFrame');
                     });
                     // go, go, go ....
+                    entity.visible = true;
                     return;
                 }
             }
