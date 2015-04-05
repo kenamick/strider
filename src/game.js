@@ -966,7 +966,10 @@
                     visible: false,
                     type: ''
                 })
-                // .collision();
+                .reel('EnemyTurretShoot', generalAnimSpeed, 0, 0, 2)
+                .reel('EnemyDrone', generalAnimSpeed, 0, 0, 2)
+                .reel('EnemyDroneAdvanced', generalAnimSpeed, 2, 1, 2)
+                .reel('EnemyDroneDestroyer', generalAnimSpeed, 0, 1, 2);
                 enemies_data.push(entity);
             }
             for (i = 0; i < MAX_BULLETS; i++) {
@@ -1040,29 +1043,33 @@
               , spreadBullet = false
               , hp = ENEMY_HP
               , shootDelay = ENEMY_SHOOTDELAY
-              , shootRange = ENEMY_SHOOTRANGE;
+              , shootRange = ENEMY_SHOOTRANGE
+              , reel = null;
 
             if (type === ENEMY_TURRET) {
                 component = 'EnemyTurretLeft';
-                // y -= 26;
+                reel = 'EnemyTurretShoot';
             } else if (type === ENEMY_DRONE) {
-                component = 'EnemyDroneNorth';
+                component = 'EnemyDrone';
                 accel = 0.025;
+                reel = component;
             } else if (type === ENEMY_DRONE_ADVANCED) {
-                component = 'EnemyDroneNorth';
+                component = 'EnemyDroneAdvanced';
                 accel = 0.05;
                 hp *= 2;
                 shootDelay = shootDelay * 0.5;
                 shootRange += shootRange * 0.25;
                 type = ENEMY_DRONE;
+                reel = component;
             } else if (type === ENEMY_DRONE_DESTROYER) {
-                component = 'EnemyDroneNorth';
+                component = 'EnemyDroneDestroyer';
                 accel = 0.075;
                 hp *= 3;
                 shootDelay = shootDelay * 0.75;
                 shootRange += shootRange * 0.25;
                 type = ENEMY_DRONE;
                 spreadBullet = true;
+                reel = component;
             } else {
                 throw 'Unknown enemy type ' + type;
             }
@@ -1076,9 +1083,9 @@
                     entity.EnemyType = type;
                     entity.removeComponent('EnemyTurretLeft');
                     // entity.removeComponent('EnemyTurretRight');
-                    entity.removeComponent('EnemyDroneNorth');
-                    // entity.removeComponent('EnemyDroneSouth');
-                    // entity.removeComponent('EnemyDroneWest');
+                    entity.removeComponent('EnemyDrone');
+                    entity.removeComponent('EnemyDroneAdvanced');
+                    entity.removeComponent('EnemyDroneDestroyer');
                     // entity.removeComponent('EnemyDroneEast');
                     entity.addComponent(component);
                     entity.unbind('Kill');
@@ -1091,7 +1098,6 @@
                          *  TURRET
                          */
                         entity.w = 50; entity.h = 26;
-                        entity.reel('shoot', generalAnimSpeed, 0, 0, 2);
                         // facing
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
@@ -1122,7 +1128,7 @@
                               , ecy = this.y + this.h / 2;
                               // console.log(Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy));
                             if (Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy) < shootRange) {
-                                entity.animate('shoot');
+                                entity.animate('EnemyTurretShoot');
                             }
                         }.bind(entity);
                     } else if (type === ENEMY_DRONE) {
@@ -1132,7 +1138,7 @@
                         entity.w = 50; entity.h = 50;
                         entity.accel = 0;
                         entity.z = octocat.z + 1; // in front of gunner
-                        entity.reel('move', generalAnimSpeed, 0, 0, 2);
+                        // entity.reel('move', generalAnimSpeed, 0, 0, 2);
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
@@ -1143,7 +1149,7 @@
                                 this.accel = 0;
                             }
                         });
-                        entity.animate('move', -1);
+                        entity.animate(reel, -1);
                         // shoot
                         entity.shootFn = function() {
                             var ecx = this.x + this.w / 2
@@ -1278,7 +1284,7 @@
 
         // addEnemy(ENEMY_TURRET, 150, 100);
         // addEnemy(ENEMY_DRONE, 150, 100);
-        addEnemy(ENEMY_DRONE_DESTROYER, 150, 100);
+        addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")

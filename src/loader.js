@@ -124,7 +124,7 @@
                         tileh: 50,
                         paddingX: 1,
                         paddingY: 1,
-                        map: {EnemyDroneSouth: [0, 0], EnemyDroneWest: [2, 0], EnemyDroneNorth: [0, 1], EnemyDroneEast: [2, 1]}
+                        map: {EnemyDrone: [0, 0], EnemyDroneAdvanced: [2, 0], EnemyDroneDestroyer: [0, 1], EnemyDrone2: [2, 1]}
                     },
                     'xhair.png': {
                         tile: 46,
