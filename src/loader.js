@@ -17,7 +17,7 @@
         Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
         Crafty.viewport.bounds = { 
             min: { x:-100, y: -Infinity }, 
-            max: { x: STAGE_WIDTH + 50, y: Infinity } 
+            max: { x: STAGE_WIDTH + 50, y: STAGE_HEIGHT } 
         };
         // Crafty.viewport.clampToEntities = true;
         Crafty.settings.modify("autoPause", true);

@@ -408,7 +408,7 @@
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
-            y: Crafty.viewport.height / 2, //level_data[0].y,  // TODO: bug in positioning
+            y: level_data[0].y,  // TODO: bug in positioning
             z: 990
         })
         .origin('center')
@@ -644,7 +644,11 @@
             Crafty.trigger('playerupdatejuice');
         }, PLAYER_ENERGY_REPLENISH, -1);
 
-        Crafty.viewport.follow(octocat, 0, 0);
+        // var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+        //     x: ship.x + 41,
+        //     y: ship.y + 80,
+        //     z: -3
+        // })
 
         var xhair = Crafty.e("2D, Canvas, Xhair, Tween")
         .attr({
@@ -872,13 +876,13 @@
         })();        
 
         (function (vp) {
-            var _pvy = vp.y,
-                _dvy = 0;
+            var _pvy = vp.y
+              , _dvy = 0;
             function recyclePlatforms(e) {
                 _dvy = vp.y - _pvy;
                 if (_dvy * _dvy > 10000) {
                     _pvy = vp.y;
-                    debug('distance 50', _dvy, vp.y);
+                    debug('distance', _dvy, vp.y);
 
                     if (_dvy > 0) {
                         cur_platforms += step_platforms;
@@ -1171,7 +1175,6 @@
                         entity.animate(reel, -1);
                         // shoot
                         entity.shootFn = function() {
-                            console.log('opa');
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2
                               , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
@@ -1422,7 +1425,9 @@
             this.alpha = 1;
             this.unbind('MouseDown', toggleMUSIC);
         });
-   
+
+        // camera follow
+        Crafty.viewport.follow(octocat, 0, 0);        
     });
 
     Crafty.scene("loading");
