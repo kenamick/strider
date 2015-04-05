@@ -111,7 +111,7 @@
                     },
                     'enemy_turret.png': {
                         tile: 50,
-                        tileh: 50,
+                        tileh: 26,
                         map: {EnemyTurretLeft: [0, 0], EnemyTurretRight: [0, 1]}
                     },
                     'enemy_bullet.png': {
