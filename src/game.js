@@ -59,7 +59,7 @@
         PLAYER_ENERGY_REPLENISH = 3000,
         playerDamage = 1;
         isDead = false,
-        playerTargetDist = 150000, // 40000, //TODO
+        playerTargetDist = 40000, // 40000, //TODO
         // enemy base vars
         ENEMY_TURRET = 1,
         ENEMY_TURRET_ADVANCED = 2,
@@ -454,6 +454,8 @@
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;
+                jumpboost.visible = true; // show boost anim
+                jumpboost.animate('play')
             } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
@@ -647,11 +649,21 @@
             Crafty.trigger('playerupdatejuice');
         }, PLAYER_ENERGY_REPLENISH, -1);
 
-        // var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
-        //     x: ship.x + 41,
-        //     y: ship.y + 80,
-        //     z: -3
-        // })
+        // jumpboost
+        var jumpboost = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+            x: 0,
+            y: 0,
+            z: octocat.z - 1,
+            visible: false
+        })
+        .reel('play', ~~(generalAnimSpeed / 2.5), 0, 0, 6)
+        .bind('EnterFrame', function() {
+            this.x = octocat.cx - this.w / 2;
+            this.y = octocat.cy + 20
+        })
+        .bind('AnimationEnd', function() {
+            this.visible = false;
+        });
 
         var xhair = Crafty.e("2D, Canvas, Xhair, Tween")
         .attr({
@@ -1352,7 +1364,7 @@
             }
         }
 
-        addEnemy(ENEMY_TURRET_DESTROYER, 150, 100);
+        // addEnemy(ENEMY_TURRET_DESTROYER, 150, 100);
         // addEnemy(ENEMY_DRONE, 150, 100);
         // addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
 
