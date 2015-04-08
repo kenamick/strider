@@ -552,7 +552,7 @@
         });
         octocat.bind('Shoot', function() {
             playerEnergy -= 1;
-            if (playerEnergy <= 0) {
+            if (playerEnergy < 0) {
                 // no ammo
                 return;
             }
