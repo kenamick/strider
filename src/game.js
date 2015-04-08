@@ -137,58 +137,35 @@
             clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
         }];
 
-        var vw = (Crafty.viewport.width + 50)
+        var vw = (Crafty.viewport.width)
           , vh = -Crafty.viewport.y + Crafty.viewport.height - 150;
 
         var i = 1, j = 0;
         while (i < total_platforms) {
-            if (i % 5 === 0) {
-                platform2add = {
-                    x: -100 + ~~ (Math.random() * vw),
-                    y: vh - i * 100 + (50 * Math.random()),
-                    w: 150,
-                    h: 26,
-                    num: i,
-                    clr: Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig',
-                    powerup: Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH,
-                    hasTurret: true
-                };
+            platform2add = {
+                x: -100 + ~~ (Math.random() * vw),
+                y: vh - i * 100 + (50 * Math.random())
+            };
+            if (i % 8 == 0 && i > 8) {
+                platform2add.w = 150;
+                platform2add.h = 26;
+                platform2add.clr = Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig';
+                platform2add.powerup = Math.random() > 0.3 ? POWERUP_ENERGY : POWERUP_HEALTH;
+                platform2add.hasDrone = true;
+            } else if (i % 5 === 0) {
+                platform2add.w = 150;
+                platform2add.h = 26;
+                platform2add.clr = Math.random() > 0.5 ? 'PlatformBlueBig' : 'PlatformGreenBig';
+                platform2add.powerup = Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH;
+                platform2add.hasTurret = true;
             } else {
-                platform2add = {
-                    x: -100 + ~~ (Math.random() * vw),
-                    y: vh - i * 100 + (50 * Math.random()),
-                    w: 50,
-                    h: 26,
-                    num: i,
-                    clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen',
-                    powerup: false
-                };
+                platform2add.w = 50;
+                platform2add.h = 26;
+                platform2add.clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
+                platform2add.powerup = false;
             }
+            platform2add.num = i;
             level_data.push(platform2add);
-            // j = 0;
-            // while(j < 2) {
-            //     luck = Math.random();
-            //     if (luck > 0.75) {
-            //         platform2add = clone(platform2add);
-            //         platform2add.x -= 50;
-            //         i += 1;
-            //         platform2add.i = i;
-            //         level_data.push(platform2add);
-            //     } else if (luck < 0.25) {
-            //         platform2add = clone(platform2add);
-            //         platform2add.x += 50;
-            //         i += 1;
-            //         platform2add.i = i;
-            //         level_data.push(platform2add);
-            //     } else if (luck > 0.25) {
-            //         platform2add = clone(platform2add);
-            //         platform2add.x = Crafty.viewport.width - platform2add.x;
-            //         i += 1;
-            //         platform2add.i = i;
-            //         level_data.push(platform2add);
-            //     }
-            //     j += 1;
-            // }
             i += 1;
         }
         // last top platform
@@ -980,6 +957,11 @@
                                     addPowerup(d.powerup, spawnX + 12, this.y);
                                 }
                                 d.turretAdded = true;
+                            }
+                            if (d.hasDrone && !d.droneAdded) {
+                                spawnX = this.x + (Math.random() * (this.w - 50));
+                                addEnemy(ENEMY_DRONE, spawnX, this.y - 50);
+                                d.droneAdded = true;
                             }
 
                             this.trigger("Recycled");
