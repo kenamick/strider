@@ -74,7 +74,7 @@
         BULLET_BLUE = 2,
         // BULLET_LIVE = 3500,
         BULLET_MAX_DIST = ~~(ENEMY_SHOOTRANGE * 0.9);
-        BULLET_SPEED = 3,
+        BULLET_SPEED = 2.75,
         enemies_data = [],
         bullets_data = [],
         SPREAD8 = calcSpread(10, 8),
@@ -163,7 +163,7 @@
                 platform2add.w = 50;
                 platform2add.h = 26;
                 platform2add.clr = Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen';
-                platform2add.powerup = false;
+                platform2add.powerup = Math.random() < 0.2 ? (Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH) : false;
             }
             platform2add.num = i;
             level_data.push(platform2add);
@@ -925,10 +925,18 @@
                             }
                             if (d.hasTurret && !d.turretAdded) {
                                 spawnX = this.x + (Math.random() * (this.w - 50));
-                                addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
-                                // 50% chance to spawn bouns behind turret
-                                if (Math.random() < 0.5) {
+                                if (meters < METERS_DEPTH_3) {
+                                    addEnemy(ENEMY_TURRET_DESTROYER, spawnX, this.y - 26);
                                     addPowerup(d.powerup, spawnX + 12, this.y);
+                                } else if (meters < METERS_DEPTH_2) {
+                                    addEnemy(ENEMY_TURRET_ADVANCED, spawnX, this.y - 26);
+                                    addPowerup(d.powerup, spawnX + 12, this.y);
+                                } else  {
+                                    addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
+                                    // 50% chance to spawn bouns behind turret
+                                    if (Math.random() < 0.5) {
+                                        addPowerup(d.powerup, spawnX + 12, this.y);
+                                    }
                                 }
                                 d.turretAdded = true;
                             }
@@ -961,7 +969,7 @@
                 entity = Crafty.e("2D, Canvas, Powerup, Collision")
                 .attr({
                     x: 0, y: 0,
-                    z: 899,
+                    z: 889,
                     visible: false,
                     type: ''
                 })
@@ -1068,15 +1076,15 @@
                     component = 'EnemyTurretRed';
                     reel = component;
                     hp *= 1.5;
-                    shootDelay = shootDelay * 0.75;
+                    shootDelay = ~~(shootDelay * 0.75);
                 break;
                 case ENEMY_TURRET_DESTROYER:
                     type = ENEMY_TURRET;
                     component = 'EnemyTurretPurple';
                     reel = component;
                     hp *= 2;
-                    shootDelay = shootDelay * 0.75;
-                    shootRange += shootRange * 0.25;
+                    shootDelay = ~~(shootDelay * 0.75);
+                    shootRange += ~~(shootRange * 0.25);
                 break;
                 case ENEMY_DRONE:
                     component = 'EnemyDrone';
@@ -1088,17 +1096,17 @@
                     component = 'EnemyDroneAdvanced';
                     accel = 0.05;
                     hp *= 2;
-                    shootDelay = shootDelay * 0.5;
-                    shootRange += shootRange * 0.25;
+                    shootDelay = ~~(shootDelay * 0.5);
+                    shootRange += ~~(shootRange * 0.25);
                     reel = component;
                 break;
                 case ENEMY_DRONE_DESTROYER:
                     type = ENEMY_DRONE;
                     component = 'EnemyDroneDestroyer';
-                    accel = 0.075;
+                    accel = 0.05;
                     hp *= 3;
-                    shootDelay = shootDelay * 0.75;
-                    shootRange += shootRange * 0.25;
+                    shootDelay = ~~(shootDelay * 0.75);
+                    shootRange += ~~(shootRange * 0.1);
                     spreadBullet = true;
                     reel = component;
                 break;
@@ -1180,10 +1188,10 @@
                             if (!Crafty.math.withinRange(ecx, octocat.cx - 2, octocat.cx + 2)) {
                                 if (ecx < octocat.x) {
                                     this.accel += accel;
-                                    this.accel = Math.min(this.accel, 8);
+                                    this.accel = Math.min(this.accel, 6);
                                 } else {
                                     this.accel -= accel;
-                                    this.accel = Math.max(this.accel, -8);
+                                    this.accel = Math.max(this.accel, -6);
                                 }
                                 this.x += this.accel;
                             } else {
@@ -1225,7 +1233,8 @@
                     entity.visible = true;
                     return entity;
                 }
-            }   
+            }
+            debug('*** No free enemy slots found!');
         }
         function addBullet(type, x, y, dx, dy, speed) {
             for (var i = 0; i < bullets_data.length; i++) {
@@ -1236,7 +1245,6 @@
                     entity.oy = y;
                     entity.x = x;
                     entity.y = y;
-                    entity.i = i;
                     if (speed) {
                         entity.speed = speed;
                     }
