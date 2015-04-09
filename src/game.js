@@ -72,7 +72,8 @@
         ENEMY_HP = 10, //TODO
         BULLET_NORMAL = 1,
         BULLET_BLUE = 2,
-        BULLET_LIVE = 3500,
+        // BULLET_LIVE = 3500,
+        BULLET_MAX_DIST = ~~(ENEMY_SHOOTRANGE * 0.9);
         BULLET_SPEED = 3,
         enemies_data = [],
         bullets_data = [],
@@ -310,7 +311,7 @@
             // bullet.trigger('Kill');
             playerHealth -= 1;
             Crafty.trigger('playerupdatehealth');
-            if (playerHealth < 0) {
+            if (playerHealth < 0 && false) { //TODO
                 bgovr.color("#ff0000");
                 Crafty.trigger('playerdead');
             } else {
@@ -902,26 +903,11 @@
                             //TODO: kill ship, if it had any
                             this.removeComponent(this.clr);
 
-
                             this.alpha = 1;
                             this.attr(d);
                             this.addComponent(d.clr);
                             this.collision();
 
-                            // this.attr(d);
-                            // this.alpha = 1;
-                            // this.bind("TweenEnd", function (k) {
-                            //     if('y' === k) {
-                            //         this.attr(d);
-                            //         this.unbind("TweenEnd");
-                            //     }
-                            //     if('alpha' === k) {
-                            //         this.attr(d);
-                            //     }
-                            //     // this.alpha = 1;
-                            //     // this.collision();
-                            //     // this.unbind("TweenEnd");
-                            // });
                             var r = ~~ (10 * (1 + Math.random()));
                             if (d.goal && !ship) {
                                 ship = Crafty.e("2D, Canvas, Spaceship, Collision, SpriteAnimation").attr({
@@ -931,18 +917,6 @@
                                     _acc: 0.125
                                 })
                                 .collision();
-                            // } else if(!this.has("Push") && 0 === cur % (r + 1)) {
-                            //     this.addComponent("Pull");
-                            // } else if(0 === cur % (r + 2)) {
-                            //     Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
-                            //         x: this.x + (this.w - 48) / 2,
-                            //         y: this.y - 64
-                            //     }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("&#xF220");
-                            // } else if(0 === cur % 2) {
-                            //     Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
-                            //         x: this.x + (this.w - 48) / 2,
-                            //         y: this.y - 64
-                            //     }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("&#xF22A"); // star
                             }
 
                             if (d.powerup && !d.powerupAdded) {
@@ -960,7 +934,15 @@
                             }
                             if (d.hasDrone && !d.droneAdded) {
                                 spawnX = this.x + (Math.random() * (this.w - 50));
-                                addEnemy(ENEMY_DRONE, spawnX, this.y - 50);
+                                if (meters < METERS_DEPTH_3) {
+                                    addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
+                                } else if (meters < METERS_DEPTH_2) {
+                                    addEnemy(ENEMY_DRONE_ADVANCED, spawnX, this.y - 50);
+                                } else if (meters < METERS_DEPTH_2 + 100) {
+                                    addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
+                                } else  {
+                                    addEnemy(ENEMY_DRONE, spawnX, this.y - 50);
+                                }
                                 d.droneAdded = true;
                             }
 
@@ -1250,8 +1232,11 @@
                 var entity = bullets_data[i];
                 if (!entity.visible) {
                     // setup
+                    entity.ox = x;
+                    entity.oy = y;
                     entity.x = x;
                     entity.y = y;
+                    entity.i = i;
                     if (speed) {
                         entity.speed = speed;
                     }
@@ -1265,22 +1250,19 @@
                     entity.bind('EnterFrame', function() {
                         this.x += Math.cos(this.direction) * this.speed;
                         this.y += Math.sin(this.direction) * this.speed;
-                    });
-                    entity.bind('Kill', function () {
-                        console.log('bullet die');
-                        this.unbind('EnterFrame');
-                        this.ignoreHits();
-                        this.visible = false;
-                    });
-                    entity.fn = function() {
-                        if (this.visible) {
+                        if (Crafty.math.squaredDistance(this.x, this.y, this.ox, this.oy) > BULLET_MAX_DIST) {
                             this.trigger('Kill');
                         }
-                    }.bind(entity);
-                    entity.delay(entity.fn, BULLET_LIVE, 0);
+                    });
+                    entity.bind('Kill', function () {
+                        // debug('--- bullet die ---', this.i);
+                        entity.unbind('EnterFrame');
+                        entity.ignoreHits();
+                        entity.visible = false;
+                    });
                     entity.checkHits('Gunner');
                     entity.uniqueBind('HitOn', function () {
-                        entity.trigger('Kill');
+                        this.trigger('Kill');
                         onHitBullet();
                     });
                     // go, go, go ....
@@ -1289,6 +1271,7 @@
                     return entity;
                 }
             }
+            debug('*** No free bullet slots found!');
         }
         function addAnimation(type, x, y) {
             var animSpeed = ~~(generalAnimSpeed / 2);
