@@ -124,7 +124,7 @@
                     'enemy_bullet.png': {
                         tile: 10,
                         tileh: 10,
-                        map: {EnemyBullet: [0, 0], EnemyBulletBlue: [0, 1]}
+                        map: {EnemyBullet: [0, 0], EnemyBulletBlue: [0, 1], EnemyBulletGlow: [0, 2]}
                     },
                     'enemy_drone.png': {
                         tile: 50,

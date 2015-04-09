@@ -1003,7 +1003,8 @@
                     hp: 0
                 })
                 .reel('shoot', generalAnimSpeed, 0, 0, 2)
-                .reel('shootBlue', generalAnimSpeed, 0, 1, 2);
+                .reel('shootBlue', generalAnimSpeed, 0, 1, 2)
+                .reel('shootGlow', generalAnimSpeed, 0, 2, 2);
                 // .collision();
                 bullets_data.push(entity);
             }
@@ -1275,7 +1276,11 @@
                     });
                     // go, go, go ....
                     entity.visible = true;
-                    entity.animate(type === BULLET_BLUE ? 'shootBlue' : 'shoot', -1);
+                    if (meters < METERS_DEPTH_3) {
+                        entity.animate('shootGlow', -1);
+                    } else {
+                        entity.animate(type === BULLET_BLUE ? 'shootBlue' : 'shoot', -1);    
+                    }
                     return entity;
                 }
             }
