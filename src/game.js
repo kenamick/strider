@@ -27,6 +27,7 @@
         MAX_BULLETS = MAX_ENEMIES * 2,
         POWERUP_ENERGY = 1,
         POWERUP_HEALTH = 2,
+        POWERUP_ENERGY_BLUE = 3,
         MAX_ENERGY = 49,
         MAX_HEALTH = 4,
         // animations        
@@ -294,7 +295,11 @@
         if (e[0] && e[0].obj && e[0].obj.visible) {
             var obj = e[0].obj;
             obj.visible = false;
-            playerEnergy += ~~(MAX_ENERGY * 0.25);
+            if (obj.energyType === POWERUP_ENERGY_BLUE) {
+                playerEnergy += ~~(MAX_ENERGY * 0.5);    
+            } else {
+                playerEnergy += ~~(MAX_ENERGY * 0.25);    
+            }
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
         }
@@ -821,8 +826,8 @@
             if (!HUDEnergy)
                 return;
 
-            playerEnergy = Math.max(playerEnergy, 0);
-            playerEnergy = Math.min(playerEnergy, 49);
+            playerEnergy = playerEnergy < 0 ? 0 : playerEnergy;
+            playerEnergy = playerEnergy > 49 ? 49 : playerEnergy;
             HUDEnergy.trigger('Invalidate');
         });
         // Crafty.bind("playershoot", function() {
@@ -927,15 +932,18 @@
                                 spawnX = this.x + (Math.random() * (this.w - 50));
                                 if (meters < METERS_DEPTH_3) {
                                     addEnemy(ENEMY_TURRET_DESTROYER, spawnX, this.y - 26);
-                                    addPowerup(d.powerup, spawnX + 12, this.y);
+                                    addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
                                 } else if (meters < METERS_DEPTH_2) {
                                     addEnemy(ENEMY_TURRET_ADVANCED, spawnX, this.y - 26);
-                                    addPowerup(d.powerup, spawnX + 12, this.y);
+                                    addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
                                 } else  {
                                     addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
-                                    // 50% chance to spawn bouns behind turret
-                                    if (Math.random() < 0.5) {
+                                    // 25% to 50% chance to spawn bouns behind turret
+                                    var chance = Math.random();
+                                    if (chance < 0.25) {
                                         addPowerup(d.powerup, spawnX + 12, this.y);
+                                    } else if (chance < 0.5) {
+                                        addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
                                     }
                                 }
                                 d.turretAdded = true;
@@ -987,8 +995,8 @@
                 .reel('EnemyTurretGreen', generalAnimSpeed, 0, 0, 2)
                 .reel('EnemyTurretRed', generalAnimSpeed, 0, 1, 2)
                 .reel('EnemyTurretPurple', generalAnimSpeed, 0, 2, 2)
-                .reel('EnemyDrone', generalAnimSpeed, 0, 0, 2)
-                .reel('EnemyDroneAdvanced', generalAnimSpeed, 2, 1, 2)
+                .reel('EnemyDrone', generalAnimSpeed, 2, 1, 2)
+                .reel('EnemyDroneAdvanced', generalAnimSpeed, 0, 0, 2)
                 .reel('EnemyDroneDestroyer', generalAnimSpeed, 0, 1, 2);
                 enemies_data.push(entity);
             }
@@ -1052,8 +1060,16 @@
                 if (!powerups_data[i].visible) {
                     powerups_data[i].x = x;
                     powerups_data[i].y = y - 19;
+                    powerups_data[i].energyType = type;
                     powerups_data[i].removeComponent('EnergyOrange, HealthRed');
-                    powerups_data[i].addComponent(type === POWERUP_HEALTH ? 'HealthRed' : 'EnergyOrange')
+                    var comp;
+                    switch(type) {
+                        case POWERUP_HEALTH: comp = 'HealthRed'; break;
+                        case POWERUP_ENERGY: comp = 'EnergyOrange'; break;
+                        case POWERUP_ENERGY_BLUE: comp = 'EnergyBlue'; break;
+                        default: throw 'Invalid powerup type ' + type;
+                    }
+                    powerups_data[i].addComponent(comp)
                     powerups_data[i].visible = true;
                     return powerups_data[i];
                 }
