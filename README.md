@@ -39,9 +39,13 @@ Assets edited with GIMP.
 
 ### Sfx
 
-TODO
+  * Jump & Hurt by [Jack Menhorn](http://opengameart.org/content/fps-placeholder-sounds)
+  * Turret shot by [OnlyTheGhosts](https://www.freesound.org/people/OnlyTheGhosts/sounds/251430/)
+  * Explosions by [Michel Baradari](http://opengameart.org/content/2-high-quality-explosions)
+  * Projectiles by [Michel Baradari](http://opengameart.org/content/4-projectile-launches)
+  * Gun sfx by [Julien Nicolas](https://www.freesound.org/people/Julien%20Nicolas/sounds/133799/)
 
-Audio assets edited with Audacity.
+Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
 ### Music
 
