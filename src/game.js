@@ -82,6 +82,14 @@
         SPREAD8_R = calcSpread(50, 8)
         //
         ;
+    var pi = Math.PI
+      , pi_6 = Math.PI / 6
+      , pi_4 = Math.PI / 4
+      , pi_3 = Math.PI / 3
+      , pi_2 = Math.PI / 2
+      , pi_23 = 2 * Math.PI / 3
+      , pi_34 = 3 * Math.PI / 4
+      , pi_56 = 5 * Math.PI / 6;
 
     function clone(obj) {
         if(obj == null || typeof(obj) != 'object')
@@ -106,8 +114,8 @@
     function calcSpread(r, size) {
         var x, y
           , phi  = 0
-          , step = 2 * Math.PI / size
-          , spread = []
+          , step = 2 * pi / size
+          , spread = [];
         for (var i = 0; i < size; i++) {
             x = Math.cos(phi) * r;
             y = Math.sin(phi) * r;
@@ -340,15 +348,6 @@
 
     Crafty.scene('main', function () {
         initState();
-
-        var pi = Math.PI
-          , pi_6 = Math.PI / 6
-          , pi_4 = Math.PI / 4
-          , pi_3 = Math.PI / 3
-          , pi_2 = Math.PI / 2
-          , pi_23 = 2 * Math.PI / 3
-          , pi_34 = 3 * Math.PI / 4
-          , pi_56 = 5 * Math.PI / 6;
 
         /************************************************************************
          * Create entities

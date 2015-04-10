@@ -1,4 +1,4 @@
-.o0 Strider 0o.
+_.o0 Strider 0o._
 ===============================
 
 [game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
@@ -17,7 +17,7 @@ Good luck!
 Make your way to the top by using:
 
   * Arrow keys or `WASD` keys to move and jump on platforms.
-  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *TR-15* plasma rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *RP-2300 "Warmonger"* R assault rifle is fully automatic. Just aim it at your target and it will do the rest.
 
 ## Supported Browsers
 
@@ -28,17 +28,16 @@ TODO
   * [Crafty](http://craftyjs.com) - An amazing Javascript/HTML5 Game engine.
 
 ## Credits
-### Game Art
+### Art
 
   * Sprites and animations by [Master484](http://opengameart.org/content/open-gunner-starter-kit).
   * Spaceship sprite by [Stephen Challener (Redshrike)](http://opengameart.org/content/space-ship-building-bits-volume-1).
   * Smoke animation by [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1).
   * Crosshair sprites by [para](http://opengameart.org/content/64-crosshairs-pack).
 
-Assets edited with GIMP.
+Assets edited with [GIMP](http://www.gimp.org/).
 
 ### Sfx
-
   * Jump & Hurt by [Jack Menhorn](http://opengameart.org/content/fps-placeholder-sounds)
   * Turret shot by [OnlyTheGhosts](https://www.freesound.org/people/OnlyTheGhosts/sounds/251430/)
   * Explosions by [Michel Baradari](http://opengameart.org/content/2-high-quality-explosions)
