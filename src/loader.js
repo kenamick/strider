@@ -152,6 +152,8 @@
                 audio: {
                     jump: ['land.ogg', 'land.m4a'],
                     hurt: ['hurt.ogg', 'hurt.m4a'],
+                    death: ['death.ogg', 'death.m4a'],
+                    deathsplat: ['deathsplat.ogg', 'deathsplat.m4a'],
                     turretshot1: ['turretshot.ogg', 'turretshot.m4a'],
                     turretshot2: ['turretshot2.ogg', 'turretshot2.m4a'],
                     explode1: ['explode.ogg', 'explode.m4a'],

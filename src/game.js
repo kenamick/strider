@@ -761,7 +761,8 @@
         Crafty.bind("playerdead", function () {
             if (!isDead) {
                 isDead = true;
-                Crafty.audio.play('dead', 1, 0.2);
+                sfx('deathsplat');
+                sfx('death');
 
                 Crafty.e("2D, Canvas, Splatter, SpriteAnimation")
                 .origin('center')
