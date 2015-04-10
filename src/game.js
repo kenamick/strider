@@ -126,6 +126,12 @@
         }
         return result;
     }
+    function sfx(name, repeat, vol) {
+        if (SFX) {
+            debug('play sfx', name);
+            Crafty.audio.play(name, repeat, vol);
+        }
+    }
 
     function initLevel() {
         var platform2add;
@@ -322,7 +328,8 @@
             } else {
                 bgovr.color("#ff0000").delay(function () {
                     this.color("#006064");
-                }, 500);                
+                }, 500);
+                sfx('hurt');
             }
         // }
     }
@@ -433,6 +440,7 @@
         octocat.bind('KeyDown', function (e) {
             if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
                 this._canJumpAgain = true;
+                sfx('jump');
             } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
                 this._up = true;
                 this._gy = 0;
@@ -447,21 +455,23 @@
         });
         octocat.bind('KeyUp', function (e) {
             // TEST ////////
-            if (e.key === Crafty.keys.O) {
-                playerHealth -= 1;
-                Crafty.trigger('playerupdatehealth');
-            }
-            if (e.key === Crafty.keys.P) {
-                playerHealth += 1;
-                Crafty.trigger('playerupdatehealth');
-                // playerEnergy -= 1;
-                // Crafty.trigger('playerupdatejuice');
-            }
-            if (e.key === Crafty.keys.K) {
-                addEnemy(ENEMY_TURRET, 150 + Math.random() * 150, 100)
-            }
-            if (e.key === Crafty.keys.L) {
-                addEnemy(ENEMY_DRONE, 50 + Math.random() * 150, 100)
+            if (isDebug) {
+                if (e.key === Crafty.keys.O) {
+                    playerHealth -= 1;
+                    Crafty.trigger('playerupdatehealth');
+                }
+                if (e.key === Crafty.keys.P) {
+                    playerHealth += 1;
+                    Crafty.trigger('playerupdatehealth');
+                    // playerEnergy -= 1;
+                    // Crafty.trigger('playerupdatejuice');
+                }
+                if (e.key === Crafty.keys.K) {
+                    addEnemy(ENEMY_TURRET, 150 + Math.random() * 150, 100)
+                }
+                if (e.key === Crafty.keys.L) {
+                    addEnemy(ENEMY_DRONE, 50 + Math.random() * 150, 100)
+                }
             }
             ///////// 
         });
@@ -625,6 +635,17 @@
                 addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
                 this.animate(anim);
             }
+            var rnd = Math.random();
+            if (rnd > 0.7) {
+                rnd = 'gun2';
+            } else if (rnd > 0.4) {
+                rnd = 'gun3';
+            } else {
+                rnd = 'gun1';
+            }
+            // if (!Crafty.audio.isPlaying(rnd)) {
+                sfx(rnd);
+            // }
         });
         octocat.delay(function() {
             // replenish energy
@@ -1140,6 +1161,7 @@
                     entity.hp = hp;
                     entity.EnemyType = type;
                     entity.EnemyReel = reel;
+                    entity.sfxExplode = (Math.random() > 0.5) ? 'explode2' : 'explode1';
                     entity.removeComponent('EnemyTurretGreen');
                     entity.removeComponent('EnemyTurretRed');
                     entity.removeComponent('EnemyTurretPurple');
@@ -1159,6 +1181,7 @@
                          *  TURRET
                          */
                         entity.w = 50; entity.h = 26;
+                        entity.sfxFire = (Math.random() > 0.5) ? 'turretshot2' : 'turretshot1';
                         // facing
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
@@ -1183,6 +1206,7 @@
                             }
                             addBullet(BULLET_NORMAL, ecx, ecy, octocat.cx, octocat.cy);
                             addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
+                            sfx(entity.sfxFire);
                         });
                         entity.shootFn = function() {
                             var ecx = this.x + this.w / 2
@@ -1199,6 +1223,7 @@
                         entity.w = 50; entity.h = 50;
                         entity.accel = 0;
                         entity.z = octocat.z + 1; // in front of gunner
+                        entity.sfxFire = (Math.random() > 0.5) ? 'droneshot2' : 'droneshot1';
                         entity.bind('EnterFrame', function() {
                             var ecx = this.x + this.w / 2
                               , ecy = this.y + this.h / 2;
@@ -1232,7 +1257,8 @@
                                 } else {
                                     addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
                                 }
-                                addAnimation(ANIM_GUNFLARE, ecx, ecy + 8);
+                                addAnimation(ANIM_GUNFLARE, ecx, ecy + 7);
+                                sfx(entity.sfxFire);
                             }
                         }.bind(entity);
                     }
@@ -1245,6 +1271,7 @@
                         entity.shootDleay.cancelDelay(entity.shootFn);
                         this.visible = false;
                         entity.unbind('EnterFrame');
+                        sfx(entity.sfxExplode);
                     });
                     // go, go, go ....
                     entity.visible = true;

@@ -44,7 +44,7 @@
             //     //     alpha: 1
             //     // }, 50);
             // });
-            Crafty.paths({ audio: "assets/sounds/", images: "assets/images/" });
+            Crafty.paths({ audio: "assets/sfx/", images: "assets/images/" });
             var assets = {
                 images: ['title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 
                     'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
@@ -150,10 +150,17 @@
                     }
                 },
                 audio: {
-                    jump: ["jump.mp3", "jump.ogg", "jump.wav"],
-                    push: ["push.mp3", "push.ogg", "push.wav"],
-                    star: ["star.mp3", "star.ogg", "star.wav"],
-                    dead: ["dead.mp3", "dead.ogg", "dead.wav"]
+                    jump: ['land.ogg', 'land.m4a'],
+                    hurt: ['hurt.ogg', 'hurt.m4a'],
+                    turretshot1: ['turretshot.ogg', 'turretshot.m4a'],
+                    turretshot2: ['turretshot2.ogg', 'turretshot2.m4a'],
+                    explode1: ['explode.ogg', 'explode.m4a'],
+                    explode2: ['explode2.ogg', 'explode2.m4a'],
+                    droneshot1: ['droneshot.ogg', 'droneshot.m4a'],
+                    droneshot2: ['droneshot2.ogg', 'droneshot2.m4a'],
+                    gun1: ['gun01.ogg', 'gun01.m4a'],
+                    gun2: ['gun02.ogg', 'gun02.m4a'],
+                    gun3: ['gun03.ogg', 'gun03.m4a'],
                 }
             };
             Crafty.load(assets, function() {
