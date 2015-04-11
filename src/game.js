@@ -54,7 +54,7 @@
         step_platforms = 1,
         // player vars
         playerSpeed = 4,
-        playerJump = 17,
+        playerJump = 25, //17,
         playerHealth = 4,
         playerEnergy = 49,
         PLAYER_ENERGY_REPLENISH = 1500,
@@ -306,14 +306,16 @@
         }
     }
     function onHitEnergy(e) {
-        if (e[0] && e[0].obj && e[0].obj.visible) {
-            var obj = e[0].obj;
-            obj.visible = false;
+        console.log('*** HIT ENERGY');
+        var obj = e[0].obj;
+        if (obj && obj.visible) {
+            obj.trigger('Kill');
             if (obj.energyType === POWERUP_ENERGY_BLUE) {
                 playerEnergy += ~~(MAX_ENERGY * 0.5);    
             } else {
                 playerEnergy += ~~(MAX_ENERGY * 0.25);    
             }
+            console.log('*** TAKE ENERGY');
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
         }
@@ -432,7 +434,8 @@
         .onHit('Spikes', onHitSpikes)
         .onHit('Spaceship', onHitSpaceship)
         .onHit('HealthRed', onHitHealth)
-        .onHit('EnergyOrange', onHitEnergy);
+        .onHit('EnergyOrange', onHitEnergy)
+        .onHit('EnergyBlue', onHitEnergy);
 
         if (isDebug) octocat.addComponent('WiredHitBox');
 
@@ -1082,7 +1085,9 @@
                     powerups_data[i].x = x;
                     powerups_data[i].y = y - 19;
                     powerups_data[i].energyType = type;
-                    powerups_data[i].removeComponent('EnergyOrange, HealthRed');
+                    powerups_data[i].removeComponent('EnergyOrange');
+                    powerups_data[i].removeComponent('EnergyBlue');
+                    powerups_data[i].removeComponent('HealthRed');
                     var comp;
                     switch(type) {
                         case POWERUP_HEALTH: comp = 'HealthRed'; break;
@@ -1092,6 +1097,10 @@
                     }
                     powerups_data[i].addComponent(comp)
                     powerups_data[i].visible = true;
+                    powerups_data[i].bind('Kill', function() {
+                        this.x = -500; // prevent collisions
+                        this.visible = false;
+                    });
                     return powerups_data[i];
                 }
             }              
