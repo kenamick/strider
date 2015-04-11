@@ -7,13 +7,13 @@
  * A Github Game Off 2012 Entry
  * @copyright Omer Goshen <gershon@goosemoose.com>
  */
-(function($, Crafty) {
-    $(document).ready(function () {
+(function(Crafty) {
+    document.addEventListener('DOMContentLoaded', function () {
         
         /************************************************************************
          * Game Into Scene
          */
-        Crafty.scene('intro', function initIntro() {
+        Crafty.scene('intro', function () {
             Crafty.background("#fff");
 
             var txt = Crafty.e("2D, DOM, Text, Delay").attr({
@@ -90,7 +90,7 @@
         /************************************************************************
          * Game End Scene
          */
-       Crafty.scene('dead', function (data) {
+        Crafty.scene('dead', function (data) {
             data = data || {};
             data.meters = data.meters || 0;
 
@@ -122,4 +122,4 @@
         });
 
     }); //eof-ready
-})(jQuery, Crafty);
+}(Crafty));

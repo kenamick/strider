@@ -7,8 +7,8 @@
  * A Github Game Off 2012 Entry
  * @copyright Omer Goshen <gershon@goosemoose.com>
  */
-(function octocatJump($, Crafty) {
-    $(document).ready(function () {
+(function octocatJump(Crafty) {
+    document.addEventListener('DOMContentLoaded', function () {
 
     var GRAVITY = 1,
         SFX = true,
@@ -1450,5 +1450,5 @@
 
     Crafty.scene("loading");
 
-    });
-})(jQuery, Crafty);
+    }); //eof-ready
+}(Crafty));
