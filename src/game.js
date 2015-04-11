@@ -14,8 +14,8 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = true,
-        enableIntroSfx = false,
+        isDebug = false,
+        enableIntroSfx = true,
         
         METERS_DEPTH = 800,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -1439,13 +1439,6 @@
             sfx('warning');
             sfx('doorshut');
         }
-
-        Crafty.e('2D, Canvas, Text, SpaceFont')
-        .attr({
-            x: 50,
-            y: 50
-        })
-        .text('Hello Strider. Your Mission is to establish a communication channgel!');
     });
 
     Crafty.scene("loading");
