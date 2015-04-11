@@ -61,7 +61,7 @@
         PLAYER_ENERGY_REPLENISH = 1500,
         playerDamage = 1;
         isDead = false,
-        playerTargetDist = 40000, // 40000, //TODO
+        playerTargetDist = 40000,  //TODO
         // enemy base vars
         ENEMY_TURRET = 1,
         ENEMY_TURRET_ADVANCED = 2,
@@ -244,7 +244,6 @@
         }
     }
     function onHitEnergy(e) {
-        console.log('*** HIT ENERGY');
         var obj = e[0].obj;
         if (obj && obj.visible) {
             obj.trigger('Kill');
@@ -253,7 +252,7 @@
             } else {
                 playerEnergy += ~~(MAX_ENERGY * 0.25);    
             }
-            console.log('*** TAKE ENERGY');
+            debug('*** TAKE ENERGY');
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
         }
