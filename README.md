@@ -3,25 +3,27 @@ _.o0 Strider 0o._
 
 [game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
 
-This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012) game. It is not a fork of the repo itself, because
-I already had a [game-off-2012](https://github.com/petarov/game-off-2012) repository and Github does not allow one to have two repositories with the same name.
-
-## Story
-
 The year is 2415. You are _Strider_. A a member of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
 
 Good luck!
+
+## Fork Info
+
+This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012) game. It is not a fork of the repo itself, because
+I already had a [game-off-2012](https://github.com/petarov/game-off-2012) repository and Github does not allow one to have two repositories with the same name.
 
 ## Controls
 
 Make your way to the top by using:
 
-  * Arrow keys or `WASD` keys to move and jump on platforms.
-  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * `Arrow keys` or `WAsD` keys to move and jump on platforms.
+  * `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
 
 ## Supported Browsers
 
-TODO
+  * Google Chrome - 41.0+
+  * Firefox - 37.0+
+  * Safari - ???
 
 ## Open Source Libraries
 
