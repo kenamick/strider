@@ -22,6 +22,38 @@
         // Crafty.viewport.clampToEntities = true;
         Crafty.settings.modify("autoPause", true);
 
+        /**
+         * Octicons font component
+         * @see https://github.com/styleguide/css/7.0
+         */
+        Crafty.c("Octicons", {
+            init: function () {
+                this.requires("2D, DOM, Text");
+                this.css({
+                    "font-family": "Octicons",
+                    "font-size": "48px",
+                    "font-weight": "normal",
+                    'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+                    // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #444,1px -1px 0 #444,-1px 1px 0 #444,1px 1px 0 #444'
+                    // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0'
+                });
+                // .text("&#xF220");
+            }
+        });
+        Crafty.c('SpaceFont', {
+            init: function () {
+                this.requires('2D, DOM, Text');
+                this.textFont({ family: 'Jura', size: '11px', weight: 'normal' })
+                this.textColor('white')
+                this.css({
+                    // "font-family": "Jura",
+                    // "font-size": "18px",
+                    // "font-weight": "normal",
+                    'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+                });
+            }
+        });
+
         Crafty.scene("loading", function () {
             Crafty.background("#fff");
             // Crafty.background("url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff");
@@ -174,7 +206,8 @@
                 // setTimeout(function () {
                 //     Crafty.scene("intro");
                 // }, 500);
-                Crafty.scene("main");
+ 
+                Crafty.scene('dead');
             }, function (e) {
                 //TODO
                 //console.log(e);

@@ -11,9 +11,9 @@
     $(document).ready(function () {
         
         /************************************************************************
-         * Game Into Menu
+         * Game Into Scene
          */
-        Crafty.scene("intro", function initIntro() {
+        Crafty.scene('intro', function initIntro() {
             Crafty.background("#fff");
 
             var txt = Crafty.e("2D, DOM, Text, Delay").attr({
@@ -22,7 +22,7 @@
                 w: Crafty.viewport.width,
                 alpha: 0
             }).css({
-                "font": "10px Verdana, Arial",
+                "font": "10px Jura, Arial",
                 "color": "#888",
                 "text-align": "center"
             }).text('Press ESC to skip intro');
@@ -88,15 +88,37 @@
         });
 
         /************************************************************************
-         * Game End Menu
+         * Game End Scene
          */
-       Crafty.scene("dead", function initDead() {
-            // Crafty.background("#fff");
-            Crafty.viewport.y = 0;
-            var s = 0,
-                total = 0;
-            Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
+       Crafty.scene('dead', function (data) {
+            data = data || {};
+            data.meters = data.meters || 0;
 
+            Crafty.background("#000");
+            Crafty.viewport.x = 0;
+            Crafty.viewport.y = 0;
+            Crafty.background("url('assets/images/starsky.png') repeat ");
+
+            Crafty.e('2D, DOM, Text, SpaceFont')
+            .attr({x: 135, y: 150, w: 150 })
+            .textFont({size: '20px'})
+            .text('Mission Failed!');
+
+            Crafty.e('2D, DOM, Text, SpaceFont')
+            .attr({x: 100, y: 250, w: 250 })
+            .textFont({size: '20px'})
+            .text('Strider reached: ' + data.meters + ' m.');
+
+            Crafty.e('2D, DOM, Text, SpaceFont')
+            .attr({x: 135, y: Crafty.viewport.height - 16, w: Crafty.viewport.width})
+            // .textFont({size: '20px'})
+            // .textColor('#888')
+            .text('Press any key to continue');
+
+            Crafty.e('Keyboard').bind('KeyDown', function (e) {
+                this.destroy();
+                Crafty.scene('intro');
+            });
         });
 
     }); //eof-ready

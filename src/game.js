@@ -206,25 +206,6 @@
         isDead = false;
     }    
 
-    /**
-     * Octicons font component
-     * @see https://github.com/styleguide/css/7.0
-     */
-    Crafty.c("Octicons", {
-        init: function () {
-            this.requires("2D, DOM, Text");
-            this.css({
-                "font-family": "Octicons",
-                "font-size": "48px",
-                "font-weight": "normal",
-                'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-                // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #444,1px -1px 0 #444,-1px 1px 0 #444,1px 1px 0 #444'
-                // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0'
-            });
-            // .text("&#xF220");
-        }
-    });
-
     function onHitPlatform(e) {
         sfx('land');
     }
@@ -324,7 +305,7 @@
             z: -4,
             w: Crafty.viewport.width + 150,
             h: Crafty.viewport.height
-        }).image('assets/images/starsky.png', 'repeat');        
+        }).image('assets/images/starsky.png', 'repeat');
         var bgovr = Crafty.e('2D, Canvas, BackgroundOverlay, Color, Delay').attr({
             x: -100,
             y: 0,
@@ -428,11 +409,11 @@
                 this.pauseAnimation();
             }
 
-            if (this.isDown(Crafty.keys.LEFT_ARROW)) {
+            if (this.isDown(Crafty.keys.LEFT_ARROW) || this.isDown(Crafty.keys.A)) {
                 if (!this.isPlaying('walk_left')) {
                     this.animate('walk_left', 10);
                 }
-            } else if (this.isDown(Crafty.keys.RIGHT_ARROW)) {
+            } else if (this.isDown(Crafty.keys.RIGHT_ARROW) || this.isDown(Crafty.keys.D)) {
                 if (!this.isPlaying('walk_right')) {
                     this.animate('walk_right', 10);
                 }
@@ -717,7 +698,7 @@
                 // die Strider ...
                 octocat.destroy();
                 setTimeout(function () {
-                    Crafty.scene('dead');
+                    Crafty.scene('dead', {'meters': meters});
                 }, 1000);
             }
         });
@@ -1458,6 +1439,13 @@
             sfx('warning');
             sfx('doorshut');
         }
+
+        Crafty.e('2D, Canvas, Text, SpaceFont')
+        .attr({
+            x: 50,
+            y: 50
+        })
+        .text('Hello Strider. Your Mission is to establish a communication channgel!');
     });
 
     Crafty.scene("loading");
