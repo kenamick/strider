@@ -45,6 +45,9 @@ Assets edited with [GIMP](http://www.gimp.org/).
   * Gun sfx by [Julien Nicolas](https://www.freesound.org/people/Julien%20Nicolas/sounds/133799/)
   * Death sfx by [Replix](https://www.freesound.org/people/Replix/sounds/173126/)
   * Death splatter sfx by [Rock Savage](https://www.freesound.org/people/Rock%20Savage/sounds/81042/)
+  * Door slam sfx by [Robinhood76](https://www.freesound.org/people/Robinhood76/sounds/104644/)
+  * Intro voice sfx by [JetSmith88](https://www.freesound.org/people/JetSmith88/sounds/206070/)
+  * Jump land by [MentalSanityOff](https://www.freesound.org/people/MentalSanityOff/sounds/170504/)
 
 Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 

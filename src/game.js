@@ -15,6 +15,7 @@
         MUSIC = true,
         enableFPS = true,
         isDebug = true,
+        enableIntroSfx = false,
         
         METERS_DEPTH = 800,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -54,7 +55,7 @@
         step_platforms = 1,
         // player vars
         playerSpeed = 4,
-        playerJump = 25, //17,
+        playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
         PLAYER_ENERGY_REPLENISH = 1500,
@@ -225,70 +226,7 @@
     });
 
     function onHitPlatform(e) {
-            // Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
-            //     x: this.x + 16,
-            //     y: this.y - 8,
-            //     w: 64,
-            //     h: 64
-            // }).reel("Smoke", 450, 0, 0, 10).animate('Smoke', 0).bind("AnimationEnd", this.destroy);
-        return;
-
-        var c = e[0],
-            obj = c.obj,
-            octocat = Crafty("Player"),
-            bgovr = Crafty("BackgroundOverlay"),
-            dy = this.y - this._oldpos.y;
-
-        if(dy <= 0 || obj.alpha !== 1) return;
-
-        // if (-1 === c.normal.y) {
-        if(-1 === c.normal.y) {
-
-            Crafty.e("2D, DOM, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
-                x: this.x + 16,
-                y: this.y - 8,
-                w: 64,
-                h: 64
-            }).reel("Smoke", 25, 0, 0, 10).animate('Smoke', 0).bind("AnimationEnd", this.destroy);
-
-            var _y = obj.y;
-            obj.tween({
-                y: _y + 20
-            }, 5).bind("TweenEnd", function (k) {
-                if(k === 'y') obj.tween({
-                    y: _y
-                }, 4);
-            });
-
-            if(dy > 0) {
-
-                // this.stopFalling();
-                this.y += c.overlap * -c.normal.y;
-
-                this._speed.y = obj.has("Push") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
-
-                if(c.obj.has("Pull")) {
-                    if(obj.use) obj.use();
-                    // c.obj.bind("TweenEnd", function(){
-                    //     c.obj.use();
-                    // });
-                    if(SFX) Crafty.audio.play("pull", 1, 0.2);
-
-                    bgovr.color("#ff0000").delay(function () {
-                        this.color("#006064");
-                    }, 250);
-                } else if(c.obj.has("Push")) {
-                    if(obj.use) obj.use();
-
-                    if(SFX) Crafty.audio.play("push", 1, 0.2);
-
-                    bgovr.color("#00ff00").delay(function () {
-                        this.color("#006064");
-                    }, 250);
-                } else if(SFX) Crafty.audio.play("jump", 1, 0.1);
-
-            }
-        }
+        sfx('land');
     }
     function onHitSpikes(e) {
         Crafty.trigger('playerdead');
@@ -436,6 +374,7 @@
         .onHit('HealthRed', onHitHealth)
         .onHit('EnergyOrange', onHitEnergy)
         .onHit('EnergyBlue', onHitEnergy);
+        // .onHit('Platform', function() {}, onHitPlatform);
 
         if (isDebug) octocat.addComponent('WiredHitBox');
 
@@ -1514,7 +1453,12 @@
         });
 
         // camera follow
-        Crafty.viewport.follow(octocat, 0, 0);        
+        Crafty.viewport.follow(octocat, 0, 0);
+
+        if (enableIntroSfx) {
+            sfx('warning');
+            sfx('doorshut');
+        }
     });
 
     Crafty.scene("loading");

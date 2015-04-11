@@ -151,6 +151,7 @@
                 },
                 audio: {
                     jump: ['land.ogg', 'land.m4a'],
+                    land: ['landfeet.ogg', 'landfeet.m4a'],
                     hurt: ['hurt.ogg', 'hurt.m4a'],
                     death: ['death.ogg', 'death.m4a'],
                     deathsplat: ['deathsplat.ogg', 'deathsplat.m4a'],
@@ -163,6 +164,9 @@
                     gun1: ['gun01.ogg', 'gun01.m4a'],
                     gun2: ['gun02.ogg', 'gun02.m4a'],
                     gun3: ['gun03.ogg', 'gun03.m4a'],
+                    warning: ['warning.ogg', 'warning.m4a'],
+                    doorshut: ['doorshut.ogg', 'doorshut.m4a'],
+
                 }
             };
             Crafty.load(assets, function() {
