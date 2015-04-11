@@ -8,7 +8,7 @@ I already had a [game-off-2012](https://github.com/petarov/game-off-2012) reposi
 
 ## Story
 
-The year is 2415. You are _Strider_. A a member of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. As soon as you collect your data you need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
+The year is 2415. You are _Strider_. A a member of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
 
 Good luck!
 
@@ -17,7 +17,7 @@ Good luck!
 Make your way to the top by using:
 
   * Arrow keys or `WASD` keys to move and jump on platforms.
-  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *RP-2300 "Warmonger"* R assault rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * `X`, `Z` or `Y` - Shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
 
 ## Supported Browsers
 
