@@ -232,14 +232,14 @@
             if (skipIntro) {
                 Crafty.scene('main');
             }
-            bgovr.tween({alpha: 1.0}, 3000)
+            bgovr.tween({alpha: 1.0}, 1800)
             .bind('TweenEnd', function () {
                 Crafty.scene('intro');
             })
             .delay(function() {
                 text.visible = false;
                 percent.visible = false;
-            }, 1500);
+            }, 1000);
         }, function (e) {
             // console.log(e);
             percent.text(~~(e.percent) + '%');
