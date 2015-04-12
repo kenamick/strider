@@ -222,7 +222,7 @@
             }
         };
         if (isSafari) {
-            // disable sound under Safari, because Crafty has no mp4 support yet! :(
+            // disable sound under Safari, because Crafty has no m4a/mp4 support yet! :(
             console.log(isSafari);
             assets.audio = {};
             document.getElementsByClassName('sorry')[0].style.visibility = 'visible';

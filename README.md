@@ -23,7 +23,9 @@ Make your way to the top by using:
 
   * Google Chrome - 41.0+
   * Firefox - 37.0+
-  * Safari - ???
+  * Safari - 8.0+ _(!)_
+
+(!) Sadly, music & sound do not work under Safari atm! :(
 
 ## Open Source Libraries
 

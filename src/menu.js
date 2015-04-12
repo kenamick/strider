@@ -76,9 +76,8 @@
                         }, logosShowTimeout);
                     });
                 });
-            }, logosShowTimeout);
+            }, logosShowTimeout );
         });
-    
 
     });
 
