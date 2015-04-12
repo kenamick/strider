@@ -65,7 +65,7 @@ Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
 ### Music
 
-TODO
+  * _2nd T-Legion_ by [me](http://kenamick.com/pro-xex) :metal:
 
 ### License
 

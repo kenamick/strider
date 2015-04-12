@@ -13,9 +13,10 @@
     var GRAVITY = 1,
         SFX = true,
         MUSIC = true,
+        MUSIC_VOL = 0.8,
         enableFPS = true,
         isDebug = true,
-        enableIntroSfx = false,
+        enableIntroSfx = true,
         
         METERS_DEPTH = 400,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -142,6 +143,11 @@
             Crafty.audio.play(name, repeat, vol);
         }
     }
+    function music(name, repeat, vol) {
+        if (MUSIC) {
+            Crafty.audio.play(name, repeat, vol);
+        }
+    }
 
     function initLevel() {
         var platform2add;
@@ -203,6 +209,7 @@
          * Reset stuff
          */
         Crafty.background('none');
+        MUSIC_VOL = 0.8;
         // Crafty.viewport.y = 0;
         isDead = false;
         playerHealth = 4;
@@ -419,6 +426,12 @@
                         this.color('#006064');
                     }, 400);
                 }
+            } else if (e.key === 57) {
+                MUSIC_VOL += 0.1;
+                MUSIC_VOL = Math.min(MUSIC_VOL, 1);
+            } else if (e.key === 56) {
+                MUSIC_VOL -= 0.1;
+                MUSIC_VOL = Math.max(MUSIC_VOL, 0);
             }
             // TEST ////////
             if (isDebug) {
@@ -725,7 +738,7 @@
         Crafty.bind("EnterFrame", scrollViewport);
         
         Crafty.bind("Pause", function() {
-            // Crafty.audio.mute();
+            Crafty.audio.mute();
             Crafty("BackgroundOverlay").color("#000000");
             Crafty("BackgroundOverlay").alpha = 0.5;
             Crafty("PauseText").destroy();
@@ -743,7 +756,7 @@
             // Crafty.DrawManager.draw();
         });
         Crafty.bind("Unpause", function() {
-            // Crafty.audio.unmute();
+            Crafty.audio.unmute();
             Crafty("BackgroundOverlay").color("#006064");
             Crafty("BackgroundOverlay").alpha = 0.2;
             Crafty("PauseText").destroy();
@@ -1516,6 +1529,15 @@
                 return;
             MUSIC = !MUSIC;
             Crafty("MUSIC").image('assets/images/' + (MUSIC ? 'musicOn.png' : 'musicOff.png'));
+            if (MUSIC) {
+                if (!Crafty.audio.isPlaying('music1')) {
+                    music('music1', true, MUSIC_VOL);
+                }
+            } else {
+                if (Crafty.audio.isPlaying('music1')) {
+                    Crafty.audio.stop('music1');    
+                }
+            }
         }
         Crafty.e("2D, DOM, MUSIC, Image, Mouse").attr({
             x: Crafty.viewport.width - 94,
@@ -1555,6 +1577,7 @@
             sfx('warning');
             sfx('doorshut');
         }
+        music('music1', true, MUSIC_VOL);
     });
 
     Crafty.scene("loading");

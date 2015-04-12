@@ -219,6 +219,7 @@
                 liftoff: ['liftoff.ogg', 'liftoff.m4a'],
                 liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
                 wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
+                music1: ['2ndtlegion.ogg']
             }
         };
         if (isSafari) {
