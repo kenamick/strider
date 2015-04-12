@@ -232,6 +232,7 @@
                 doorshut: ['doorshut.ogg', 'doorshut.m4a'],
                 powerup01: ['pup01.ogg', 'pup01.m4a'],
                 powerup02: ['pup02.ogg', 'pup02.m4a'],
+                overcharge: ['overcharge.ogg', 'overcharge.m4a'],
             }
         };
         Crafty.load(assets, function() {

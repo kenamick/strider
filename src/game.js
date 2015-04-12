@@ -222,6 +222,10 @@
             playerHealth += 1;
             if (!Crafty.audio.isPlaying('powerup02')) {
                 sfx('powerup02');
+                // var bgovr = Crafty("BackgroundOverlay");
+                // bgovr.color('#20ee20').delay(function () {
+                //     this.color('#006064');
+                // }, 250);
             }
             Crafty.trigger('playerupdatehealth');
             Crafty.trigger('playsmokeanim');
@@ -239,6 +243,10 @@
             debug('*** TAKE ENERGY');
             if (!Crafty.audio.isPlaying('powerup01')) {
                 sfx('powerup01');
+                // var bgovr = Crafty("BackgroundOverlay");
+                // bgovr.color('#0000ff').delay(function () {
+                //     this.color('#006064');
+                // }, 250);
             }
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
@@ -257,11 +265,11 @@
             playerHealth -= 1;
             Crafty.trigger('playerupdatehealth');
             if (playerHealth < 0 && false) { //TODO
-                bgovr.color("#ff0000");
+                bgovr.color('#ff0000');
                 Crafty.trigger('playerdead');
             } else {
-                bgovr.color("#ff0000").delay(function () {
-                    this.color("#006064");
+                bgovr.color('#ff0000').delay(function () {
+                    this.color('#006064');
                 }, 500);
                 sfx('hurt');
             }
@@ -382,6 +390,21 @@
             }
         });
         octocat.bind('KeyUp', function (e) {
+            if (e.key === 49) {
+                // Overcharge
+                if (playerHealth > 0) {
+                    playerHealth -= 1;
+                    Crafty.trigger('playerupdatehealth');
+                    playerEnergy += MAX_ENERGY;
+                    Crafty.trigger('playerupdatejuice');
+                    sfx('overcharge');
+                    sfx('hurt');
+                    var bgovr = Crafty("BackgroundOverlay");
+                    bgovr.color('#20ee20').delay(function () {
+                        this.color('#006064');
+                    }, 400);
+                }
+            }
             // TEST ////////
             if (isDebug) {
                 if (e.key === Crafty.keys.O) {
