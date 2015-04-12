@@ -10,6 +10,8 @@
 (function(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
+    var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+    console.log(navigator.userAgent);
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
@@ -219,6 +221,12 @@
                 wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
             }
         };
+        if (isSafari) {
+            // disable sound under Safari, because Crafty has no mp4 support yet! :(
+            console.log(isSafari);
+            assets.audio = {};
+            document.getElementsByClassName('sorry')[0].style.visibility = 'visible';
+        }
         Crafty.load(assets, function() {
             if (skipIntro) {
                 Crafty.scene('main');
@@ -232,6 +240,7 @@
                 percent.visible = false;
             }, 1500);
         }, function (e) {
+            // console.log(e);
             percent.text(~~(e.percent) + '%');
         }, function (e) {
             console.log('ya blew it!');
