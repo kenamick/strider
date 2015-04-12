@@ -111,7 +111,9 @@
 
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
             this.destroy();
-            Crafty.scene('intro');
+            // game reset
+            window.location.reload();
+            // Crafty.scene('intro');
         });
     });
 

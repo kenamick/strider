@@ -14,10 +14,10 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = false,
+        isDebug = true,
         enableIntroSfx = false,
         
-        METERS_DEPTH = 800,
+        METERS_DEPTH = 400,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
         METERS_DEPTH_3 = METERS_DEPTH * 0.25,
         meters = METERS_DEPTH,
@@ -194,17 +194,30 @@
             num: i,
             clr: 'PlatformBlueBig',
             goal: true
-        }); 
+        });
     }    
-    initLevel();
 
     function initState() {
         /**
          * Reset stuff
          */
         Crafty.background('none');
-        Crafty.viewport.y = 0;
+        // Crafty.viewport.y = 0;
         isDead = false;
+        playerHealth = 4;
+        playerEnergy = 49;
+        meters = METERS_DEPTH;
+
+        cur_platforms = 0;
+        level_data = [];
+        powerups_data = [];
+        anims_data = [];
+        enemies_data = [];
+        bullets_data = [];
+
+        ship = null;
+
+        initLevel();
     }    
 
     function onHitPlatform(e) {
@@ -287,7 +300,7 @@
         /************************************************************************
          * Create entities
          */
-        if (enableFPS) {
+        // if (enableFPS) {
             // Crafty.e("2D, DOM, FPS, Text").attr({x: 50, y: 60, maxValues:10})
             // .css({
             //     "font": "96px Chewy, Impact",
@@ -298,7 +311,7 @@
             // .bind("MeasureRenderTime", function(fps) {
             //     this.text(fps);
             // }).text('test');
-        }
+        // }
 
         var bg = Crafty.e('2D, Canvas, Image, Background').attr({
             x: -100,
@@ -735,13 +748,13 @@
             Crafty("PauseText").destroy();
             // Crafty.DrawManager.draw();
         });
-        Crafty.bind("playerdead", function () {
+        Crafty.bind('playerdead', function () {
             if (!isDead) {
                 isDead = true;
                 sfx('deathsplat');
                 sfx('death');
 
-                Crafty.e("2D, Canvas, Splatter, SpriteAnimation")
+                Crafty.e('2D, Canvas, Splatter, SpriteAnimation')
                 .origin('center')
                 .attr({
                     x: octocat.cx - 40,
@@ -758,9 +771,10 @@
                 }, 1000);
             }
         });
-        Crafty.bind("playerwin", function () {
+        Crafty.bind('playerwin', function () {
             // Crafty.unbind("ViewportScroll", recyclePlatforms);
             // good bye Strider
+            octocat.x = -1000;
             octocat.destroy();
             HUDHealth.destroy();
             HUDEnergy.destroy();
@@ -772,7 +786,7 @@
             });            
             Crafty.viewport.follow(ship, 0, 0);
             // engines
-            var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+            var e1 = Crafty.e('2D, Canvas, SpaceshipEngine, SpriteAnimation').attr({
                 x: ship.x + 41,
                 y: ship.y + 80,
                 z: -3
@@ -786,7 +800,7 @@
             .bind('AnimationEnd', function(reel) {
                 this.animate('play2', -1);
             });
-            var e1 = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
+            var e1 = Crafty.e('2D, Canvas, SpaceshipEngine, SpriteAnimation').attr({
                 x: ship.x + 28,
                 y: ship.y + 80,
                 z: -3
@@ -802,9 +816,37 @@
             });
             sfx('liftoff');
             sfx('liftoff2');
-            // Crafty.e('Delay').delay(function () {
-            //     sfx('movin');
-            // }, 2000, 0);
+            Crafty.e('Delay').delay(function () {
+                sfx('movin');
+                
+            }, 1000, 0);
+            Crafty.e('Delay').delay(function () {
+                Crafty.e('2D, DOM, Text, SpaceFont')
+                .attr({x: 125, y: 150, w: Crafty.viewport.width })
+                .textFont({size: '20px'})
+                .textColor('white')
+                .text('Mission Successful!')
+                .bind('EnterFrame', function() {
+                    this.y = ship.y - 100;
+                });
+            }, 5000, 0);
+            Crafty.e('Delay').delay(function () {
+                Crafty.e('2D, DOM, Text, SpaceFont')
+                .attr({x: 115, y: 150, w: Crafty.viewport.width })
+                .textFont({size: '20px'})
+                .textColor('white')
+                .text('Good job agent Strider!')
+                .bind('EnterFrame', function() {
+                    this.y = ship.y + 150;
+                });
+            }, 8000, 0);
+            Crafty.e('Keyboard').bind('KeyDown', function (e) {
+                if(e.keyCode !== Crafty.keys.ESC) return;
+                this.destroy();
+                // reset game
+                window.location.reload();
+                // Crafty.scene('main');
+            });
         });
         Crafty.bind("playerupdatehealth", function () {
             if (!HUDHealth)
@@ -873,9 +915,9 @@
                 Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + level_data[i].clr).attr(level_data[i])
                 // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
                 .collision();
-            };
+            }
             cur_platforms = max_platforms - step_platforms;
-        })();        
+        })(); 
 
         (function (vp) {
             var _pvy = vp.y
@@ -1495,6 +1537,17 @@
 
         // camera follow
         Crafty.viewport.follow(octocat, 0, 0);
+
+        /// ----- TEST -----
+        // ship = Crafty.e("2D, Canvas, Spaceship, Collision, SpriteAnimation").attr({
+        //     x: 50,
+        //     y: -86,
+        //     z: -3,
+        //     _acc: 0.125
+        // })
+        // .collision();
+        // Crafty.trigger('playerwin');
+        /// ---------------
 
         if (enableIntroSfx) {
             sfx('warning');

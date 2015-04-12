@@ -3,7 +3,7 @@ _.o0 Strider 0o._
 
 [game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
 
-The year is 2415. You are _Strider_. A a member of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
+The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
 
 Good luck!
 

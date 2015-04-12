@@ -13,7 +13,7 @@
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
-        skipIntro = false;
+        skipIntro = true;
 
     Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
     Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
@@ -83,29 +83,9 @@
             alpha: 0
         }).color('white');
 
-        // Crafty.background("url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff");
-        // Crafty.e("2D, DOM, Color, Tween, Delay").attr({
-        //     x: 0,
-        //     y: 0,
-        //     w: Crafty.viewport.width,
-        //     h: Crafty.viewport.height,
-        //     alpha: 0,
-        //     z: 2
-        // }).color("#fff").tween({
-        //     alpha: 1
-        // }, 50).bind("TweenEnd", function () {
-        //     // var spinner = Crafty.e("2D, DOM, Image, Tween").attr({
-        //     //     x: Crafty.viewport.width / 2 - 64,
-        //     //     y: Crafty.viewport.height / 2 - 64,
-        //     //     z: 3,
-        //     //     alpha: 0
-        //     // }).image('assets/images/octocat-spinner-128.gif').tween({
-        //     //     alpha: 1
-        //     // }, 50);
-        // });
         Crafty.paths({ audio: "assets/sfx/", images: "assets/images/" });
         var assets = {
-            images: ['title.png', 'cratfy_logo.png', 'github_logo.png', 'wall01.png', 'backgrounds.png', 'starsky.png', 
+            images: ['title.png', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 'backgrounds.png', 'starsky.png', 
                 'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
             sprites: {
                 'ui_energy.png': {
@@ -233,7 +213,7 @@
                 powerup01: ['pup01.ogg', 'pup01.m4a'],
                 powerup02: ['pup02.ogg', 'pup02.m4a'],
                 overcharge: ['overcharge.ogg', 'overcharge.m4a'],
-                // movin: ['movin.ogg', 'movin.m4a'],
+                movin: ['movin.ogg', 'movin.m4a'],
                 liftoff: ['liftoff.ogg', 'liftoff.m4a'],
                 liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
                 wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
