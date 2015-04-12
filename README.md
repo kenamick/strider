@@ -1,24 +1,26 @@
 _.o0 Strider 0o._
 ===============================
 
-[game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
+:video_game: [game-off-2015](https://github.com/blog/1972-the-game-has-changed) challenge entry.
 
 The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
 
 Good luck!
 
+![Screenshot 1](http://i.imgur.com/NvyohaR.png)
+![Screenshot 2](http://i.imgur.com/reiuW2Z.png)
+
 ## Fork Info
 
-This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012) game. It is not a fork of the repo itself, because
-I already had a [game-off-2012](https://github.com/petarov/game-off-2012) repository and Github does not allow one to have two repositories with the same name.
+This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012) game. It's not a fork of the repo itself, because I already have a [game-off-2012](https://github.com/petarov/game-off-2012) repository and Github does not allow one to have two repos with the same name.
 
 ## Controls
 
 Make your way to the top by using:
 
-  * `Arrow keys` or `WAsD` keys to move and jump on platforms.
-  * `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
-  * Press `1` to use overcharge. Trade 1 health for full energy refill.
+  * :running: `Arrow keys` or `WAsD` keys to move and jump on platforms.
+  * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * :rage1: Press `1` to use overcharge. Trade 1 health for complete energy refill.
 
 ## Supported Browsers
 
@@ -26,7 +28,7 @@ Make your way to the top by using:
   * Firefox - 37.0+
   * Safari - 8.0+ _(!)_
 
-(!) Sadly, music & sound do not work under Safari atm! :(
+Sadly, music & sound do not work under Safari atm! :disappointed:
 
 ## Open Source Libraries
 
