@@ -50,6 +50,7 @@ Assets edited with [GIMP](http://www.gimp.org/).
   * Door slam sfx by [Robinhood76](https://www.freesound.org/people/Robinhood76/sounds/104644/)
   * Intro voice sfx by [JetSmith88](https://www.freesound.org/people/JetSmith88/sounds/206070/)
   * Jump land by [MentalSanityOff](https://www.freesound.org/people/MentalSanityOff/sounds/170504/)
+  * Ricochet sfx by [rakurka](https://www.freesound.org/people/rakurka/sounds/109957/)
 
 Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 

@@ -14,8 +14,8 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = false,
-        enableIntroSfx = true,
+        isDebug = true,
+        enableIntroSfx = false,
         
         METERS_DEPTH = 800,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -485,6 +485,15 @@
                     octocat.trigger('Moved'); // update target
                 } else {
                     addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
+                    var rnd = Math.random();
+                    if (rnd > 0.7) {
+                        rnd = 'rico3';
+                    } else if (rnd > 0.4) {
+                        rnd = 'rico2';
+                    } else {
+                        rnd = 'rico1';
+                    }
+                    sfx(rnd)
                 }
 
                 // manually adjust shooting anims ...oh my!
