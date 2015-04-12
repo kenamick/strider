@@ -14,8 +14,8 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = true,
-        enableIntroSfx = false,
+        isDebug = false,
+        enableIntroSfx = true,
         
         METERS_DEPTH = 400,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,

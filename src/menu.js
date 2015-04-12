@@ -15,6 +15,7 @@
      */
     Crafty.scene('intro', function () {
         Crafty.background('#f6fafb');
+        var logosTimeout = 250, logosShowTimeout = 2000;
 
         var txt = Crafty.e('2D, DOM, Text, Delay').attr({
             x: 4,
@@ -42,12 +43,12 @@
             alpha: 0
         }).image('assets/images/gameoff.jpg').tween({
             alpha: 1
-        }, 250).one('TweenEnd', function () {
+        }, logosTimeout).one('TweenEnd', function () {
             this.unbind('TweenEnd');
             this.delay(function () {
                 this.tween({
                     alpha: 0
-                }, 250).bind('TweenEnd', function () {
+                }, logosTimeout).bind('TweenEnd', function () {
                     this.unbind('TweenEnd');
                     var crafty = Crafty.e('2D, DOM, Image, Tween, Delay').attr({
                         x: (400 - 147) / 2,
@@ -55,27 +56,27 @@
                         alpha: 0
                     }).image('assets/images/cratfy_logo.png').tween({
                         alpha: 1
-                    }, 250).bind('TweenEnd', function () {
+                    }, logosTimeout).bind('TweenEnd', function () {
                         this.unbind('TweenEnd');
                         this.delay(function () {
                             this.tween({
                                 alpha: 0
-                            }, 250).bind('TweenEnd', function () {
+                            }, logosTimeout).bind('TweenEnd', function () {
                                 Crafty.e('2D, DOM, Image, Tween, Keyboard').attr({
                                     alpha: 0
                                 }).image('assets/images/title.png').tween({
                                     alpha: 1
-                                }, 250).bind('TweenEnd', function () {
+                                }, logosTimeout).bind('TweenEnd', function () {
                                     txt.text('Press any key to start the game').css('color', '#fff');
                                     this.bind('KeyDown', function () {
                                         Crafty.scene('main');
                                     });
                                 });
                             });
-                        }, 1500);
+                        }, logosShowTimeout);
                     });
                 });
-            }, 1500);
+            }, logosShowTimeout);
         });
     
 
