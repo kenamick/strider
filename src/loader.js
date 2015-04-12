@@ -233,6 +233,10 @@
                 powerup01: ['pup01.ogg', 'pup01.m4a'],
                 powerup02: ['pup02.ogg', 'pup02.m4a'],
                 overcharge: ['overcharge.ogg', 'overcharge.m4a'],
+                // movin: ['movin.ogg', 'movin.m4a'],
+                liftoff: ['liftoff.ogg', 'liftoff.m4a'],
+                liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
+                wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
             }
         };
         Crafty.load(assets, function() {

@@ -14,7 +14,7 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = true,
+        isDebug = false,
         enableIntroSfx = false,
         
         METERS_DEPTH = 800,
@@ -492,8 +492,16 @@
             //     xhair.y = lastEnemyY - xhair.h / 2;
             //     xhair.dy = lastEnemyY + 5;
             //     xhair.tween({y: xhair.dy}, 750);
-            // }            
+            // }
+            this.moved = true;
         });
+        octocat.delay(function() {
+            if (!this.moved) {
+                sfx('wait4mom');
+                this.animate('shoot_n_e');
+            }
+            this.moved = false;
+        }, 5000, -1);
         octocat.bind('Shoot', function() {
             playerEnergy -= 1;
             // if (playerEnergy < 0) {
@@ -790,7 +798,12 @@
             })
             .bind('AnimationEnd', function(reel) {
                 this.animate('play2', -1);
-            });            
+            });
+            sfx('liftoff');
+            sfx('liftoff2');
+            // Crafty.e('Delay').delay(function () {
+            //     sfx('movin');
+            // }, 2000, 0);
         });
         Crafty.bind("playerupdatehealth", function () {
             if (!HUDHealth)

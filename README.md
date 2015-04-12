@@ -54,6 +54,9 @@ Art assets edited with [GIMP](http://www.gimp.org/).
   * Ricochet sfx by [rakurka](https://www.freesound.org/people/rakurka/sounds/109957/)
   * Energy pickup sfx by [303creative](https://www.freesound.org/people/303creative/sounds/39953/)
   * Health pickup sfx by [juancamiloorjuela](https://www.freesound.org/people/juancamiloorjuela/sounds/204318/)
+  * Movin in voice by [davdud101](https://www.freesound.org/people/davdud101/sounds/150504/)
+  * Lift off by [cydon](https://www.freesound.org/people/cydon/sounds/126507/)
+  * Space by [PlymouthJCliffords](https://www.freesound.org/people/PlymouthJCliffords/sounds/164842/)
 
 Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
