@@ -472,10 +472,11 @@
         });
         octocat.bind('Shoot', function() {
             playerEnergy -= 1;
-            if (playerEnergy < 0) {
-                // no ammo
-                return;
-            }
+            // if (playerEnergy < 0) {
+            //     // no ammo
+            //     sfx('gunclip');
+            //     return;
+            // }
             if (octocat.targetEnemy) {
                 var target = octocat.targetEnemy
                   , ecx = target.x + target.w / 2
@@ -485,21 +486,23 @@
                   , phi = Math.atan2(this.cy - ecy, this.cx - ecx)
                   , px = 0, py = 0;
 
-                target.hp -= playerDamage;
-                if (target.hp < 0) {
-                    target.trigger('Kill');
-                    octocat.trigger('Moved'); // update target
-                } else {
-                    addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
-                    var rnd = Math.random();
-                    if (rnd > 0.7) {
-                        rnd = 'rico3';
-                    } else if (rnd > 0.4) {
-                        rnd = 'rico2';
+                if (playerEnergy >= 0) {
+                    target.hp -= playerDamage;
+                    if (target.hp < 0) {
+                        target.trigger('Kill');
+                        octocat.trigger('Moved'); // update target
                     } else {
-                        rnd = 'rico1';
+                        addAnimation(ANIM_HITENEMY, target.x + target.w * Math.random(), target.y + target.h * Math.random());
+                        var rnd = Math.random();
+                        if (rnd > 0.7) {
+                            rnd = 'rico3';
+                        } else if (rnd > 0.4) {
+                            rnd = 'rico2';
+                        } else {
+                            rnd = 'rico1';
+                        }
+                        sfx(rnd);
                     }
-                    sfx(rnd)
                 }
 
                 // manually adjust shooting anims ...oh my!
@@ -556,7 +559,6 @@
                 }
                 if (anim) {
                     this.animate(anim);
-                    addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
                 }
                 // debug('animation: ', anim);
             } else {
@@ -568,20 +570,26 @@
                     px = this.w / 2;
                 }
                 py = -2;
-                addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
                 this.animate(anim);
             }
-            var rnd = Math.random();
-            if (rnd > 0.7) {
-                rnd = 'gun2';
-            } else if (rnd > 0.4) {
-                rnd = 'gun3';
+
+            if (playerEnergy >= 0) {
+                addAnimation(ANIM_PLAYER_GUNFLARE, px, py);
+                var rnd = Math.random();
+                if (rnd > 0.7) {
+                    rnd = 'gun2';
+                } else if (rnd > 0.4) {
+                    rnd = 'gun3';
+                } else {
+                    rnd = 'gun1';
+                }
+                // if (!Crafty.audio.isPlaying(rnd)) {
+                    sfx(rnd);
+                // }
             } else {
-                rnd = 'gun1';
+                // no ammo
+                sfx('gunclip');
             }
-            // if (!Crafty.audio.isPlaying(rnd)) {
-                sfx(rnd);
-            // }
         });
         octocat.delay(function() {
             // replenish energy

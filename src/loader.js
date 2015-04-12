@@ -223,6 +223,7 @@
                 gun1: ['gun01.ogg', 'gun01.m4a'],
                 gun2: ['gun02.ogg', 'gun02.m4a'],
                 gun3: ['gun03.ogg', 'gun03.m4a'],
+                gunclip: ['gunclip.ogg', 'gunclip.m4a'],
                 rico1: ['rico01.ogg', 'rico01.m4a'],
                 rico2: ['rico02.ogg', 'rico02.m4a'],
                 rico3: ['rico03.ogg', 'rico03.m4a'],

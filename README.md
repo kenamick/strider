@@ -45,6 +45,7 @@ Art assets edited with [GIMP](http://www.gimp.org/).
   * Explosions by [Michel Baradari](http://opengameart.org/content/2-high-quality-explosions)
   * Projectiles by [Michel Baradari](http://opengameart.org/content/4-projectile-launches)
   * Gun sfx by [Julien Nicolas](https://www.freesound.org/people/Julien%20Nicolas/sounds/133799/)
+  * Gun clip sfx by [BMacZero](https://www.freesound.org/people/BMacZero/sounds/94119/)
   * Death sfx by [Replix](https://www.freesound.org/people/Replix/sounds/173126/)
   * Death splatter sfx by [Rock Savage](https://www.freesound.org/people/Rock%20Savage/sounds/81042/)
   * Door slam sfx by [Robinhood76](https://www.freesound.org/people/Robinhood76/sounds/104644/)
