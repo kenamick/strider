@@ -220,6 +220,9 @@
             var obj = e[0].obj;
             obj.visible = false;
             playerHealth += 1;
+            if (!Crafty.audio.isPlaying('powerup02')) {
+                sfx('powerup02');
+            }
             Crafty.trigger('playerupdatehealth');
             Crafty.trigger('playsmokeanim');
         }
@@ -234,6 +237,9 @@
                 playerEnergy += ~~(MAX_ENERGY * 0.25);    
             }
             debug('*** TAKE ENERGY');
+            if (!Crafty.audio.isPlaying('powerup01')) {
+                sfx('powerup01');
+            }
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
         }

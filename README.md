@@ -37,7 +37,7 @@ Make your way to the top by using:
   * Smoke animation by [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1).
   * Crosshair sprites by [para](http://opengameart.org/content/64-crosshairs-pack).
 
-Assets edited with [GIMP](http://www.gimp.org/).
+Art assets edited with [GIMP](http://www.gimp.org/).
 
 ### Sfx
   * Jump & Hurt by [Jack Menhorn](http://opengameart.org/content/fps-placeholder-sounds)
@@ -51,6 +51,8 @@ Assets edited with [GIMP](http://www.gimp.org/).
   * Intro voice sfx by [JetSmith88](https://www.freesound.org/people/JetSmith88/sounds/206070/)
   * Jump land by [MentalSanityOff](https://www.freesound.org/people/MentalSanityOff/sounds/170504/)
   * Ricochet sfx by [rakurka](https://www.freesound.org/people/rakurka/sounds/109957/)
+  * Energy pickup sfx by [303creative](https://www.freesound.org/people/303creative/sounds/39953/)
+  * Health pickup sfx by [juancamiloorjuela](https://www.freesound.org/people/juancamiloorjuela/sounds/204318/)
 
 Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
