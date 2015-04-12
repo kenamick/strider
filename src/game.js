@@ -369,6 +369,7 @@
                 this._canJumpAgain = true;
                 sfx('jump');
             } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+                sfx('jumpboost');
                 this._up = true;
                 this._gy = 0;
                 this._canJumpAgain = false;

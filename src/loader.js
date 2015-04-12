@@ -210,6 +210,7 @@
             },
             audio: {
                 jump: ['land.ogg', 'land.m4a'],
+                jumpboost: ['jumpboost.ogg', 'jumpboost.m4a'],
                 land: ['landfeet.ogg', 'landfeet.m4a'],
                 hurt: ['hurt.ogg', 'hurt.m4a'],
                 death: ['death.ogg', 'death.m4a'],
