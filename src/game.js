@@ -15,7 +15,7 @@
         MUSIC = true,
         MUSIC_VOL = 0.8,
         enableFPS = true,
-        isDebug = true,
+        isDebug = false,
         enableIntroSfx = true,
         
         METERS_DEPTH = 400,
@@ -286,7 +286,7 @@
             // bullet.trigger('Kill');
             playerHealth -= 1;
             Crafty.trigger('playerupdatehealth');
-            if (playerHealth < 0 && false) { //TODO
+            if (playerHealth < 0) {
                 bgovr.color('#ff0000');
                 Crafty.trigger('playerdead');
             } else {
@@ -356,7 +356,7 @@
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
-            y: level_data[0].y,  // TODO: bug in positioning
+            y: level_data[0].y, 
             z: 990
         })
         .origin('center')
