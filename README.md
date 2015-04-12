@@ -18,6 +18,7 @@ Make your way to the top by using:
 
   * `Arrow keys` or `WAsD` keys to move and jump on platforms.
   * `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * Press `1` to use overcharge. Trade 1 health for full energy refill.
 
 ## Supported Browsers
 

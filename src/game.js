@@ -14,8 +14,8 @@
         SFX = true,
         MUSIC = true,
         enableFPS = true,
-        isDebug = false,
-        enableIntroSfx = true,
+        isDebug = true,
+        enableIntroSfx = false,
         
         METERS_DEPTH = 400,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -83,6 +83,7 @@
         SPREAD8_R = calcSpread(50, 8)
         //
         ;
+
     var pi = Math.PI
       , pi_6 = Math.PI / 6
       , pi_4 = Math.PI / 4
@@ -115,7 +116,7 @@
     function calcSpread(r, size) {
         var x, y
           , phi  = 0
-          , step = 2 * pi / size
+          , step = 2 * Math.PI / size
           , spread = [];
         for (var i = 0; i < size; i++) {
             x = Math.cos(phi) * r;
@@ -137,7 +138,7 @@
     }
     function sfx(name, repeat, vol) {
         if (SFX) {
-            debug('play sfx', name);
+            // debug('play sfx', name);
             Crafty.audio.play(name, repeat, vol);
         }
     }
@@ -927,7 +928,7 @@
                 _dvy = vp.y - _pvy;
                 if (_dvy * _dvy > 10000) {
                     _pvy = vp.y;
-                    debug('distance', _dvy, vp.y);
+                    // debug('distance', _dvy, vp.y);
 
                     if (_dvy > 0) {
                         cur_platforms += step_platforms;
@@ -1320,6 +1321,7 @@
                     entity.oy = y;
                     entity.x = x;
                     entity.y = y;
+                    // entity.i = i;
                     if (speed) {
                         entity.speed = speed;
                     }
