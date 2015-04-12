@@ -471,7 +471,7 @@
             } else {
                 this.isShooting = false;
                 var reel = this.getReel();
-                if (reel && !reel.id.startsWith('shoot')) { // what a hack ladies & gentlemen
+                if (reel && reel.id.substr(0, 5) !== 'shoot') { // what a hack ladies & gentlemen
                     this.animate(this.direction === 'right' ? 'stand_right' : 'stand_left', 0);
                 }
                 // if (!this.isPlaying('stand_left') && !this.isPlaying('stand_right')) {
