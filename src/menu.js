@@ -14,7 +14,7 @@
      * Game Intro Scene
      */
     Crafty.scene('intro', function () {
-        Crafty.background('#fff');
+        Crafty.background('#f6fafb');
 
         var txt = Crafty.e('2D, DOM, Text, Delay').attr({
             x: 4,
@@ -28,20 +28,19 @@
         }).text('Press ESC to skip intro');
         txt.bind('EnterFrame', function (e) {
             var f = e.frame % 100;
-            this.alpha = ~~ (f < 50);
+            this.alpha = ~~(f < 50);
         });
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
             if(e.keyCode !== Crafty.keys.ESC) return;
             this.destroy();
             Crafty.scene('main');
         });
-
         //TODO: un-nest this crap
         Crafty.e('2D, DOM, Image, Tween, Delay').attr({
-            x: (400 - 174) / 2,
-            y: (640 - 174) / 2,
+            x: 0,
+            y: (640 - 450) / 2,
             alpha: 0
-        }).image('assets/images/github_logo.png').tween({
+        }).image('assets/images/gameoff.jpg').tween({
             alpha: 1
         }, 250).one('TweenEnd', function () {
             this.unbind('TweenEnd');

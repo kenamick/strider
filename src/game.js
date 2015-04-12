@@ -54,11 +54,11 @@
         max_platforms = 10,
         step_platforms = 1,
         // player vars
+        PLAYER_ENERGY_REPLENISH_TO = 1500,
         playerSpeed = 4,
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = 49,
-        PLAYER_ENERGY_REPLENISH = 1500,
         playerDamage = 1;
         isDead = false,
         playerTargetDist = 40000,  //TODO
@@ -199,10 +199,11 @@
     initLevel();
 
     function initState() {
-        Crafty.background("none");
+        /**
+         * Reset stuff
+         */
+        Crafty.background('none');
         Crafty.viewport.y = 0;
-        score = 0;
-        stars = 0;
         isDead = false;
     }    
 
@@ -627,7 +628,7 @@
             // replenish energy
             playerEnergy += 1;
             Crafty.trigger('playerupdatejuice');
-        }, PLAYER_ENERGY_REPLENISH, -1);
+        }, PLAYER_ENERGY_REPLENISH_TO, -1);
 
         // jumpboost
         var jumpboost = Crafty.e("2D, Canvas, SpaceshipEngine, SpriteAnimation").attr({
