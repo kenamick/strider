@@ -19,7 +19,7 @@ Make your way to the top by using:
 
   * :running: `Arrow keys` or `WAsD` keys to move and jump on platforms. 
   * :arrow_up: Press `Up Arrow` or `W` twice to double jump.
-  * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
+  * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest. Your energy replenishes with 1 every 1.5 seconds.
   * :rage1: Press `1` to use overcharge. Trade 1 health for complete energy refill.
 
 It might seem like a hard to play game at the beginning, but it's really not. A couple of hints:
