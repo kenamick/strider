@@ -125,6 +125,97 @@
     });
 
     /************************************************************************
+     * Game Instructions Scene
+     */
+    Crafty.scene('instructions', function () {
+        Crafty.background("url('assets/images/splash_screen_blurred.jpg')");
+        Crafty.viewport.x = 0;
+        Crafty.viewport.y = 0;
+
+        // stop all sfx
+        Crafty.audio.stop();
+
+        var sx = 15, sy = 25, txtClr = 'white';
+
+        // Goal
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
+        .textFont({size: '16px'}).textColor('#888')
+        .text('Goal');
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 25, w: Crafty.viewport.width - 75})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("You are Strider. An agent of a rebel force that needs to deliver some very important documents to your allies.");
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 70, w: Crafty.viewport.width - 75})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("A transport ship is waiting for you at 0 m. height. You need to travel 3 km. up the shaft to reach your destination. Jump up on the platforms to make your way up.");
+
+        // Controls
+        sy = sy + 140;
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
+        .textFont({size: '16px'}).textColor('#888')
+        .text('Controls');
+
+        Crafty.e('2D, Canvas, Powerup, Gunner').attr({x: sx, y: sy + 20});
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 25, w: Crafty.viewport.width - 50})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Use the 'Arrow' or 'WAsD' keys to move and jump.");
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 55, w: Crafty.viewport.width - 75})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Press the 'Up Arrow' key or 'W' key twice to activate your thrusters and do a double jump.");
+
+        // Powerups
+        sy = sy + 110;
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
+        .textFont({size: '16px'}).textColor('#888')
+        .text('Powerups');
+
+        Crafty.e('2D, Canvas, Powerup, HealthRed')
+        .attr({x: sx, y: sy + 25});
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 30, y: sy + 30, w: Crafty.viewport.width})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("+1 HP");
+
+        Crafty.e('2D, Canvas, Powerup, EnergyOrange')
+        .attr({x: sx, y: sy + 50});
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 30, y: sy + 55, w: Crafty.viewport.width})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("30% percent energy refill.");
+
+        Crafty.e('2D, Canvas, Powerup, EnergyBlue')
+        .attr({x: sx, y: sy + 75});
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 30, y: sy + 80, w: Crafty.viewport.width})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("60% percent energy refill.");
+
+        // Enemies
+        sy = sy + 130;
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
+        .textFont({size: '16px'}).textColor('#888')
+        .text('Enemies');
+
+        Crafty.e('2D, Canvas, Powerup, EnemyTurretGreen').attr({x: sx, y: sy + 30});
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 70, y: sy + 40, w: Crafty.viewport.width - 70})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Non-moveable enemy turret.");
+
+        Crafty.e('2D, Canvas, Powerup, EnemyDrone').attr({x: sx, y: sy + 80});
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 70, y: sy + 100, w: Crafty.viewport.width - 70})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Moveable enemy drone.");
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 130, y: Crafty.viewport.height - 25, w: Crafty.viewport.width})
+        .textFont({size: '12px'}).textColor('white')
+        .text('Press any key to continue');
+        Crafty.e('Keyboard').bind('KeyUp', function (e) {
+            this.destroy();
+            Crafty.scene('menu');
+        });
+    });
+
+    /************************************************************************
      * Game End Scene
      */
     Crafty.scene('dead', function (data) {

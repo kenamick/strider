@@ -279,7 +279,7 @@
             if (obj.energyType === POWERUP_ENERGY_BLUE) {
                 playerEnergy += ~~(MAX_ENERGY * 0.5);    
             } else {
-                playerEnergy += ~~(MAX_ENERGY * 0.25);    
+                playerEnergy += ~~(MAX_ENERGY * 0.3);    
             }
             debug('*** TAKE ENERGY');
             if (!Crafty.audio.isPlaying('powerup01')) {

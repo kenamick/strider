@@ -191,35 +191,35 @@
                 }
             },
             audio: {
-                jump: ['land.ogg', 'land.m4a'],
-                jumpboost: ['jumpboost.ogg', 'jumpboost.m4a'],
-                land: ['landfeet.ogg', 'landfeet.m4a'],
-                hurt: ['hurt.ogg', 'hurt.m4a'],
-                death: ['death.ogg', 'death.m4a'],
-                deathsplat: ['deathsplat.ogg', 'deathsplat.m4a'],
-                turretshot1: ['turretshot.ogg', 'turretshot.m4a'],
-                turretshot2: ['turretshot2.ogg', 'turretshot2.m4a'],
-                explode1: ['explode.ogg', 'explode.m4a'],
-                explode2: ['explode2.ogg', 'explode2.m4a'],
-                droneshot1: ['droneshot.ogg', 'droneshot.m4a'],
-                droneshot2: ['droneshot2.ogg', 'droneshot2.m4a'],
-                gun1: ['gun01.ogg', 'gun01.m4a'],
-                gun2: ['gun02.ogg', 'gun02.m4a'],
-                gun3: ['gun03.ogg', 'gun03.m4a'],
-                gunclip: ['gunclip.ogg', 'gunclip.m4a'],
-                rico1: ['rico01.ogg', 'rico01.m4a'],
-                rico2: ['rico02.ogg', 'rico02.m4a'],
-                rico3: ['rico03.ogg', 'rico03.m4a'],
-                warning: ['warning.ogg', 'warning.m4a'],
-                doorshut: ['doorshut.ogg', 'doorshut.m4a'],
-                powerup01: ['pup01.ogg', 'pup01.m4a'],
-                powerup02: ['pup02.ogg', 'pup02.m4a'],
-                overcharge: ['overcharge.ogg', 'overcharge.m4a'],
-                movin: ['movin.ogg', 'movin.m4a'],
-                liftoff: ['liftoff.ogg', 'liftoff.m4a'],
-                liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
-                wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
-                music1: ['2ndtlegion.ogg']
+                // jump: ['land.ogg', 'land.m4a'],
+                // jumpboost: ['jumpboost.ogg', 'jumpboost.m4a'],
+                // land: ['landfeet.ogg', 'landfeet.m4a'],
+                // hurt: ['hurt.ogg', 'hurt.m4a'],
+                // death: ['death.ogg', 'death.m4a'],
+                // deathsplat: ['deathsplat.ogg', 'deathsplat.m4a'],
+                // turretshot1: ['turretshot.ogg', 'turretshot.m4a'],
+                // turretshot2: ['turretshot2.ogg', 'turretshot2.m4a'],
+                // explode1: ['explode.ogg', 'explode.m4a'],
+                // explode2: ['explode2.ogg', 'explode2.m4a'],
+                // droneshot1: ['droneshot.ogg', 'droneshot.m4a'],
+                // droneshot2: ['droneshot2.ogg', 'droneshot2.m4a'],
+                // gun1: ['gun01.ogg', 'gun01.m4a'],
+                // gun2: ['gun02.ogg', 'gun02.m4a'],
+                // gun3: ['gun03.ogg', 'gun03.m4a'],
+                // gunclip: ['gunclip.ogg', 'gunclip.m4a'],
+                // rico1: ['rico01.ogg', 'rico01.m4a'],
+                // rico2: ['rico02.ogg', 'rico02.m4a'],
+                // rico3: ['rico03.ogg', 'rico03.m4a'],
+                // warning: ['warning.ogg', 'warning.m4a'],
+                // doorshut: ['doorshut.ogg', 'doorshut.m4a'],
+                // powerup01: ['pup01.ogg', 'pup01.m4a'],
+                // powerup02: ['pup02.ogg', 'pup02.m4a'],
+                // overcharge: ['overcharge.ogg', 'overcharge.m4a'],
+                // movin: ['movin.ogg', 'movin.m4a'],
+                // liftoff: ['liftoff.ogg', 'liftoff.m4a'],
+                // liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
+                // wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
+                // music1: ['2ndtlegion.ogg']
             }
         };
         if (isSafari) {
@@ -229,6 +229,8 @@
             document.getElementsByClassName('sorry')[0].style.visibility = 'visible';
         }
         Crafty.load(assets, function() {
+            Crafty.scene('instructions');
+            return;
             if (skipIntro) {
                 Crafty.scene('main');
             }
