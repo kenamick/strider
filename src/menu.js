@@ -106,20 +106,31 @@
         }).image('assets/images/splash_screen.jpg').tween({
             alpha: 1
         }, logosTimeout).bind('TweenEnd', function () {
-            var txt = Crafty.e('2D, DOM, Text, SpaceFont, Delay').attr({
-                x: 120,
-                y: Crafty.viewport.height - 16,
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                x: 121,
+                y: Crafty.viewport.height - 25,
                 w: Crafty.viewport.width,
-                alpha: 1
             })
-            .textFont({size: '12px'})
+            .textFont({size: '14px'})
             .textColor('white')
-            .text('Press any key to start the game');
+            .text("Press 'X' to start the game");
 
-            txt.text('Press any key to start the game')
-            this.bind('KeyUp', function () {
-                // go go go ...
-                Crafty.scene('main');
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                x: 115,
+                y: Crafty.viewport.height - 75,
+                w: Crafty.viewport.width,
+            })
+            .textFont({size: '14px'})
+            .textColor('white')
+            .text("Press 'I' to read instructions");
+
+            this.bind('KeyUp', function (e) {
+                if (e.keyCode === Crafty.keys.X) {
+                    // go go go ...
+                    Crafty.scene('main');
+                } else if (e.keyCode === Crafty.keys.I) {
+                    Crafty.scene('instructions');
+                }
             });
         });
     });
@@ -144,7 +155,7 @@
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 25, w: Crafty.viewport.width - 75})
         .textFont({size: '14px'}).textColor(txtClr)
-        .text("You are Strider. An agent of a rebel force that needs to deliver some very important documents to your allies.");
+        .text("You are Strider. An agent of a rebel force that needs to deliver some very important documents to headquarters.");
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 70, w: Crafty.viewport.width - 75})
         .textFont({size: '14px'}).textColor(txtClr)
@@ -166,8 +177,12 @@
         .textFont({size: '14px'}).textColor(txtClr)
         .text("Press the 'Up Arrow' key or 'W' key twice to activate your thrusters and do a double jump.");
 
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 95, w: Crafty.viewport.width - 75})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Press 'X', 'Z' or 'Y' to shoot. You don't need to aim. Your rifle targets the nearest enemy automatically.");
+
         // Powerups
-        sy = sy + 110;
+        sy = sy + 150;
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
         .textFont({size: '16px'}).textColor('#888')
         .text('Powerups');
@@ -191,7 +206,7 @@
         .text("60% percent energy refill.");
 
         // Enemies
-        sy = sy + 130;
+        sy = sy + 115;
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
         .textFont({size: '16px'}).textColor('#888')
         .text('Enemies');
@@ -207,7 +222,7 @@
         .text("Moveable enemy drone.");
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 130, y: Crafty.viewport.height - 25, w: Crafty.viewport.width})
-        .textFont({size: '12px'}).textColor('white')
+        .textFont({size: '14px'}).textColor('white')
         .text('Press any key to continue');
         Crafty.e('Keyboard').bind('KeyUp', function (e) {
             this.destroy();
