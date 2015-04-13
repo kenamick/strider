@@ -855,6 +855,7 @@
             Crafty.e('Delay').delay(function () {
                 sfx('movin');
             }, 1000, 0);
+            //TODO: fix delay obj not destroyed bug
             Crafty.e('Delay').delay(function () {
                 Crafty.e('2D, DOM, Text, SpaceFont')
                 .attr({x: 125, y: 150, w: Crafty.viewport.width })
@@ -875,11 +876,13 @@
                     this.y = ship.y + 150;
                 });
             }, 8000, 0);
+            // keyboard
             Crafty.e('Keyboard').bind('KeyDown', function (e) {
-                if(e.keyCode !== Crafty.keys.ESC) return;
+                if(e.keyCode !== Crafty.keys.ESC) 
+                    return;
                 this.destroy();
                 // reset game
-                Crafty.scene('intro');
+                Crafty.scene('menu');
             });
         });
         Crafty.uniqueBind("playerupdatehealth", function () {

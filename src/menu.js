@@ -9,14 +9,15 @@
  */
 (function(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
+
+    var logosTimeout = 250, logosShowTimeout = 2000;
         
     /************************************************************************
      * Game Intro Scene
      */
     Crafty.scene('intro', function () {
         Crafty.background('#f6fafb');
-        var logosTimeout = 250, logosShowTimeout = 2000;
-
+        
         // var txt = Crafty.e('2D, DOM, Canvas, SpaceFont, Delay').attr({
         //     x: 4,
         //     y: Crafty.viewport.height - 16,
@@ -34,7 +35,7 @@
         // });
 
         var txt = Crafty.e('2D, DOM, Text, SpaceFont, Delay').attr({
-            x: 150,
+            x: 145,
             y: Crafty.viewport.height - 16,
             w: Crafty.viewport.width,
             alpha: 1
@@ -79,19 +80,7 @@
                             this.tween({
                                 alpha: 0
                             }, logosTimeout).bind('TweenEnd', function () {
-                                Crafty.e('2D, Canvas, Image, Tween, Keyboard').attr({
-                                    alpha: 0
-                                }).image('assets/images/splash_screen.jpg').tween({
-                                    alpha: 1
-                                }, logosTimeout).bind('TweenEnd', function () {
-                                    txt.x = 120;
-                                    txt.text('Press any key to start the game')
-                                    .textColor('white')
-                                    this.bind('KeyUp', function () {
-                                        // go go go ...
-                                        Crafty.scene('main');
-                                    });
-                                });
+                                Crafty.scene('menu');
                             });
                         }, logosShowTimeout);
                     });
@@ -99,6 +88,40 @@
             }, logosShowTimeout );
         });
 
+    });
+
+    /************************************************************************
+     * Game Menu Scene
+     */
+    Crafty.scene('menu', function () {
+        Crafty.background('#f6fafb');
+        Crafty.viewport.x = 0;
+        Crafty.viewport.y = 0;
+
+        // stop all sfx
+        Crafty.audio.stop();
+
+        Crafty.e('2D, Canvas, Image, Tween, Keyboard').attr({
+            alpha: 0
+        }).image('assets/images/splash_screen.jpg').tween({
+            alpha: 1
+        }, logosTimeout).bind('TweenEnd', function () {
+            var txt = Crafty.e('2D, DOM, Text, SpaceFont, Delay').attr({
+                x: 120,
+                y: Crafty.viewport.height - 16,
+                w: Crafty.viewport.width,
+                alpha: 1
+            })
+            .textFont({size: '12px'})
+            .textColor('white')
+            .text('Press any key to start the game');
+
+            txt.text('Press any key to start the game')
+            this.bind('KeyUp', function () {
+                // go go go ...
+                Crafty.scene('main');
+            });
+        });
     });
 
     /************************************************************************
@@ -114,7 +137,7 @@
         Crafty.background('#000');
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;
-        Crafty.background("url('assets/images/starsky.png') repeat ");
+        Crafty.background("url('assets/images/starsky.png') repeat");
 
         Crafty.e('2D, DOM, Text, SpaceFont')
         .attr({x: 135, y: 150, w: 150 })
@@ -136,7 +159,7 @@
             this.destroy();
             Crafty.audio.stop('music1');
             // game reset
-            Crafty.scene('main'); //TODO
+            Crafty.scene('menu');
         });
     });
 
