@@ -48,6 +48,7 @@
         HUDEnergy = null,
         HUDHealth = null,
         SmokeAnim = null,
+        octocat = null,
         PlayerDeadAnim = null,
         // level vars
         level_data = [],
@@ -236,6 +237,7 @@
 
         ship = null;
         SmokeAnim = null;
+        octocat = null;
 
         level_data = genLevel();
         // crafty
@@ -369,7 +371,7 @@
             direction: 'right'
         }).color('#006064');
 
-        var octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway')
+        octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway')
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
@@ -717,10 +719,8 @@
 
         PlayerDeadAnim = Crafty.e('2D, Canvas, Splatter, SpriteAnimation')
         .origin('center')
-        .attr({
-            x: octocat.cx - 40,
-            y: octocat.cy - 22
-        }).reel('play', generalAnimSpeed, 0, 0, 6);
+        .attr({x: -999, y: 0})
+        .reel('play', generalAnimSpeed, 0, 0, 6);
 
         // door
         Crafty.e("2D, Canvas, SpriteAnimation, DoorAnim")
@@ -793,9 +793,12 @@
                 sfx('death');
 
                 // die Strider ...
-                PlayerDeadAnim.x = octocat.x - 40;
-                PlayerDeadAnim.y = octocat.y - 22;
+                PlayerDeadAnim.x = octocat.cx - 40;
+                PlayerDeadAnim.y = octocat.cy - 22;
                 PlayerDeadAnim.animate('play');
+                PlayerDeadAnim.one('AnimationEnd', function() {
+                    this.destroy();
+                });
                 octocat.visible = false;
                 octocat.destroy();
 
