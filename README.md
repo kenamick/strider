@@ -18,7 +18,8 @@ This is a fork of Ogoshen's [Octojump](https://github.com/ogoshen/game-off-2012)
 
 Make your way to the top by using:
 
-  * :running: `Arrow keys` or `WAsD` keys to move and jump on platforms.
+  * :running: `Arrow keys` or `WAsD` keys to move and jump on platforms. 
+  * :arrow_up: Press `Up Arrow` or `W` twice to double jump.
   * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
   * :rage1: Press `1` to use overcharge. Trade 1 health for complete energy refill.
 
@@ -42,6 +43,7 @@ Sadly, music & sound do not work under Safari atm! :disappointed:
 ## Credits
 ### Art
 
+  * Splash screen artwork by [XThrill](https://twitter.com/XThrill)
   * Sprites and animations by [Master484](http://opengameart.org/content/open-gunner-starter-kit).
   * Spaceship sprite by [Stephen Challener (Redshrike)](http://opengameart.org/content/space-ship-building-bits-volume-1).
   * Smoke animation by [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1).
@@ -50,6 +52,7 @@ Sadly, music & sound do not work under Safari atm! :disappointed:
 Art assets edited with [GIMP](http://www.gimp.org/).
 
 ### Sfx
+
   * Jump & Hurt by [Jack Menhorn](http://opengameart.org/content/fps-placeholder-sounds)
   * Turret shot by [OnlyTheGhosts](https://www.freesound.org/people/OnlyTheGhosts/sounds/251430/)
   * Explosions by [Michel Baradari](http://opengameart.org/content/2-high-quality-explosions)
