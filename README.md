@@ -22,9 +22,9 @@ Make your way to the top by using:
   * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
   * :rage1: Press `1` to use overcharge. Trade 1 health for complete energy refill.
 
-It might seem like a hard to play game at the beginning, but it's really not. A coupld of hints:
+It might seem like a hard to play game at the beginning, but it's really not. A couple of hints:
 
- * Move, move, move. Don't stay at one place. Always *move*, *jump* and track the enemy projectiles.
+ * Move, move, move. Don't just stay at one place when the enemy shoots at you. Always *move*, *jump* and track the enemy projectiles.
  * Save your health and energy powerups for later use. You may always go back down to pick up a powerup left behind.
 
 ## Supported Browsers
