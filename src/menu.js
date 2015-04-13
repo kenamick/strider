@@ -88,6 +88,9 @@
         data = data || {};
         data.meters = data.meters || 0;
 
+        // stop all sfx
+        Crafty.audio.stop();
+
         Crafty.background('#000');
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;

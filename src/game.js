@@ -48,6 +48,7 @@
         HUDEnergy = null,
         HUDHealth = null,
         SmokeAnim = null,
+        PlayerDeadAnim = null,
         // level vars
         level_data = [],
         powerups_data = [],
@@ -234,6 +235,7 @@
         bullets_data = [];
 
         ship = null;
+        SmokeAnim = null;
 
         level_data = genLevel();
         // crafty
@@ -713,6 +715,13 @@
         //     this.tween({y: this.dy - 5}, 750);
         // });
 
+        PlayerDeadAnim = Crafty.e('2D, Canvas, Splatter, SpriteAnimation')
+        .origin('center')
+        .attr({
+            x: octocat.cx - 40,
+            y: octocat.cy - 22
+        }).reel('play', generalAnimSpeed, 0, 0, 6);
+
         // door
         Crafty.e("2D, Canvas, SpriteAnimation, DoorAnim")
         .attr({
@@ -725,10 +734,10 @@
 
         // something to die for ...
         var stype = Math.random() > 0.5 ? "Spikes02" : "Spikes01";
-        for (var i = 0; i < 11; i++) {
+        for (var i = 0; i < 13; i++) {
             var todie4 = Crafty.e("2D, Canvas, Spikes, Collision, " + stype)
             .attr({
-                x: -100 + i * 50,
+                x: -150 + i * 50,
                 y: Crafty.viewport.height - 23,
                 w: 50,
                 h: 23
@@ -783,22 +792,16 @@
                 sfx('deathsplat');
                 sfx('death');
 
-                Crafty.e('2D, Canvas, Splatter, SpriteAnimation')
-                .origin('center')
-                .attr({
-                    x: octocat.cx - 40,
-                    y: octocat.cy - 22
-                })
-                .bind('AnimationEnd', function() {
-                    this.destroy();
-                })
-                .reel('play', generalAnimSpeed, 0, 0, 6).animate('play');
                 // die Strider ...
+                PlayerDeadAnim.x = octocat.x - 40;
+                PlayerDeadAnim.y = octocat.y - 22;
+                PlayerDeadAnim.animate('play');
                 octocat.visible = false;
                 octocat.destroy();
+
                 setTimeout(function () {
                     Crafty.scene('dead', {'meters': meters});
-                }, 1000);
+                }, 1150);
             }
         });
         Crafty.uniqueBind('playerwin', function () {
@@ -896,7 +899,7 @@
             }
             HUDHealth.trigger('NewComponent');
         });
-        Crafty.bind("playerupdatejuice", function () {
+        Crafty.uniqueBind("playerupdatejuice", function () {
             if (!HUDEnergy)
                 return;
 
@@ -919,22 +922,22 @@
          * Behaviors and Monitoring
          */
 
-        (function (vp) {
-            function updateOctocat(e) {
-                var y = this.y;
-                // this.animate('walk', 5, - 1);
-                // Crafty.viewport.scroll('y', Crafty.viewport.height/2 - octocat.y);
-                // isDead = Crafty.viewport.y + this.y > Crafty.canvas._canvas.height;
-                isDead = isDead || this._enabled && (vp.y + y > vp.height);
-                if(isDead) {
-                    Crafty.unbind("EnterFrame", scrollViewport);
-                    this.unbind('EnterFrame', updateOctocat);
-                    Crafty.trigger('playerdead');
-                    return;
-                }
-            }
-            octocat.bind("EnterFrame", updateOctocat);
-        })(Crafty.viewport);
+        // (function (vp) {
+        //     function updateOctocat(e) {
+        //         var y = this.y;
+        //         // this.animate('walk', 5, - 1);
+        //         // Crafty.viewport.scroll('y', Crafty.viewport.height/2 - octocat.y);
+        //         // isDead = Crafty.viewport.y + this.y > Crafty.canvas._canvas.height;
+        //         isDead = isDead || this._enabled && (vp.y + y > vp.height);
+        //         if(isDead) {
+        //             Crafty.unbind("EnterFrame", scrollViewport);
+        //             this.unbind('EnterFrame', updateOctocat);
+        //             Crafty.trigger('playerdead');
+        //             return;
+        //         }
+        //     }
+        //     octocat.bind("EnterFrame", updateOctocat);
+        // })(Crafty.viewport);
 
         // // Create the Platform pool, these entities will be recycled throughout the level
         // (function initPlatformPool() {
