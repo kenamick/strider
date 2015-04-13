@@ -7,8 +7,7 @@ The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and T
 
 Good luck!
 
-![Screenshot 1](http://i.imgur.com/NvyohaR.png)
-![Screenshot 2](http://i.imgur.com/reiuW2Z.png)
+![Screenshot 1](http://i.imgur.com/NvyohaR.png) ![Screenshot 2](http://i.imgur.com/reiuW2Z.png)
 
 ## Fork Info
 
@@ -25,8 +24,8 @@ Make your way to the top by using:
 
 It might seem like a hard to play game at the beginning, but it's really not. A coupld of hints:
 
- * Move, move, move. Don't stay at one place. Always move, jump and track the enemy projectiles.
- * Save your health and energy powerups for later. You may always go back down to the bottom to pick up a powerup.
+ * Move, move, move. Don't stay at one place. Always *move*, *jump* and track the enemy projectiles.
+ * Save your health and energy powerups for later use. You may always go back down to pick up a powerup left behind.
 
 ## Supported Browsers
 
