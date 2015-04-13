@@ -111,6 +111,7 @@
 
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
             this.destroy();
+            Crafty.audio.stop('music1');
             // game reset
             Crafty.scene('main'); //TODO
         });

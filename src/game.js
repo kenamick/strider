@@ -31,7 +31,7 @@
         POWERUP_HEALTH = 2,
         POWERUP_ENERGY_BLUE = 3,
         MAX_ENERGY = 49,
-        MAX_HEALTH = 999, //4,
+        MAX_HEALTH = 4,
         // animations        
         MAX_ANIMATIONS = 15,
         anims_data = [],
@@ -145,6 +145,7 @@
     }
     function music(name, repeat, vol) {
         if (MUSIC) {
+            debug('play music', name);
             Crafty.audio.play(name, repeat, vol);
         }
     }
@@ -793,6 +794,7 @@
                 })
                 .reel('play', generalAnimSpeed, 0, 0, 6).animate('play');
                 // die Strider ...
+                octocat.visible = false;
                 octocat.destroy();
                 setTimeout(function () {
                     Crafty.scene('dead', {'meters': meters});
@@ -802,6 +804,7 @@
         Crafty.uniqueBind('playerwin', function () {
             // good bye Strider
             octocat.x = -1000;
+            octocat.visible = false;
             octocat.destroy();
             HUDHealth.destroy();
             HUDEnergy.destroy();
@@ -845,7 +848,6 @@
             sfx('liftoff2');
             Crafty.e('Delay').delay(function () {
                 sfx('movin');
-                
             }, 1000, 0);
             Crafty.e('Delay').delay(function () {
                 Crafty.e('2D, DOM, Text, SpaceFont')
@@ -1374,22 +1376,24 @@
                         entity.animate(reel, -1);
                         // shoot
                         entity.shootFn = function() {
-                            var ecx = this.x + this.w / 2
-                              , ecy = this.y + this.h / 2
-                              , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
-                            
-                            if (dist < shootRange) {
-                                if (spreadBullet) {
-                                    var spread = getSpread(ecx, ecy, SPREAD8);
-                                    var spread_r = getSpread(ecx, ecy, SPREAD8_R);
-                                    for (var i = 0; i < spread.length; i++) {
-                                        addBullet(BULLET_BLUE, spread[i][0], spread[i][1], spread_r[i][0], spread_r[i][1]);
+                            if (octocat.visible) {
+                                var ecx = this.x + this.w / 2
+                                  , ecy = this.y + this.h / 2
+                                  , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
+                                
+                                if (dist < shootRange) {
+                                    if (spreadBullet) {
+                                        var spread = getSpread(ecx, ecy, SPREAD8);
+                                        var spread_r = getSpread(ecx, ecy, SPREAD8_R);
+                                        for (var i = 0; i < spread.length; i++) {
+                                            addBullet(BULLET_BLUE, spread[i][0], spread[i][1], spread_r[i][0], spread_r[i][1]);
+                                        }
+                                    } else {
+                                        addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
                                     }
-                                } else {
-                                    addBullet(BULLET_BLUE, ecx, ecy, octocat.cx, octocat.cy);
+                                    addAnimation(ANIM_GUNFLARE, ecx, ecy + 7);
+                                    sfx(entity.sfxFire);
                                 }
-                                addAnimation(ANIM_GUNFLARE, ecx, ecy + 7);
-                                sfx(entity.sfxFire);
                             }
                         }.bind(entity);
                     }
@@ -1621,7 +1625,7 @@
                 }
             } else {
                 if (Crafty.audio.isPlaying('music1')) {
-                    Crafty.audio.stop('music1');    
+                    Crafty.audio.stop('music1');
                 }
             }
         }
