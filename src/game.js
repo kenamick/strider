@@ -12,13 +12,13 @@
 
     var GRAVITY = 1,
         SFX = true,
-        MUSIC = false,
+        MUSIC = true,
         MUSIC_VOL = 0.8,
-        enableFPS = true,
-        isDebug = true,
-        enableIntroSfx = false,
+        enableFPS = false,
+        isDebug = false,
+        enableIntroSfx = true,
         
-        METERS_DEPTH = 400,
+        METERS_DEPTH = 3000,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
         METERS_DEPTH_3 = METERS_DEPTH * 0.25,
         meters = METERS_DEPTH,
@@ -31,7 +31,7 @@
         POWERUP_HEALTH = 2,
         POWERUP_ENERGY_BLUE = 3,
         MAX_ENERGY = 49,
-        MAX_HEALTH = 4,
+        MAX_HEALTH = 999, //4,
         // animations        
         MAX_ANIMATIONS = 15,
         anims_data = [],
@@ -52,7 +52,7 @@
         level_data = [],
         powerups_data = [],
         cur_platforms = 0,
-        max_platforms = 11,
+        max_platforms = 30, //Math.max(METERS_DEPTH / 100, 11),
         step_platforms = 1,
         // player vars
         PLAYER_ENERGY_REPLENISH_TO = 1500,
@@ -148,6 +148,9 @@
             Crafty.audio.play(name, repeat, vol);
         }
     }
+    function getMeters(y) {
+        return METERS_DEPTH - ~~((Crafty.viewport.height - y) * 0.1 - 1);
+    }
 
     function genLevel() {
         var platforms = [];
@@ -204,7 +207,8 @@
             h: 26,
             num: i,
             clr: 'PlatformBlueBig',
-            goal: true
+            goal: true,
+            hasDrone: true
         });
         return platforms;
     }    
@@ -217,7 +221,7 @@
         MUSIC_VOL = 0.8;
         // Crafty.viewport.y = 0;
         isDead = false;
-        playerHealth = 4;
+        playerHealth = MAX_HEALTH;
         playerEnergy = 49;
         meters = METERS_DEPTH;
 
@@ -796,7 +800,6 @@
             }
         });
         Crafty.uniqueBind('playerwin', function () {
-            // Crafty.unbind("ViewportScroll", recyclePlatforms);
             // good bye Strider
             octocat.x = -1000;
             octocat.destroy();
@@ -931,111 +934,113 @@
             octocat.bind("EnterFrame", updateOctocat);
         })(Crafty.viewport);
 
-        // Create the Platform pool, these entities will be recycled throughout the level
-        (function initPlatformPool() {
-            var platforms = level_data.slice(cur_platforms, max_platforms);
-            for (var i = 0; i < platforms.length; i++) {
-                Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + level_data[i].clr).attr(level_data[i])
-                // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
-                .collision();
-            }
-            cur_platforms = max_platforms - step_platforms;
-        })(); 
+        // // Create the Platform pool, these entities will be recycled throughout the level
+        // (function initPlatformPool() {
+        //     var platforms = level_data.slice(cur_platforms, max_platforms);
+        //     for (var i = 0; i < platforms.length; i++) {
+        //         Crafty.e("2D, Canvas, Color, Platform, Collision, Tween, Delay, " + level_data[i].clr).attr(level_data[i])
+        //         // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
+        //         .collision();
+        //     }
+        //     step_platforms = 3;
+        //     cur_platforms = max_platforms - step_platforms;
+        // })();
 
-        (function (vp) {
-            var _pvy = vp.y
-              , _dvy = 0
-              , spawnX, spawnY;
-            function recyclePlatforms(e) {
-                _dvy = vp.y - _pvy;
-                if (_dvy * _dvy > 10000) {
-                    _pvy = vp.y;
-                    // debug('distance', _dvy, vp.y);
+        // (function (vp) {
+        //     var _pvy = vp.y
+        //       , _dvy = 0
+        //       , spawnX, spawnY;
+        //     function recyclePlatforms(e) {
+        //         _dvy = vp.y - _pvy;
+        //         if (_dvy * _dvy > 160000) {
+        //             _pvy = vp.y;
+        //             // debug('distance', _dvy, vp.y);
 
-                    if (_dvy > 0) {
-                        cur_platforms += step_platforms;
-                    } else if (_dvy < 0) {
-                        cur_platforms -= step_platforms;
-                    }
-                    var cur = cur_platforms - max_platforms;
+        //             if (_dvy > 0) {
+        //                 cur_platforms += step_platforms;
+        //             } else if (_dvy < 0) {
+        //                 cur_platforms -= step_platforms;
+        //             }
+        //             var cur = cur_platforms - max_platforms;
+        //             console.log('current platform: ', cur);
 
-                    var platforms = Crafty('Platform');
-                    platforms.each(function (i) {
-                        var d = level_data[cur++];
-                        if (d) {
-                            this.unbind('TweenEnd');
+        //             var platforms = Crafty('Platform');
+        //             platforms.each(function (i) {
+        //                 var d = level_data[cur++];
+        //                 if (d) {
+        //                     this.unbind('TweenEnd');
 
-                            if(this._children) {
-                                for(var j = 0; j < this._children.length; j++) {
-                                    if(this._children[j].destroy) {
-                                        this._children[j].destroy();
-                                    } else if(this._children[j] instanceof Crafty.polygon) delete this._children[j];
-                                }
-                                this._children.length = 0; // = [];
-                            }
-                            this.removeComponent(this.clr);
+        //                     if(this._children) {
+        //                         for(var j = 0; j < this._children.length; j++) {
+        //                             if(this._children[j].destroy) {
+        //                                 this._children[j].destroy();
+        //                             } else if(this._children[j] instanceof Crafty.polygon) delete this._children[j];
+        //                         }
+        //                         this._children.length = 0; // = [];
+        //                     }
+        //                     this.removeComponent(this.clr);
 
-                            this.alpha = 1;
-                            this.attr(d);
-                            this.addComponent(d.clr);
-                            this.collision();
+        //                     this.alpha = 1;
+        //                     this.attr(d);
+        //                     this.addComponent(d.clr);
+        //                     this.collision();
 
-                            var r = ~~ (10 * (1 + Math.random()));
-                            if (d.goal && !ship) {
-                                ship = Crafty.e('2D, Canvas, Spaceship, Collision, SpriteAnimation').attr({
-                                    x: d.x + 50,
-                                    y: d.y - 86,
-                                    z: -3,
-                                    _acc: 0.125
-                                })
-                                .collision();
-                            }
+        //                     var r = ~~ (10 * (1 + Math.random()));
+        //                     if (d.goal && !ship) {
+        //                         ship = Crafty.e('2D, Canvas, Spaceship, Collision, SpriteAnimation').attr({
+        //                             x: d.x + 50,
+        //                             y: d.y - 86,
+        //                             z: -3,
+        //                             _acc: 0.125
+        //                         }).collision();
+        //                     }
 
-                            if (d.powerup && !d.powerupAdded) {
-                                addPowerup(d.powerup, this.x + (Math.random() * (this.w - 20)), this.y);
-                                d.powerupAdded = true;
-                            }
-                            if (d.hasTurret && !d.turretAdded) {
-                                spawnX = this.x + (Math.random() * (this.w - 50));
-                                if (meters < METERS_DEPTH_3) {
-                                    addEnemy(ENEMY_TURRET_DESTROYER, spawnX, this.y - 26);
-                                    addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
-                                } else if (meters < METERS_DEPTH_2) {
-                                    addEnemy(ENEMY_TURRET_ADVANCED, spawnX, this.y - 26);
-                                    addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
-                                } else  {
-                                    addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
-                                    // 25% to 50% chance to spawn bouns behind turret
-                                    var chance = Math.random();
-                                    if (chance < 0.25) {
-                                        addPowerup(d.powerup, spawnX + 12, this.y);
-                                    } else if (chance < 0.5) {
-                                        addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
-                                    }
-                                }
-                                d.turretAdded = true;
-                            }
-                            if (d.hasDrone && !d.droneAdded) {
-                                spawnX = this.x + (Math.random() * (this.w - 50));
-                                if (meters < METERS_DEPTH_3) {
-                                    addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
-                                } else if (meters < METERS_DEPTH_2) {
-                                    addEnemy(ENEMY_DRONE_ADVANCED, spawnX, this.y - 50);
-                                } else if (meters < METERS_DEPTH_2 + 100) {
-                                    addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
-                                } else  {
-                                    addEnemy(ENEMY_DRONE, spawnX, this.y - 50);
-                                }
-                                d.droneAdded = true;
-                            }
+        //                     if (d.powerup && !d.powerupAdded) {
+        //                         addPowerup(d.powerup, this.x + (Math.random() * (this.w - 20)), this.y);
+        //                         d.powerupAdded = true;
+        //                     }
+        //                     if (d.hasTurret && !d.turretAdded) {
+        //                         spawnX = this.x + (Math.random() * (this.w - 50));
+        //                         if (meters < METERS_DEPTH_3) {
+        //                             addEnemy(ENEMY_TURRET_DESTROYER, spawnX, this.y - 26);
+        //                             addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
+        //                         } else if (meters < METERS_DEPTH_2) {
+        //                             addEnemy(ENEMY_TURRET_ADVANCED, spawnX, this.y - 26);
+        //                             addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
+        //                         } else  {
+        //                             addEnemy(ENEMY_TURRET, spawnX, this.y - 26);
+        //                             // 25% to 50% chance to spawn bouns behind turret
+        //                             var chance = Math.random();
+        //                             if (chance < 0.25) {
+        //                                 addPowerup(d.powerup, spawnX + 12, this.y);
+        //                             } else if (chance < 0.5) {
+        //                                 addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, this.y);
+        //                             }
+        //                         }
+        //                         d.turretAdded = true;
+        //                     }
+        //                     if (d.hasDrone && !d.droneAdded) {
+        //                         spawnX = this.x + (Math.random() * (this.w - 50));
+        //                         if (meters < METERS_DEPTH_3) {
+        //                             addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
+        //                         } else if (meters < METERS_DEPTH_2) {
+        //                             addEnemy(ENEMY_DRONE_ADVANCED, spawnX, this.y - 50);
+        //                         } else if (meters < METERS_DEPTH_2 + 100) {
+        //                             addEnemy(ENEMY_DRONE_DESTROYER, spawnX, this.y - 50);
+        //                         } else  {
+        //                             addEnemy(ENEMY_DRONE, spawnX, this.y - 50);
+        //                         }
+        //                         d.droneAdded = true;
+        //                     }
 
-                            this.trigger("Recycled");
-                        }
-                    });
-                }
-            }
-            Crafty.bind('ViewportScroll', recyclePlatforms);
-        })(Crafty.viewport);
+        //                     this.trigger("Recycled");
+        //                 }
+        //             });
+        //         }
+        //     }
+        //     // Crafty.bind('ViewportScroll', recyclePlatforms);
+        //     Crafty.bind('EnterFrame', recyclePlatforms);
+        // })(Crafty.viewport);
 
         // Create entities pools
         (function initEntitiesPool() {
@@ -1122,6 +1127,80 @@
                 anims_data.push(entity);
             }
         })();
+
+        // Create the Platform pool, these entities will be recycled throughout the level
+        (function initPlatformPool() {
+            for (var i = 0; i < level_data.length; i++) {
+                var d = level_data[i];
+                var entity = Crafty.e('2D, Canvas, Color, Platform, Collision, Tween, Delay, ' + d.clr)
+                .attr(d)
+                .collision();
+
+                // var d = level_data[cur++];
+                // this.unbind('TweenEnd');
+
+                entity.alpha = 1;
+                // entity.attr(d);
+                // entity.addComponent(d.clr);
+                entity.collision();
+
+                var r = ~~ (10 * (1 + Math.random()));
+                if (d.goal && !ship) {
+                    ship = Crafty.e('2D, Canvas, Spaceship, Collision, SpriteAnimation').attr({
+                        x: d.x + 50,
+                        y: d.y - 86,
+                        z: -3,
+                        _acc: 0.125
+                    }).collision();
+                }
+
+                var meters = getMeters(entity.y);
+
+                if (d.powerup && !d.powerupAdded) {
+                    addPowerup(d.powerup, entity.x + (Math.random() * (entity.w - 20)), entity.y);
+                    d.powerupAdded = true;
+                }
+                if (d.hasTurret && !d.turretAdded) {
+                    spawnX = entity.x + (Math.random() * (entity.w - 50));
+                    if (meters < METERS_DEPTH_3) {
+                        addEnemy(ENEMY_TURRET_DESTROYER, spawnX, entity.y - 26);
+                        addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, entity.y);
+                    } else if (meters < METERS_DEPTH_2) {
+                        addEnemy(ENEMY_TURRET_ADVANCED, spawnX, entity.y - 26);
+                        addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, entity.y);
+                    } else  {
+                        addEnemy(ENEMY_TURRET, spawnX, entity.y - 26);
+                        // 25% to 50% chance to spawn bouns behind turret
+                        var chance = Math.random();
+                        if (chance < 0.25) {
+                            addPowerup(d.powerup, spawnX + 12, entity.y);
+                        } else if (chance < 0.5) {
+                            addPowerup(POWERUP_ENERGY_BLUE, spawnX + 12, entity.y);
+                        }
+                    }
+                    d.turretAdded = true;
+                }
+                if (d.hasDrone && !d.droneAdded) {
+                    spawnX = entity.x + (Math.random() * (entity.w - 50));
+                    if (meters < METERS_DEPTH_3) {
+                        addEnemy(ENEMY_DRONE_DESTROYER, spawnX, entity.y - 50);
+                    } else if (meters < METERS_DEPTH_2) {
+                        addEnemy(ENEMY_DRONE_ADVANCED, spawnX, entity.y - 50);
+                    } else if (meters < METERS_DEPTH_2 + 100) {
+                        addEnemy(ENEMY_DRONE_DESTROYER, spawnX, entity.y - 50);
+                    } else {
+                        if (meters < 2000) {
+                            // getting scary
+                            addEnemy(ENEMY_DRONE_ADVANCED, spawnX, entity.y - 50);
+                        } else {
+                            addEnemy(ENEMY_DRONE, spawnX, entity.y - 50);
+                        }
+                    }
+                    d.droneAdded = true;
+                }
+            }
+        })();
+
         function addPowerup(type, x, y) {
             for (var i = 0; i < powerups_data.length; i++) {
                 if (!powerups_data[i].visible) {
@@ -1165,14 +1244,14 @@
                     type = ENEMY_TURRET;
                     component = 'EnemyTurretRed';
                     reel = component;
-                    hp *= 1.5;
+                    hp = ~~(hp * 1.25);
                     shootDelay = ~~(shootDelay * 0.75);
                 break;
                 case ENEMY_TURRET_DESTROYER:
                     type = ENEMY_TURRET;
                     component = 'EnemyTurretPurple';
                     reel = component;
-                    hp *= 2;
+                    hp = ~~(hp * 1.75);
                     shootDelay = ~~(shootDelay * 0.75);
                     shootRange += ~~(shootRange * 0.25);
                 break;
@@ -1186,7 +1265,7 @@
                     component = 'EnemyDroneAdvanced';
                     accel = 0.05;
                     hp *= 2;
-                    shootDelay = ~~(shootDelay * 0.5);
+                    shootDelay = ~~(shootDelay * 0.7);
                     shootRange += ~~(shootRange * 0.25);
                     reel = component;
                 break;
@@ -1194,7 +1273,7 @@
                     type = ENEMY_DRONE;
                     component = 'EnemyDroneDestroyer';
                     accel = 0.05;
-                    hp *= 3;
+                    hp *= 2.5;
                     shootDelay = ~~(shootDelay * 0.75);
                     shootRange += ~~(shootRange * 0.1);
                     spreadBullet = true;
