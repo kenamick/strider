@@ -134,6 +134,10 @@
         // stop all sfx
         Crafty.audio.stop();
 
+        Crafty("Delay").each(function() {
+            this.destroy();
+        });
+
         Crafty.background('#000');
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;
