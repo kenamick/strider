@@ -12,11 +12,11 @@
 
     var GRAVITY = 1,
         SFX = true,
-        MUSIC = true,
+        MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = true,
-        isDebug = false,
-        enableIntroSfx = true,
+        isDebug = true,
+        enableIntroSfx = false,
         
         METERS_DEPTH = 400,
         METERS_DEPTH_2 = METERS_DEPTH * 0.5,
@@ -52,7 +52,7 @@
         level_data = [],
         powerups_data = [],
         cur_platforms = 0,
-        max_platforms = 10,
+        max_platforms = 11,
         step_platforms = 1,
         // player vars
         PLAYER_ENERGY_REPLENISH_TO = 1500,
@@ -149,17 +149,18 @@
         }
     }
 
-    function initLevel() {
+    function genLevel() {
+        var platforms = [];
         var platform2add;
 
-        level_data = [{
+        platforms.push({
             x: Crafty.viewport.width / 2 - 50,
             y: Crafty.viewport.height - 60,
             w: 50,
             h: 26,
             num: 0,
             clr: Math.random() > 0.5 ? 'PlatformBlue' : 'PlatformGreen'
-        }];
+        });
 
         var vw = (Crafty.viewport.width)
           , vh = -Crafty.viewport.y + Crafty.viewport.height - 150;
@@ -168,7 +169,10 @@
         while (i < total_platforms) {
             platform2add = {
                 x: -100 + ~~ (Math.random() * vw),
-                y: vh - i * 100 + (50 * Math.random())
+                y: vh - i * 100 + (50 * Math.random()),
+                hasDrone: false,
+                hasTurret: false,
+                powerup: false
             };
             if (i % 8 == 0 && i > 8) {
                 platform2add.w = 150;
@@ -189,11 +193,11 @@
                 platform2add.powerup = Math.random() < 0.2 ? (Math.random() > 0.5 ? POWERUP_ENERGY : POWERUP_HEALTH) : false;
             }
             platform2add.num = i;
-            level_data.push(platform2add);
+            platforms.push(platform2add);
             i += 1;
         }
         // last top platform
-        level_data.push({
+        platforms.push({
             x: Crafty.viewport.width / 2 - 150 / 2,
             y: vh - i * 100 + (50 * Math.random()),
             w: 150,
@@ -202,6 +206,7 @@
             clr: 'PlatformBlueBig',
             goal: true
         });
+        return platforms;
     }    
 
     function initState() {
@@ -217,7 +222,7 @@
         meters = METERS_DEPTH;
 
         cur_platforms = 0;
-        level_data = [];
+        // level_data = [];
         powerups_data = [];
         anims_data = [];
         enemies_data = [];
@@ -225,8 +230,13 @@
 
         ship = null;
 
-        initLevel();
-    }    
+        level_data = genLevel();
+        // crafty
+        Crafty.unbind('EnterFrame');
+        Crafty.unbind('Pause');
+        Crafty.unbind('Unpause');
+        Crafty.unbind('ViewportScroll');
+    }
 
     function onHitPlatform(e) {
         sfx('land');
@@ -762,7 +772,7 @@
             Crafty("PauseText").destroy();
             // Crafty.DrawManager.draw();
         });
-        Crafty.bind('playerdead', function () {
+        Crafty.uniqueBind('playerdead', function () {
             if (!isDead) {
                 isDead = true;
                 sfx('deathsplat');
@@ -785,7 +795,7 @@
                 }, 1000);
             }
         });
-        Crafty.bind('playerwin', function () {
+        Crafty.uniqueBind('playerwin', function () {
             // Crafty.unbind("ViewportScroll", recyclePlatforms);
             // good bye Strider
             octocat.x = -1000;
@@ -858,11 +868,10 @@
                 if(e.keyCode !== Crafty.keys.ESC) return;
                 this.destroy();
                 // reset game
-                window.location.reload();
-                // Crafty.scene('main');
+                Crafty.scene('intro');
             });
         });
-        Crafty.bind("playerupdatehealth", function () {
+        Crafty.uniqueBind("playerupdatehealth", function () {
             if (!HUDHealth)
                 return;
 
@@ -894,7 +903,7 @@
         //     playerEnergy -= 1;
         //     addAnimation(ANIM_PLAYER_GUNFLARE);
         // });
-        Crafty.bind('playsmokeanim', function(data) {
+        Crafty.uniqueBind('playsmokeanim', function(data) {
             SmokeAnim.x = octocat.x;
             SmokeAnim.y = octocat.y;
             SmokeAnim.visible = true;
@@ -950,11 +959,11 @@
                     }
                     var cur = cur_platforms - max_platforms;
 
-                    var platforms = Crafty("Platform");
+                    var platforms = Crafty('Platform');
                     platforms.each(function (i) {
                         var d = level_data[cur++];
                         if (d) {
-                            this.unbind("TweenEnd");
+                            this.unbind('TweenEnd');
 
                             if(this._children) {
                                 for(var j = 0; j < this._children.length; j++) {
@@ -964,8 +973,6 @@
                                 }
                                 this._children.length = 0; // = [];
                             }
-
-                            //TODO: kill ship, if it had any
                             this.removeComponent(this.clr);
 
                             this.alpha = 1;
@@ -975,7 +982,7 @@
 
                             var r = ~~ (10 * (1 + Math.random()));
                             if (d.goal && !ship) {
-                                ship = Crafty.e("2D, Canvas, Spaceship, Collision, SpriteAnimation").attr({
+                                ship = Crafty.e('2D, Canvas, Spaceship, Collision, SpriteAnimation').attr({
                                     x: d.x + 50,
                                     y: d.y - 86,
                                     z: -3,
@@ -1027,14 +1034,14 @@
                     });
                 }
             }
-            Crafty.bind("ViewportScroll", recyclePlatforms);
+            Crafty.bind('ViewportScroll', recyclePlatforms);
         })(Crafty.viewport);
 
         // Create entities pools
         (function initEntitiesPool() {
             var i, entity;
             for (i = 0; i < MAX_POWERUPS; i++) {
-                entity = Crafty.e("2D, Canvas, Powerup, Collision")
+                entity = Crafty.e('2D, Canvas, Powerup, Collision')
                 .attr({
                     x: 0, y: 0,
                     z: 889,
@@ -1045,7 +1052,7 @@
                 powerups_data.push(entity);
             }
             for (i = 0; i < MAX_ENEMIES; i++) {
-                entity = Crafty.e("2D, Canvas, Enemy, SpriteAnimation, Delay")
+                entity = Crafty.e('2D, Canvas, Enemy, SpriteAnimation, Delay')
                 .attr({
                     x: 0, y: 0,
                     z: 890,
@@ -1061,7 +1068,7 @@
                 enemies_data.push(entity);
             }
             for (i = 0; i < MAX_BULLETS; i++) {
-                entity = Crafty.e("2D, Canvas, EnemyBullet, Collision, SpriteAnimation, Delay")
+                entity = Crafty.e('2D, Canvas, EnemyBullet, Collision, SpriteAnimation, Delay')
                 .attr({
                     x: 0, y: 0,
                     z: 892,
