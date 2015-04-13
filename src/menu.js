@@ -51,7 +51,7 @@
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
             if(e.keyCode !== Crafty.keys.ESC) return;
             this.destroy();
-            Crafty.scene('main');
+            Crafty.scene('menu');
         });
 
         //TODO: un-nest this crap
