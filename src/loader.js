@@ -15,7 +15,7 @@
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
-        skipIntro = true;
+        skipIntro = false;
 
     Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
     Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
@@ -87,7 +87,7 @@
 
         Crafty.paths({ audio: "assets/sfx/", images: "assets/images/" });
         var assets = {
-            images: ['title.png', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 'backgrounds.png', 'starsky.png', 
+            images: ['splash_screen.jpg', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 'backgrounds.png', 'starsky.png', 
                 'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
             sprites: {
                 'ui_energy.png': {

@@ -17,27 +17,44 @@
         Crafty.background('#f6fafb');
         var logosTimeout = 250, logosShowTimeout = 2000;
 
-        var txt = Crafty.e('2D, DOM, Text, Delay').attr({
-            x: 4,
+        // var txt = Crafty.e('2D, DOM, Canvas, SpaceFont, Delay').attr({
+        //     x: 4,
+        //     y: Crafty.viewport.height - 16,
+        //     w: Crafty.viewport.width,
+        //     alpha: 0
+        // }).css({
+        //     'font': '10px Jura, Arial',
+        //     'color': '#888',
+        //     'text-align': 'center'
+        // })
+        // .text('Press ESC to skip intro');
+        // txt.bind('EnterFrame', function (e) {
+        //     var f = e.frame % 100;
+        //     this.alpha = ~~(f < 50);
+        // });
+
+        var txt = Crafty.e('2D, DOM, Text, SpaceFont, Delay').attr({
+            x: 150,
             y: Crafty.viewport.height - 16,
             w: Crafty.viewport.width,
-            alpha: 0
-        }).css({
-            'font': '10px Jura, Arial',
-            'color': '#888',
-            'text-align': 'center'
-        }).text('Press ESC to skip intro');
-        txt.bind('EnterFrame', function (e) {
-            var f = e.frame % 100;
-            this.alpha = ~~(f < 50);
-        });
+            alpha: 1
+        })
+        .textFont({size: '12px'})
+        .textColor('#888')
+        .text('Press ESC to skip intro');
+        // txt.bind('EnterFrame', function (e) {
+        //     var f = e.frame % 100;
+        //     this.alpha = ~~(f < 50);
+        // });
+
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
             if(e.keyCode !== Crafty.keys.ESC) return;
             this.destroy();
             Crafty.scene('main');
         });
+
         //TODO: un-nest this crap
-        Crafty.e('2D, DOM, Image, Tween, Delay').attr({
+        Crafty.e('2D, Canvas, Image, Tween, Delay').attr({
             x: 0,
             y: (640 - 450) / 2,
             alpha: 0
@@ -50,7 +67,7 @@
                     alpha: 0
                 }, logosTimeout).bind('TweenEnd', function () {
                     this.unbind('TweenEnd');
-                    var crafty = Crafty.e('2D, DOM, Image, Tween, Delay').attr({
+                    var crafty = Crafty.e('2D, Canvas, Image, Tween, Delay').attr({
                         x: (400 - 147) / 2,
                         y: (640 - 120) / 2,
                         alpha: 0
@@ -62,13 +79,16 @@
                             this.tween({
                                 alpha: 0
                             }, logosTimeout).bind('TweenEnd', function () {
-                                Crafty.e('2D, DOM, Image, Tween, Keyboard').attr({
+                                Crafty.e('2D, Canvas, Image, Tween, Keyboard').attr({
                                     alpha: 0
-                                }).image('assets/images/title.png').tween({
+                                }).image('assets/images/splash_screen.jpg').tween({
                                     alpha: 1
                                 }, logosTimeout).bind('TweenEnd', function () {
-                                    txt.text('Press any key to start the game').css('color', '#fff');
-                                    this.bind('KeyDown', function () {
+                                    txt.x = 120;
+                                    txt.text('Press any key to start the game')
+                                    .textColor('white')
+                                    this.bind('KeyUp', function () {
+                                        // go go go ...
                                         Crafty.scene('main');
                                     });
                                 });
