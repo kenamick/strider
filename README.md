@@ -7,7 +7,7 @@ The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and T
 
 Good luck!
 
-![Screenshot 1](http://i.imgur.com/NvyohaR.png) ![Screenshot 2](http://i.imgur.com/reiuW2Z.png)
+![Gameplay GIF](http://i.imgur.com/LB1j1Kgs.gif) | [View gameplay gif](http://i.imgur.com/LB1j1Kg.gifv)
 
 ## Fork Info
 
