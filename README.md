@@ -1,3 +1,4 @@
+
 _.o0 Strider 0o._
 ===============================
 
@@ -7,7 +8,9 @@ The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and T
 
 Good luck!
 
-![Screenshot 1](http://i.imgur.com/NvyohaR.png) ![Screenshot 2](http://i.imgur.com/reiuW2Z.png)
+![Screenshot 1](http://i.imgur.com/NvyohaR.png) 
+
+![Gameplay GIF](http://i.imgur.com/LB1j1Kgs.gif) | [View gameplay gif](http://i.imgur.com/LB1j1Kg.gifv)
 
 ## Fork Info
 
@@ -19,7 +22,7 @@ Make your way to the top by using:
 
   * :running: `Arrow keys` or `WAsD` keys to move and jump on platforms. 
   * :arrow_up: Press `Up Arrow` or `W` twice to double jump.
-  * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest. Your energy replenishes with 1 every 1.5 seconds.
+  * :gun: `X`, `Z` or `Y` - To shoot at the nearest enemy. Your *RP-2300 "Warmonger"* assault rifle is fully automatic. Just aim it at your target and it will do the rest.
   * :rage1: Press `1` to use overcharge. Trade 1 health for complete energy refill.
 
 It might seem like a hard to play game at the beginning, but it's really not. A couple of hints:
@@ -95,3 +98,5 @@ Run the game with live reload:
 *Strider* is under [MIT License](LICENSE)
 
 Original [Octocat Jump](https://github.com/ogoshen/game-off-2012) game is @copyright Omer Goshen <gershon@goosemoose.com>
+
+
