@@ -87,8 +87,8 @@
 
         Crafty.paths({ audio: "assets/sfx/", images: "assets/images/" });
         var assets = {
-            images: ['splash_screen.jpg', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 'backgrounds.png', 'starsky.png', 
-                'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
+            images: ['splash_screen.jpg', 'splash_screen_blurred.jpg', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 
+                'backgrounds.png', 'starsky.png', 'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
             sprites: {
                 'ui_energy.png': {
                     tile: 72,
