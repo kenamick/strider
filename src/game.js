@@ -12,15 +12,15 @@
 
     var GRAVITY = 1,
         SFX = true,
-        MUSIC = true,
+        MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = false,
-        isDebug = false,
-        enableIntroSfx = true,
+        isDebug = true,
+        enableIntroSfx = !isDebug,
         
         METERS_DEPTH = 3000,
-        METERS_DEPTH_2 = METERS_DEPTH * 0.5,
-        METERS_DEPTH_3 = METERS_DEPTH * 0.25,
+        METERS_DEPTH_2 = METERS_DEPTH * 0.6,
+        METERS_DEPTH_3 = METERS_DEPTH * 0.3,
         meters = METERS_DEPTH,
         total_platforms = METERS_DEPTH / 10 - 1,
         
@@ -304,11 +304,12 @@
         // if (bullet) {
             // bullet.trigger('Kill');
             playerHealth -= 1;
-            Crafty.trigger('playerupdatehealth');
             if (playerHealth < 0) {
+                Crafty.trigger('playerupdatehealth');
                 bgovr.color('#ff0000');
                 Crafty.trigger('playerdead');
             } else {
+                Crafty.trigger('playerupdatehealth');
                 bgovr.color('#ff0000').delay(function () {
                     this.color('#006064');
                 }, 500);
@@ -543,7 +544,7 @@
             this.moved = true;
         });
         octocat.delay(function() {
-            if (!this.moved) {
+            if (!this.moved && !isDebug) {
                 sfx('wait4mom');
                 this.animate('shoot_n_e');
             }
@@ -889,13 +890,14 @@
             if (!HUDHealth)
                 return;
 
-            playerHealth = Math.min(playerHealth, MAX_HEALTH);
-            playerHealth = Math.max(playerHealth, -1);
+            playerHealth = playerHealth > MAX_HEALTH ? MAX_HEALTH : playerHealth;
+            playerHealth = playerHealth < 0 ? 0 : playerHealth;
+
             HUDHealth.removeComponent('HUDHealth4')
                 .removeComponent('HUDHealth3')
                 .removeComponent('HUDHealth2')
-                .removeComponent('HUDHealth0')
-                .removeComponent('HUDHealth4');
+                .removeComponent('HUDHealth1')
+                .removeComponent('HUDHealth0');
             switch(playerHealth) {
                 case 4: HUDHealth.addComponent('HUDHealth4'); break;
                 case 3: HUDHealth.addComponent('HUDHealth3'); break;
