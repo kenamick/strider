@@ -38,6 +38,24 @@ It might seem like a hard to play game at the beginning, but it's really not. A 
 
 Sadly, music & sound do not work under Safari atm! :disappointed:
 
+## Development
+
+Install npm dependencies:
+
+    npm install
+
+Install bower dependencies:
+
+    bower install
+
+Run the game with live reload:
+
+    grunt
+
+Create a distributable:
+
+    grunt prod
+
 ## Open Source Libraries
 
   * [Crafty](http://craftyjs.com) - An amazing Javascript/HTML5 Game engine.
@@ -78,20 +96,6 @@ Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 ### Music
 
   * _2nd T-Legion_ by [me](http://kenamick.com/pro-xex) :metal:
-
-## Development
-
-Install required bower dependencies:
-
-    bower install
-
-Install required npm dependencies:
-
-    npm install
-
-Run the game with live reload:
-
-    grunt
 
 ## License
 
