@@ -167,22 +167,26 @@
         .textFont({size: '16px'}).textColor('#888')
         .text('Controls');
 
-        Crafty.e('2D, Canvas, Powerup, Gunner').attr({x: sx, y: sy + 20});
+        Crafty.e('2D, Canvas, Powerup, Gunner').attr({x: sx - 10, y: sy + 60});
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 25, w: Crafty.viewport.width - 50})
         .textFont({size: '14px'}).textColor(txtClr)
-        .text("Use the 'Arrow' or 'WAsD' keys to move and jump.");
+        .text("Use the arrow or 'WAsD' keys to move and jump.");
 
-        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 55, w: Crafty.viewport.width - 75})
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 50, w: Crafty.viewport.width - 75})
         .textFont({size: '14px'}).textColor(txtClr)
-        .text("Press the 'Up Arrow' key or 'W' key twice to activate your thrusters and do a double jump.");
+        .text("Press 'Up' or 'W' twice to activate your thrusters and do a double jump.");
 
-        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 95, w: Crafty.viewport.width - 75})
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 90, w: Crafty.viewport.width - 75})
         .textFont({size: '14px'}).textColor(txtClr)
-        .text("Press 'X', 'Z' or 'Y' to shoot. You don't need to aim. Your rifle targets the nearest enemy automatically.");
+        .text("Press either 'X', 'Z' or 'Y' to shoot. You don't need to aim. Your rifle targets the nearest enemy automatically.");
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx + 50, y: sy + 140, w: Crafty.viewport.width - 75})
+        .textFont({size: '14px'}).textColor(txtClr)
+        .text("Your rifle needs energy to shoot. You need to either pick up powerups or wait until it recharges.");
 
         // Powerups
-        sy = sy + 150;
+        sy = sy + 180;
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
         .textFont({size: '16px'}).textColor('#888')
         .text('Powerups');
@@ -206,7 +210,7 @@
         .text("60% percent energy refill.");
 
         // Enemies
-        sy = sy + 115;
+        sy = sy + 135;
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy, w: Crafty.viewport.width})
         .textFont({size: '16px'}).textColor('#888')
         .text('Enemies');
