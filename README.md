@@ -76,7 +76,21 @@ Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
   * _2nd T-Legion_ by [me](http://kenamick.com/pro-xex) :metal:
 
-### License
+## Development
+
+Install required bower dependencies:
+
+    bower install
+
+Install required npm dependencies:
+
+    npm install
+
+Run the game with live reload:
+
+    grunt
+
+## License
 
 *Strider* is under [MIT License](LICENSE)
 
