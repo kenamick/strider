@@ -10,12 +10,12 @@
 (function octocatJump(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
-    var GRAVITY = 1,
-        SFX = true,
+    var isDebug = true,
+        GRAVITY = 1,
+        SFX = false,
         MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = false,
-        isDebug = true,
         enableIntroSfx = !isDebug,
         
         METERS_DEPTH = 3000,
@@ -263,10 +263,7 @@
             playerHealth += 1;
             if (!Crafty.audio.isPlaying('powerup02')) {
                 sfx('powerup02');
-                // var bgovr = Crafty("BackgroundOverlay");
-                // bgovr.color('#20ee20').delay(function () {
-                //     this.color('#006064');
-                // }, 250);
+                Crafty.trigger('flashscreen', {clr: '#20ee20', delay: 175});
             }
             Crafty.trigger('playerupdatehealth');
             Crafty.trigger('playsmokeanim');
@@ -284,17 +281,13 @@
             debug('*** TAKE ENERGY');
             if (!Crafty.audio.isPlaying('powerup01')) {
                 sfx('powerup01');
-                // var bgovr = Crafty("BackgroundOverlay");
-                // bgovr.color('#0000ff').delay(function () {
-                //     this.color('#006064');
-                // }, 250);
+                Crafty.trigger('flashscreen', {clr: '#2020ee', delay: 175});
             }
             Crafty.trigger('playerupdatejuice');
             Crafty.trigger('playsmokeanim');
         }
     }
     function onHitBullet(bullet) {
-        var bgovr = Crafty("BackgroundOverlay");
         // var bullet;
         // if (typeof e === 'object') {
         //     bullet = e;
@@ -306,13 +299,11 @@
             playerHealth -= 1;
             if (playerHealth < 0) {
                 Crafty.trigger('playerupdatehealth');
-                bgovr.color('#ff0000');
+                Crafty('BackgroundOverlay').color('#ff0000');
                 Crafty.trigger('playerdead');
             } else {
                 Crafty.trigger('playerupdatehealth');
-                bgovr.color('#ff0000').delay(function () {
-                    this.color('#006064');
-                }, 500);
+                Crafty.trigger('flashscreen', {clr: '#ff0000', delay: 400});
                 sfx('hurt');
             }
         // }
@@ -439,12 +430,9 @@
                     Crafty.trigger('playerupdatehealth');
                     playerEnergy += MAX_ENERGY;
                     Crafty.trigger('playerupdatejuice');
+                    Crafty.trigger('flashscreen', {clr: '#20ee20', delay: 400});
                     sfx('overcharge');
                     sfx('hurt');
-                    var bgovr = Crafty("BackgroundOverlay");
-                    bgovr.color('#20ee20').delay(function () {
-                        this.color('#006064');
-                    }, 400);
                 }
             } else if (e.key === 57) {
                 MUSIC_VOL += 0.1;
@@ -786,6 +774,14 @@
             Crafty("BackgroundOverlay").alpha = 0.2;
             Crafty("PauseText").destroy();
             // Crafty.DrawManager.draw();
+        });
+        Crafty.uniqueBind('flashscreen', function (data) {
+            if (data) {
+                var bgovr = Crafty('BackgroundOverlay');
+                bgovr.color(data.clr).delay(function () {
+                    this.color('#006064');
+                }, data.delay);
+            }
         });
         Crafty.uniqueBind('playerdead', function () {
             if (!isDead) {
