@@ -61,7 +61,7 @@
         playerSpeed = 4,
         playerJump = 17,
         playerHealth = 4,
-        playerEnergy = 49,
+        playerEnergy = MAX_ENERGY,
         playerDamage = 1;
         isDead = false,
         playerTargetDist = 40000,  //TODO
@@ -225,7 +225,7 @@
         // Crafty.viewport.y = 0;
         isDead = false;
         playerHealth = MAX_HEALTH;
-        playerEnergy = 49;
+        playerEnergy = MAX_ENERGY;
         meters = METERS_DEPTH;
 
         cur_platforms = 0;
@@ -912,7 +912,7 @@
                 return;
 
             playerEnergy = playerEnergy < 0 ? 0 : playerEnergy;
-            playerEnergy = playerEnergy > 49 ? 49 : playerEnergy;
+            playerEnergy = playerEnergy > MAX_ENERGY ? MAX_ENERGY : playerEnergy;
             HUDEnergy.trigger('Invalidate');
         });
         // Crafty.bind("playershoot", function() {
