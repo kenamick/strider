@@ -155,11 +155,8 @@
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 25, w: Crafty.viewport.width - 75})
         .textFont({size: '14px'}).textColor(txtClr)
-        .text("You are Strider. An agent of a rebel force that needs to deliver some very important documents to headquarters.");
-
-        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: sx, y: sy + 70, w: Crafty.viewport.width - 75})
-        .textFont({size: '14px'}).textColor(txtClr)
-        .text("A transport ship is waiting for you at 0 m. height. You need to travel 3 km. up the shaft to reach your destination. Jump up on the platforms to make your way up.");
+        .text("You are Strider. An agent of a rebel force that needs to deliver some very important intel to HQ. You've got the data and now you need to make your escape. " +
+            "A 3 km. deep shaft stands between you and a transport ship waiting to pick you up at 0 m. height. Jump up on the platforms, destroy the defense systems and deliver that intel.");
 
         // Controls
         sy = sy + 140;
