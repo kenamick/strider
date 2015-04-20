@@ -258,10 +258,14 @@
         .textFont({size: '20px'})
         .text('Mission Failed!');
 
-        Crafty.e('2D, DOM, Text, SpaceFont')
-        .attr({x: 100, y: 250, w: 250 })
-        .textFont({size: '20px'})
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 250, w: 250 }).textFont({size: '20px'})
         .text('Strider reached: ' + data.meters + ' m.');
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 320, w: 250 }).textFont({size: '20px'})
+        .text('Turrets destroyed: ' + data.kills.turrets);
+
+        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 350, w: 250 }).textFont({size: '20px'})
+        .text('Drones destroyed: ' + data.kills.drones);
 
         Crafty.e('2D, DOM, Text, SpaceFont')
         .attr({x: 135, y: Crafty.viewport.height - 16, w: Crafty.viewport.width})

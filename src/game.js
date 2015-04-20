@@ -62,7 +62,8 @@
         playerJump = 17,
         playerHealth = 4,
         playerEnergy = MAX_ENERGY,
-        playerDamage = 1;
+        playerDamage = 1,
+        playerKills = {},
         isDead = false,
         playerTargetDist = 40000,  //TODO
         // enemy base vars
@@ -234,6 +235,8 @@
         anims_data = [];
         enemies_data = [];
         bullets_data = [];
+        playerKills.drones = 0;
+        playerKills.turrets = 0;
 
         ship = null;
         SmokeAnim = null;
@@ -800,7 +803,7 @@
                 octocat.destroy();
 
                 setTimeout(function () {
-                    Crafty.scene('dead', {'meters': meters});
+                    Crafty.scene('dead', {'meters': meters, 'kills': playerKills});
                 }, 1150);
             }
         });
@@ -1408,6 +1411,11 @@
                     // entity.delay(entity.shootFn, shootDelay, -1); // wtf does this not work?
                     entity.shootDleay = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
                     entity.bind('Kill', function () {
+                        switch(this.EnemyType) {
+                            case ENEMY_TURRET: playerKills.turrets += 1; break;
+                            case ENEMY_DRONE: playerKills.drones += 1; break;
+                            default: throw 'Unknown enemy type ' + type; break;
+                        }
                         addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01, 
                             this.x + this.w / 2, this.y + this.h / 2);
                         entity.shootDleay.cancelDelay(entity.shootFn);
@@ -1530,10 +1538,6 @@
                 }
             }
         }
-
-        // addEnemy(ENEMY_TURRET_DESTROYER, 150, 100);
-        // addEnemy(ENEMY_DRONE, 150, 100);
-        // addEnemy(ENEMY_DRONE_ADVANCED, 150, 100);
 
         // all purpose smoke animation
         SmokeAnim = Crafty.e("2D, Canvas, SmokeJump, SpriteAnimation")
