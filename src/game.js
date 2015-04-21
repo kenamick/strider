@@ -277,7 +277,7 @@
         if (obj && obj.visible) {
             obj.trigger('Kill');
             if (obj.energyType === POWERUP_ENERGY_BLUE) {
-                playerEnergy += ~~(MAX_ENERGY * 0.5);    
+                playerEnergy += ~~(MAX_ENERGY * 0.6);    
             } else {
                 playerEnergy += ~~(MAX_ENERGY * 0.3);    
             }
