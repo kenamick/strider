@@ -230,7 +230,7 @@
         }
         Crafty.load(assets, function() {
             if (skipIntro) {
-                Crafty.scene('instructions'); //TODO
+                Crafty.scene('menu');
             }
             bgovr.tween({alpha: 1.0}, 1800)
             .bind('TweenEnd', function () {

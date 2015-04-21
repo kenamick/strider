@@ -10,9 +10,9 @@
 (function octocatJump(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
-    var isDebug = true,
+    var isDebug = false,
         GRAVITY = 1,
-        SFX = false,
+        SFX = true,
         MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = false,
@@ -1132,16 +1132,16 @@
                     type = ENEMY_TURRET;
                     component = 'EnemyTurretRed';
                     reel = component;
-                    hp = ~~(hp * 1.25);
-                    shootDelay = ~~(shootDelay * 0.75);
+                    hp = ~~(hp * 1.35);
+                    shootDelay = ~~(shootDelay * 0.9);
                 break;
                 case ENEMY_TURRET_DESTROYER:
                     type = ENEMY_TURRET;
                     component = 'EnemyTurretPurple';
                     reel = component;
-                    hp = ~~(hp * 1.75);
-                    shootDelay = ~~(shootDelay * 0.75);
-                    shootRange += ~~(shootRange * 0.25);
+                    hp = ~~(hp * 1.5);
+                    shootDelay = ~~(shootDelay * 0.8);
+                    shootRange += ~~(shootRange * 0.10);
                 break;
                 case ENEMY_DRONE:
                     component = 'EnemyDrone';
@@ -1152,17 +1152,17 @@
                     type = ENEMY_DRONE;
                     component = 'EnemyDroneAdvanced';
                     accel = 0.05;
-                    hp *= 2;
-                    shootDelay = ~~(shootDelay * 0.7);
-                    shootRange += ~~(shootRange * 0.25);
+                    hp *= 1.75;
+                    shootDelay = ~~(shootDelay * 0.8);
+                    shootRange += ~~(shootRange * 0.15);
                     reel = component;
                 break;
                 case ENEMY_DRONE_DESTROYER:
                     type = ENEMY_DRONE;
                     component = 'EnemyDroneDestroyer';
                     accel = 0.05;
-                    hp *= 2.5;
-                    shootDelay = ~~(shootDelay * 0.75);
+                    hp *= 2;
+                    shootDelay = ~~(shootDelay * 0.9);
                     shootRange += ~~(shootRange * 0.1);
                     spreadBullet = true;
                     reel = component;
