@@ -241,7 +241,7 @@
         // stop all sfx
         Crafty.audio.stop();
 
-        Crafty("Delay").each(function() {
+        Crafty('Delay').each(function() {
             this.destroy();
         });
 
@@ -250,13 +250,20 @@
         Crafty.viewport.y = 0;
         Crafty.background("url('assets/images/starsky.png') repeat");
 
-        Crafty.e('2D, DOM, Text, SpaceFont')
-        .attr({x: 135, y: 150, w: 150 })
-        .textFont({size: '20px'})
-        .text('Mission Failed!');
+        if (data.success) {
+            Crafty.e('2D, DOM, Text, SpaceFont')
+            .attr({x: 105, y: 150, w: Crafty.viewport.width})
+            .textFont({size: '20px'})
+            .text('Mission Successful!');
+        } else {
+            Crafty.e('2D, DOM, Text, SpaceFont')
+            .attr({x: 135, y: 150, w: Crafty.viewport.width})
+            .textFont({size: '20px'})
+            .text('Mission Failed!');
 
-        Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 250, w: 250 }).textFont({size: '20px'})
-        .text('Strider reached: ' + data.meters + ' m.');
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 250, w: 250 }).textFont({size: '20px'})
+            .text('Strider reached: ' + data.meters + ' m.');
+        }
 
         Crafty.e('2D, DOM, Text, SpaceFont').attr({x: 100, y: 320, w: 250 }).textFont({size: '20px'})
         .text('Turrets destroyed: ' + data.kills.turrets);

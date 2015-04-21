@@ -801,10 +801,10 @@
                 });
                 octocat.visible = false;
                 octocat.destroy();
-
-                setTimeout(function () {
+                // score screen
+                Crafty.e('Delay').delay(function () {
                     Crafty.scene('dead', {'meters': meters, 'kills': playerKills});
-                }, 1150);
+                }, 1150, 0);
             }
         });
         Crafty.uniqueBind('playerwin', function () {
@@ -878,11 +878,12 @@
             }, 8000, 0);
             // keyboard
             Crafty.e('Keyboard').bind('KeyDown', function (e) {
-                if(e.keyCode !== Crafty.keys.ESC) 
+                if(e.keyCode !== Crafty.keys.ESC && e.keyCode !== Crafty.keys.ENTER && e.keyCode !== Crafty.keys.SPACE) {
                     return;
+                }
                 this.destroy();
-                // reset game
-                Crafty.scene('menu');
+                // score screen
+                Crafty.scene('dead', {'success': true, 'meters': meters, 'kills': playerKills});
             });
         });
         Crafty.uniqueBind("playerupdatehealth", function () {
