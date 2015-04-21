@@ -15,7 +15,7 @@
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
-        skipIntro = true;
+        skipIntro = false;
 
     Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
     Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
@@ -234,7 +234,7 @@
             }
             bgovr.tween({alpha: 1.0}, 1800)
             .bind('TweenEnd', function () {
-                Crafty.scene('game');
+                Crafty.scene('intro');
             })
             .delay(function() {
                 text.visible = false;

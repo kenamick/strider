@@ -13,7 +13,7 @@
     var isDebug = false,
         GRAVITY = 1,
         SFX = true,
-        MUSIC = false,
+        MUSIC = true,
         MUSIC_VOL = 0.8,
         enableFPS = false,
         enableIntroSfx = !isDebug,
