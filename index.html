@@ -45,17 +45,23 @@
     }
     #cr-stage {
       border:1px solid #999; 
-      margin:50px auto; 
+      /*margin:50px auto; */
       color:white; 
       -webkit-box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
     }
     #game { 
-      /*background: url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff;*/
+      position: absolute;
+      top: 0;
+      left: 50%;
+      -webkit-transform: translate(-50%, 0%);
+      -moz-transform: translate(-50%, 0%);
+      -ms-transform: translate(-50%, 0%);
+      -o-transform: translate(-50%, 0%);
+      transform: translate(-50%, 0%);
       width: 400px;
       height: 640px;
       border:1px solid #999; 
-      margin:50px auto; 
       color:white; 
       -webkit-box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);

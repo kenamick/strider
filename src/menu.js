@@ -124,6 +124,17 @@
             .textColor('white')
             .text("Press 'I' to read instructions");
 
+            // --- BETA ---
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                x: 5,
+                y: Crafty.viewport.height - 15,
+                w: Crafty.viewport.width,
+            })
+            .textFont({size: '14px'})
+            .textColor('white')
+            .text("BETA");
+            // -----------
+
             this.bind('KeyUp', function (e) {
                 if (e.keyCode === Crafty.keys.X) {
                     // go go go ...
