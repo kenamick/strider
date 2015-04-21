@@ -423,9 +423,15 @@
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.direction = 'left';
+            } else if (e.key === Crafty.keys.Z) {
+                this._up = false;
+                // noop
             }
         });
         octocat.bind('KeyUp', function (e) {
+            if (e.key === Crafty.keys.Z) {
+                // noop
+            }
             if (e.key === 49) {
                 // Overcharge
                 if (playerHealth > 0) {
