@@ -149,7 +149,7 @@
     function music(name, repeat, vol) {
         if (MUSIC) {
             debug('play music', name);
-            Crafty.audio.play(name, repeat, vol);
+            Crafty.audio.play(name, repeat === true ? -1 : 0, vol);
         }
     }
     function getMeters(y) {
