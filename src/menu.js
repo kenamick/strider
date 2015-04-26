@@ -108,7 +108,7 @@
         }, logosTimeout).bind('TweenEnd', function () {
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
                 x: 121,
-                y: Crafty.viewport.height - 25,
+                y: Crafty.viewport.height - 55,
                 w: Crafty.viewport.width,
             })
             .textFont({size: '14px'})
@@ -117,7 +117,7 @@
 
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
                 x: 115,
-                y: Crafty.viewport.height - 75,
+                y: Crafty.viewport.height - 105,
                 w: Crafty.viewport.width,
             })
             .textFont({size: '14px'})
@@ -126,8 +126,8 @@
 
             // --- BETA ---
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
-                x: 5,
-                y: Crafty.viewport.height - 15,
+                x: 2,
+                y: Crafty.viewport.height - 12,
                 w: Crafty.viewport.width,
             })
             .textFont({size: '10px'})
