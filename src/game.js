@@ -756,25 +756,19 @@
         }
         Crafty.bind("EnterFrame", scrollViewport);
         
-        Crafty.bind("Pause", function() {
+        Crafty.uniqueBind("Pause", function() {
             Crafty.audio.mute();
             Crafty("BackgroundOverlay").color("#000000");
             Crafty("BackgroundOverlay").alpha = 0.5;
             Crafty("PauseText").destroy();
-            Crafty.e("2D, DOM, Text, PauseText").css({
-                "width": Crafty.viewport.width + "px",
-                "font": "96px Chewy, Impact",
-                "color": "#fff",
-                "text-align": "center",
-                'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
-            }).attr({
-                x: 0,
-                y: Crafty.viewport.height / 2 - Crafty.viewport.y - 64,
-                z: 9999
-            }).text("Paused");
+            Crafty.e('2D, DOM, Text, SpaceFont, PauseText')
+            .attr({x: octocat.x - 15, y: octocat.y - 25, w: Crafty.viewport.width})
+            .textFont({size: '16px'})
+            .textColor('white')
+            .text('Paused');
             // Crafty.DrawManager.draw();
         });
-        Crafty.bind("Unpause", function() {
+        Crafty.uniqueBind("Unpause", function() {
             Crafty.audio.unmute();
             Crafty("BackgroundOverlay").color("#006064");
             Crafty("BackgroundOverlay").alpha = 0.2;
