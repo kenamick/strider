@@ -8,6 +8,7 @@ var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
+var pkg = require('./package.json');
 
 module.exports = function (grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -63,7 +64,6 @@ module.exports = function (grunt) {
           { expand: true, src: ['assets/images/*.png', 'assets/images/*.gif', 'assets/images/*.jpg'], dest: 'dist/' },
           { expand: true, src: ['assets/sfx/*.ogg', 'assets/sfx/*.m4a'], dest: 'dist/' },
           { expand: true, src: ['assets/fonts/*'], dest: 'dist/' },
-          { expand: true, flatten: true, src: ['game/plugins/*.js'], dest: 'dist/js/plugins/' },
           { expand: true, flatten: true, src: ['bower_components/crafty/dist/crafty-min.js'], dest: 'dist/lib/' },
           { expand: true, flatten: true, src: ['LICENSE'], dest: 'dist/' },
           { expand: true, src: ['index.html'], dest: 'dist/' }
@@ -78,6 +78,21 @@ module.exports = function (grunt) {
         src: ['src/traps.js', 'src/loader.js', 'src/menu.js', 'src/game.js'],
         dest: 'dist/game.js',
       },
+    },
+    replace: {
+      dist: {
+        options: {
+          patterns: [
+            {
+              match: /@@VERSION/g,
+              replacement: pkg.version
+            }
+          ]
+        },
+        files: [
+          {expand: true, flatten: true, src: ['dist/game.js'], dest: 'dist/'}
+        ]
+      }
     },
     // browserify: {
     //   build: {
@@ -109,7 +124,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('build', ['concat','copy']);
+  grunt.registerTask('build', ['concat', 'replace', 'copy']);
   grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);

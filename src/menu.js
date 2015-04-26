@@ -130,9 +130,9 @@
                 y: Crafty.viewport.height - 15,
                 w: Crafty.viewport.width,
             })
-            .textFont({size: '14px'})
+            .textFont({size: '10px'})
             .textColor('white')
-            .text("BETA");
+            .text("@@VERSION");
             // -----------
 
             this.bind('KeyUp', function (e) {

@@ -1,7 +1,7 @@
 {
   "name": "Strider",
   "description": "Strider is a 2D sci-fi platformer game.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "devDependencies": {
     "bower": "^1.4.1",
@@ -16,6 +16,7 @@
     "grunt-html-build": "^0.4.3",
     "grunt-open": "^0.2.3",
     "grunt-processhtml": "^0.3.7",
+    "grunt-replace": "^0.8.0",
     "matchdep": "^0.3.0"
   },
   "engines": {
