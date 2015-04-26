@@ -10,10 +10,10 @@
 (function octocatJump(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
-    var isDebug = false,
+    var isDebug = true,
         GRAVITY = 1,
         SFX = true,
-        MUSIC = true,
+        MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = false,
         enableIntroSfx = !isDebug,
@@ -366,7 +366,7 @@
             direction: 'right'
         }).color('#006064');
 
-        octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Twoway')
+        octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, MyTwoway')
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
@@ -423,9 +423,6 @@
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.direction = 'left';
-            } else if (e.key === Crafty.keys.Z) {
-                this._up = false;
-                // noop
             }
         });
         octocat.bind('KeyUp', function (e) {
