@@ -66,8 +66,7 @@ module.exports = function (grunt) {
           { expand: true, src: ['assets/images/*.png', 'assets/images/*.gif', 'assets/images/*.jpg'], dest: 'dist/' },
           { expand: true, src: ['assets/sfx/*.ogg', 'assets/sfx/*.m4a'], dest: 'dist/' },
           { expand: true, src: ['assets/fonts/*'], dest: 'dist/' },
-          { expand: true, flatten: true, src: ['bower_components/crafty/dist/crafty-min.js'], dest: 'dist/lib/' },
-          { expand: true, flatten: true, src: ['bower_components/crafty/dist/crafty.js'], dest: 'dist/lib/' },
+          { expand: true, flatten: true, src: ['lib/*'], dest: 'dist/lib/' },
           { expand: true, flatten: true, src: ['LICENSE'], dest: 'dist/' },
           { expand: true, src: ['index.html'], dest: 'dist/' }
         ]
@@ -134,7 +133,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('build', ['concat', 'replace', 'copy']);
-  grunt.registerTask('build-craftydev', ['concat', 'replace', 'copy']);
+  grunt.registerTask('build-craftydev', ['concat', 'replace', 'copy:crafty']);
   grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);

@@ -44,10 +44,6 @@ Install npm dependencies:
 
     npm install
 
-Install bower dependencies:
-
-    bower install
-
 Run the game with live reload:
 
     grunt

@@ -2,7 +2,6 @@ bower_components/
 node_modules/
 dist/
 .gitconfig
-crafty.js
 _raw/
 _media/
 urch
