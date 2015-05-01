@@ -169,6 +169,7 @@
                     selctor.trigger('Sel', 'down');
                 }
                 if (e.keyCode === Crafty.keys.X || e.keyCode === Crafty.keys.ENTER || e.keyCode === Crafty.keys.SPACE) {
+                    this.destroy();
                     // go go go ...
                     switch(selctor.pos) {
                         case 0: Crafty.scene('main'); return;
@@ -334,7 +335,62 @@
      * Game End Scene
      */
     Crafty.scene('credits', function (data) {
-        
+
+        Crafty.background('#000');
+        Crafty.viewport.x = 0;
+        Crafty.viewport.y = 0;
+        Crafty.background("url('assets/images/starsky.png') repeat");
+
+        var xpos = 50, ypos = 120;
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos, w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Producing & Programming' );
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos + 30, w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Petar Petrov' );
+
+        ypos += 100;
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos , w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Sprites & Animations');
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos + 30, w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Master484 (m484games.ucoz.com)' );
+
+        ypos += 100;
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos , w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Artwork');
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos + 30, w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Stretuz (stremena.com)' );
+
+        ypos += 100;
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos , w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Music');
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: xpos, y: ypos + 30, w: Crafty.viewport.width}).textFont({size: '20px'})
+        .text('Petar Petrov' );
+
+        // exit
+
+        Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: 135, y: Crafty.viewport.height - 16, w: Crafty.viewport.width})
+        .text('Press any key to continue');
+
+        Crafty.e('Keyboard').bind('KeyDown', function (e) {
+            this.destroy();
+            Crafty.scene('menu');
+        });
     });
 
     }); //eof-ready
