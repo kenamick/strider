@@ -175,8 +175,14 @@
                     // go go go ...
                     switch(selctor.pos) {
                         case 0: Crafty.scene('main'); return;
-                        case 1: Crafty.scene('instructions'); return;
-                        case 2: Crafty.scene('credits'); return;
+                        case 1: 
+                            Crafty.audio.play('menu2');
+                            Crafty.scene('instructions');
+                            return;
+                        case 2: 
+                            Crafty.audio.play('menu2');
+                            Crafty.scene('credits'); 
+                            return;
                     }
                 }
             });
@@ -190,9 +196,6 @@
         Crafty.background("url('assets/images/splash_screen_blurred.jpg')");
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;
-
-        // stop all sfx
-        Crafty.audio.stop();
 
         var sx = 15, sy = 25, txtClr = 'white';
 

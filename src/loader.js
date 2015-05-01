@@ -202,6 +202,7 @@
                 liftoff2: ['liftoff2.ogg', 'liftoff2.m4a'],
                 wait4mom: ['wait4urmom.ogg', 'wait4urmom.m4a'],
                 menu: ['menu.ogg', 'menu.m4a'],
+                menu2: ['menu2.ogg', 'menu2.m4a'],
                 music1: ['2ndtlegion.ogg']
             }
         };
