@@ -408,7 +408,7 @@
 
         if (isDebug) octocat.addComponent('WiredHitBox');
 
-        octocat.bind("CheckLanding", function(ground) {
+        octocat.bind('CheckLanding', function(ground) {
             // do not land, if not above the platform
             if (octocat.y + octocat.h > ground.y + octocat.vy) {
                 octocat.canLand = false;
@@ -425,6 +425,9 @@
                 this.hasDoubleJumpPowerUp = true;
                 sfx('jump');
             }
+        });
+        octocat.bind('LandedOnGround', function() {
+            sfx('land');
         });
 
         octocat.bind('KeyDown', function (e) {
