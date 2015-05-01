@@ -106,25 +106,27 @@
         }).image('assets/images/splash_screen.jpg').tween({
             alpha: 1
         }, logosTimeout).bind('TweenEnd', function () {
-            Crafty.e('2D, DOM, Text, SpaceFont').attr({
-                x: 121,
-                y: Crafty.viewport.height - 55,
-                w: Crafty.viewport.width,
-            })
-            .textFont({size: '14px'})
-            .textColor('white')
-            .text("Press 'X' to start the game");
+            var xpos = 180, ypos = Crafty.viewport.height - 115;
 
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
-                x: 115,
-                y: Crafty.viewport.height - 105,
+                x: xpos,
+                y: ypos,
                 w: Crafty.viewport.width,
-            })
-            .textFont({size: '14px'})
-            .textColor('white')
-            .text("Press 'I' to read instructions");
+            }).textFont({size: '14px'}).textColor('white').text('Play');
 
-            // --- BETA ---
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                x: xpos,
+                y: ypos + 25,
+                w: Crafty.viewport.width,
+            }).textFont({size: '14px'}).textColor('white').text('Instructions');
+
+            Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                x: xpos,
+                y: ypos + 50,
+                w: Crafty.viewport.width,
+            }).textFont({size: '14px'}).textColor('white').text('Credits');
+
+            // --- Version ---
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
                 x: 2,
                 y: Crafty.viewport.height - 12,
@@ -135,12 +137,44 @@
             .text("@@VERSION");
             // -----------
 
+            var selctor = Crafty.e('2D, Canvas, Color, Tween').attr({
+                x: xpos - 15,
+                y: ypos - 1,
+                w: 230,
+                h: 16,
+                pos: 0,
+                alpha: 0.35
+            })
+            .color('white')
+            .bind('Sel', function(dir) {
+                if (dir === 'up') {
+                    this.pos -= 1;
+                } else if (dir === 'down') {
+                    this.pos += 1;
+                }
+                if (this.pos < 0) {
+                    this.pos = 2;
+                } else if (this.pos > 2) {
+                    this.pos = 0;
+                }
+                this.alpha = 0.9;
+                this.tween({alpha: 0.35}, 500);
+                this.y = ypos - 1 + (25 * this.pos);
+            });
+
             this.bind('KeyUp', function (e) {
-                if (e.keyCode === Crafty.keys.X) {
+                if (e.keyCode === Crafty.keys.UP_ARROW) {
+                    selctor.trigger('Sel', 'up');
+                } else if (e.keyCode === Crafty.keys.DOWN_ARROW) {
+                    selctor.trigger('Sel', 'down');
+                }
+                if (e.keyCode === Crafty.keys.X || e.keyCode === Crafty.keys.ENTER || e.keyCode === Crafty.keys.SPACE) {
                     // go go go ...
-                    Crafty.scene('main');
-                } else if (e.keyCode === Crafty.keys.I) {
-                    Crafty.scene('instructions');
+                    switch(selctor.pos) {
+                        case 0: Crafty.scene('main'); return;
+                        case 1: Crafty.scene('instructions'); return;
+                        case 2: Crafty.scene('credits'); return;
+                    }
                 }
             });
         });
@@ -294,6 +328,13 @@
             // game reset
             Crafty.scene('menu');
         });
+    });
+
+    /************************************************************************
+     * Game End Scene
+     */
+    Crafty.scene('credits', function (data) {
+        
     });
 
     }); //eof-ready
