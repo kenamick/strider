@@ -14,9 +14,10 @@
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
-        skipIntro = false;
+        skipIntro = true;
 
-    Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen).canvas.init();
+    Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
+    // Crafty.canvas.init();
     Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
     Crafty.viewport.bounds = { 
         min: { x:-100, y: -Infinity }, 

@@ -10,10 +10,10 @@
 (function octocatJump(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
-    var isDebug = false,
+    var isDebug = true,
         GRAVITY = 1,
         SFX = true,
-        MUSIC = true,
+        MUSIC = false,
         MUSIC_VOL = 0.8,
         enableFPS = false,
         enableIntroSfx = !isDebug,
@@ -366,7 +366,7 @@
             direction: 'right'
         }).color('#006064');
 
-        octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, MyTwoway')
+        octocat = Crafty.e('2D, Canvas, Gunner, SpriteAnimation, Physics, Gravity, Collision, Tween, Delay, Keyboard, Twoway')
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
@@ -398,7 +398,7 @@
         .animate('stand_left')
         .gravity('Platform')
         .gravityConst(GRAVITY)
-        .collision([12, 18], [12, 47], [25, 57], [38, 47], [38, 18], [25, 10])
+        .collision(12, 18,  12, 47,  25, 57,  38, 47,  38, 18,  25, 10)
         .onHit('Spikes', onHitSpikes)
         .onHit('Spaceship', onHitSpaceship)
         .onHit('HealthRed', onHitHealth)
@@ -408,18 +408,19 @@
 
         if (isDebug) octocat.addComponent('WiredHitBox');
 
-        octocat.bind('KeyDown', function (e) {
-            if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
-                this._canJumpAgain = true;
-                sfx('jump');
-            } else if (this._canJumpAgain && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W)) {
+        octocat.bind('CheckJumping', function(ground) {
+            if (!ground) { // allow player to double jump by using up his double jump powerup
+                octocat.canJump = true;
+                octocat.hasDoubleJumpPowerUp = false;
                 sfx('jumpboost');
-                this._up = true;
-                this._gy = 0;
-                this._canJumpAgain = false;
                 jumpboost.visible = true; // show boost anim
                 jumpboost.animate('play')
-            } else if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
+            }
+            sfx('jump');
+        });
+
+        octocat.bind('KeyDown', function (e) {
+            if (e.key === Crafty.keys.RIGHT_ARROW || e.key === Crafty.keys.D) {
                 this.direction = 'right';
             } else if (e.key === Crafty.keys.LEFT_ARROW || e.key === Crafty.keys.A) {
                 this.direction = 'left';
