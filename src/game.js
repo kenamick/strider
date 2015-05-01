@@ -59,7 +59,7 @@
         // player vars
         PLAYER_ENERGY_REPLENISH_TO = 1500,
         playerSpeed = 4,
-        playerJump = 17,
+        playerJump = 18,
         playerHealth = 4,
         playerEnergy = MAX_ENERGY,
         playerDamage = 1,
@@ -408,6 +408,12 @@
 
         if (isDebug) octocat.addComponent('WiredHitBox');
 
+        octocat.bind("CheckLanding", function(ground) {
+            // do not land, if not above the platform
+            if (octocat.y + octocat.h > ground.y + octocat.vy) {
+                octocat.canLand = false;
+            }
+        });
         octocat.bind('CheckJumping', function(ground) {
             if (!ground && this.hasDoubleJumpPowerUp) {
                 this.canJump = true;
@@ -689,6 +695,7 @@
         .bind('AnimationEnd', function() {
             this.visible = false;
         });
+        octocat.y = octocat.y - octocat.h - 1;
 
         var xhair = Crafty.e("2D, Canvas, Xhair, Tween")
         .attr({
