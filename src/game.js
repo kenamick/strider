@@ -409,14 +409,16 @@
         if (isDebug) octocat.addComponent('WiredHitBox');
 
         octocat.bind('CheckJumping', function(ground) {
-            if (!ground) { // allow player to double jump by using up his double jump powerup
-                octocat.canJump = true;
-                octocat.hasDoubleJumpPowerUp = false;
+            if (!ground && this.hasDoubleJumpPowerUp) {
+                this.canJump = true;
+                this.hasDoubleJumpPowerUp = false;
                 sfx('jumpboost');
                 jumpboost.visible = true; // show boost anim
                 jumpboost.animate('play')
+            } else if (ground) {
+                this.hasDoubleJumpPowerUp = true;
+                sfx('jump');
             }
-            sfx('jump');
         });
 
         octocat.bind('KeyDown', function (e) {
