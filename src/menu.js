@@ -339,7 +339,7 @@
     });
 
     /************************************************************************
-     * Game Credits
+     * Credits Scene
      */
     Crafty.scene('credits', function (data) {
 

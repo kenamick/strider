@@ -14,7 +14,7 @@
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
         screen = document.getElementById('game'),
-        skipIntro = true;
+        skipIntro = false;
 
     Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
     // Crafty.canvas.init();
