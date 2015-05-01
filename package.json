@@ -1,7 +1,7 @@
 {
   "name": "Strider",
   "description": "Strider is a 2D sci-fi platformer game.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "devDependencies": {
     "bower": "^1.4.1",
