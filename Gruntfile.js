@@ -24,7 +24,8 @@ module.exports = function (grunt) {
           spawn: false,
           livereload: LIVERELOAD_PORT
         },
-        tasks: ['build']
+        tasks: ['build-craftydev']
+        // tasks: ['build']
       }
     },
     connect: {
@@ -51,7 +52,8 @@ module.exports = function (grunt) {
     },
     clean: {
       game: [
-        'dist/game.js'
+        'dist/game.js',
+        'dist/lib/crafty.js'
       ],
       dist: [
         'dist/*'
@@ -65,7 +67,14 @@ module.exports = function (grunt) {
           { expand: true, src: ['assets/sfx/*.ogg', 'assets/sfx/*.m4a'], dest: 'dist/' },
           { expand: true, src: ['assets/fonts/*'], dest: 'dist/' },
           { expand: true, flatten: true, src: ['bower_components/crafty/dist/crafty-min.js'], dest: 'dist/lib/' },
+          { expand: true, flatten: true, src: ['bower_components/crafty/dist/crafty.js'], dest: 'dist/lib/' },
           { expand: true, flatten: true, src: ['LICENSE'], dest: 'dist/' },
+          { expand: true, src: ['index.html'], dest: 'dist/' }
+        ]
+      },
+      crafty: {
+        files: [
+          { expand: true, flatten: true, src: ['Crafty/crafty.js'], dest: 'dist/lib/' },
           { expand: true, src: ['index.html'], dest: 'dist/' }
         ]
       }
@@ -125,6 +134,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('build', ['concat', 'replace', 'copy']);
+  grunt.registerTask('build-craftydev', ['concat', 'replace', 'copy']);
   grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);
