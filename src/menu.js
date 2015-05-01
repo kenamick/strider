@@ -290,6 +290,8 @@
         Crafty('Delay').each(function() {
             this.destroy();
         });
+        Crafty.unbind('Pause');
+        Crafty.unbind('Unpause');
 
         Crafty.background('#000');
         Crafty.viewport.x = 0;
@@ -332,7 +334,7 @@
     });
 
     /************************************************************************
-     * Game End Scene
+     * Game Credits
      */
     Crafty.scene('credits', function (data) {
 
