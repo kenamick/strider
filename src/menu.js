@@ -165,8 +165,10 @@
             this.bind('KeyUp', function (e) {
                 if (e.keyCode === Crafty.keys.UP_ARROW) {
                     selctor.trigger('Sel', 'up');
+                    Crafty.audio.play('menu');
                 } else if (e.keyCode === Crafty.keys.DOWN_ARROW) {
                     selctor.trigger('Sel', 'down');
+                    Crafty.audio.play('menu');
                 }
                 if (e.keyCode === Crafty.keys.X || e.keyCode === Crafty.keys.ENTER || e.keyCode === Crafty.keys.SPACE) {
                     this.destroy();
