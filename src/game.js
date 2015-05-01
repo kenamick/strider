@@ -65,7 +65,7 @@
         playerDamage = 1,
         playerKills = {},
         isDead = false,
-        playerTargetDist = 40000,  //TODO
+        playerTargetDist = 44100,
         // enemy base vars
         ENEMY_TURRET = 1,
         ENEMY_TURRET_ADVANCED = 2,
