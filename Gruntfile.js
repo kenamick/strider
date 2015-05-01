@@ -129,6 +129,16 @@ module.exports = function (grunt) {
           'dist/index.html': ['index.html']
         }
       }
+    },
+    compress: {
+      main: {
+        options: {
+          archive: 'strider-v' + pkg.version + '.zip'
+        },
+        files: [
+          {src: ['dist/**'], dest: '/'}, 
+        ]
+      }
     }
   });
 
@@ -137,4 +147,5 @@ module.exports = function (grunt) {
   grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);
+  grunt.registerTask('zip', ['prod', 'compress']);
 };
