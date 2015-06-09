@@ -87,7 +87,7 @@
         SPREAD8_R = calcSpread(50, 8)
         //
         ;
-    console.log(MAX_ENEMIES);
+
     var pi = Math.PI
       , pi_6 = Math.PI / 6
       , pi_4 = Math.PI / 4
