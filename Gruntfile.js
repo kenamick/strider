@@ -53,7 +53,8 @@ module.exports = function (grunt) {
     clean: {
       game: [
         'dist/game.js',
-        'dist/lib/crafty.js'
+        'dist/lib/crafty.js',
+        'dist/lib/gj-js-api.js'
       ],
       dist: [
         'dist/*'

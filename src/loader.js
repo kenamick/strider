@@ -46,14 +46,20 @@
     Crafty.scene("loading", function () {
         Crafty.background('#005564');
 
+        var loginText = Crafty.e('2D, DOM, Text, SpaceFont')
+        .attr({x: 60, y: 100, w: Crafty.viewport.width })
+        .textFont({size: '20px'})
+        .textColor('white')
+        .text('Login: ' + (GJAPI.sUserName || 'root'));
+
         var text = Crafty.e('2D, DOM, Text, SpaceFont')
-        .attr({x: 85, y: 150, w: Crafty.viewport.width })
+        .attr({x: 60, y: 150, w: Crafty.viewport.width })
         .textFont({size: '20px'})
         .textColor('white')
         .text('Establishing secure com...');
 
         var percent = Crafty.e('2D, DOM, Text, SpaceFont')
-        .attr({x: 180, y: 180, w: 150 })
+        .attr({x: 300, y: 150, w: 150 })
         .textFont({size: '20px'})
         .textColor('white')
         .text('0%');
@@ -208,7 +214,6 @@
         };
         if (isSafari) {
             // disable sound under Safari, because Crafty has no m4a/mp4 support yet! :(
-            console.log(isSafari);
             assets.audio = {};
             document.getElementsByClassName('sorry')[0].style.visibility = 'visible';
         }
@@ -223,6 +228,7 @@
             .delay(function() {
                 text.visible = false;
                 percent.visible = false;
+                loginText.visible = false;
             }, 1000);
         }, function (e) {
             // console.log(e);
