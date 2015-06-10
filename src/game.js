@@ -237,7 +237,7 @@
         bullets_data = [];
         playerKills.drones = 0;
         playerKills.turrets = 0;
-
+        playerKills.powerups = 0;
         ship = null;
         SmokeAnim = null;
         octocat = null;
@@ -250,13 +250,75 @@
         Crafty.unbind('ViewportScroll');
     }
 
+    function giveAchievement(what) {
+        if (!what.achieved) {
+            what.achieved = true;
+
+            Crafty.e("2D, DOM, Text, Tween").attr({
+                x: 5,
+                w: 150,
+                z: 9999
+            }).css({
+                'color': '#fff',
+                'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+            }).tween({alpha: 0.1}, 1250)
+            .bind("EnterFrame", function () {
+                this.x = 5 - Crafty.viewport.x;
+                this.y = 30 - Crafty.viewport.y;
+                this.text('New achievement unlocked!');
+            })
+            .bind("TweenEnd", function() {
+                this.destroy();
+            });
+
+            GJAPI.TrophyAchieve(what.id, function (response) {
+                if (!response.success) {
+                    console.log('Could not achieve trophy - ' + what.id);
+                }
+            });
+        }
+    }
+    function updateAchievements(data) {
+        if (GJAPI && GJAPI.bActive) {
+            var total = data.turrets + data.drones;
+            console.log(data, total);
+            if (total >= 80) {
+                giveAchievement(trophies['platinum01']);
+            } else if (total >= 50) {
+                giveAchievement(trophies['gold01']);
+            } else if (total >= 25) {
+                giveAchievement(trophies['silver01']);
+            } else if (total >= 20) {
+                giveAchievement(trophies['bronze02']);
+            }
+
+            if (data.turrets >= 25) {
+                giveAchievement(trophies['silver02']);
+            } else if (data.turrets >= 5) {
+                giveAchievement(trophies['bronze03']);
+            }
+            if (data.drones >= 25) {
+                giveAchievement(trophies['gold02']);
+            } else if (data.drones >= 5) {
+                giveAchievement(trophies['bronze04']);
+            }
+
+            if (data.powerups >= 50) {
+                giveAchievement(trophies['silver03']);
+            } else if (data.powerups >= 20) {
+                giveAchievement(trophies['bronze05']);
+            }
+        }
+    }
     function onHitPlatform(e) {
         sfx('land');
     }
     function onHitSpikes(e) {
+        giveAchievement(trophies['bronze01']);
         Crafty.trigger('playerdead');
     }
     function onHitSpaceship(e) {
+        giveAchievement(trophies['platinum02']);
         Crafty.trigger('playerwin');
     }
     function onHitHealth(e) {
@@ -264,6 +326,8 @@
             var obj = e[0].obj;
             obj.visible = false;
             playerHealth += 1;
+            playerKills.powerups += 1;
+            updateAchievements(playerKills);
             if (!Crafty.audio.isPlaying('powerup02')) {
                 sfx('powerup02');
                 Crafty.trigger('flashscreen', {clr: '#20ee20', delay: 175});
@@ -281,7 +345,8 @@
             } else {
                 playerEnergy += ~~(MAX_ENERGY * 0.3);    
             }
-            debug('*** TAKE ENERGY');
+            playerKills.powerups += 1;
+            updateAchievements(playerKills);
             if (!Crafty.audio.isPlaying('powerup01')) {
                 sfx('powerup01');
                 Crafty.trigger('flashscreen', {clr: '#2020ee', delay: 175});
@@ -771,9 +836,9 @@
         
         Crafty.uniqueBind("Pause", function() {
             Crafty.audio.mute();
-            Crafty("BackgroundOverlay").color("#000000");
-            Crafty("BackgroundOverlay").alpha = 0.5;
-            Crafty("PauseText").destroy();
+            Crafty('BackgroundOverlay').color("#000000");
+            Crafty('BackgroundOverlay').alpha = 0.5;
+            Crafty('PauseText').destroy();
             Crafty.e('2D, DOM, Text, SpaceFont, PauseText')
             .attr({x: octocat.x - 15, y: octocat.y - 25, w: Crafty.viewport.width})
             .textFont({size: '16px'})
@@ -783,9 +848,9 @@
         });
         Crafty.uniqueBind("Unpause", function() {
             Crafty.audio.unmute();
-            Crafty("BackgroundOverlay").color("#006064");
-            Crafty("BackgroundOverlay").alpha = 0.2;
-            Crafty("PauseText").destroy();
+            Crafty('BackgroundOverlay').color("#006064");
+            Crafty('BackgroundOverlay').alpha = 0.2;
+            Crafty('PauseText').destroy();
             // Crafty.DrawManager.draw();
         });
         Crafty.uniqueBind('flashscreen', function (data) {
@@ -1298,8 +1363,14 @@
                     entity.shootDleay = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
                     entity.bind('Kill', function () {
                         switch(this.EnemyType) {
-                            case ENEMY_TURRET: playerKills.turrets += 1; break;
-                            case ENEMY_DRONE: playerKills.drones += 1; break;
+                            case ENEMY_TURRET: 
+                                playerKills.turrets += 1;
+                                updateAchievements(playerKills);
+                                break;
+                            case ENEMY_DRONE: 
+                                playerKills.drones += 1;
+                                updateAchievements(playerKills);
+                                break;
                             default: throw 'Unknown enemy type ' + type; break;
                         }
                         addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01, 
@@ -1569,5 +1640,19 @@
 
     Crafty.scene("loading");
 
+    var trophies = {
+        'bronze01': {id: 30758, achieved: false},
+        'bronze02': {id: 30759, achieved: false},
+        'bronze03': {id: 30765, achieved: false},
+        'bronze04': {id: 30767, achieved: false},
+        'bronze05': {id: 30769, achieved: false},
+        'silver01': {id: 30761, achieved: false},
+        'silver02': {id: 30766, achieved: false},
+        'silver03': {id: 30770, achieved: false},
+        'gold01': {id: 30763, achieved: false},
+        'gold02': {id: 30768, achieved: false},
+        'platinum01': {id: 30764, achieved: false},
+        'platinum02': {id: 30782, achieved: false}
+    };
     }); //eof-ready
 }(Crafty));
