@@ -55,6 +55,7 @@ Create a distributable:
 ## Open Source Libraries
 
   * [Crafty](http://craftyjs.com) - An amazing Javascript/HTML5 Game engine.
+  * [game-jolt-api-js-library](https://github.com/MausGames/game-jolt-api-js-library) - JavaScript Library to connect games with Game Jolt.
 
 ## Credits
 ### Art
