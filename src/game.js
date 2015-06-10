@@ -62,7 +62,7 @@
         playerJump = 18,
         playerHealth = 4,
         playerEnergy = MAX_ENERGY,
-        playerDamage = 1,
+        playerDamage = 2,
         playerKills = {},
         isDead = false,
         playerTargetDist = 44100,
@@ -261,7 +261,7 @@
             }).css({
                 'color': '#fff',
                 'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-            }).tween({alpha: 0.1}, 1250)
+            }).tween({alpha: 0.1}, 1750)
             .bind("EnterFrame", function () {
                 this.x = 5 - Crafty.viewport.x;
                 this.y = 30 - Crafty.viewport.y;
