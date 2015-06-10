@@ -251,7 +251,7 @@
     }
 
     function giveAchievement(what) {
-        if (!what.achieved) {
+        if (GJAPI && GJAPI.bActive && !what.achieved) {
             what.achieved = true;
 
             Crafty.e("2D, DOM, Text, Tween").attr({
