@@ -339,7 +339,7 @@
 
         // add hi-scores to GJ
         if (GJAPI && GJAPI.bActive) {
-            GJAPI.ScoreAdd(75386, data.meters, data.meters + ' meters', '', function (pResponse) {
+            GJAPI.ScoreAdd(62408, data.meters, data.meters + ' meters', '', function (pResponse) {
                 if (pResponse && !pResponse.success) {
                     console.error('Error writing score!', pResponse.message);
                 }

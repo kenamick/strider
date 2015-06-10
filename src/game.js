@@ -272,9 +272,9 @@
             });
 
             GJAPI.TrophyAchieve(what.id, function (response) {
-                if (!response.success) {
-                    console.log('Could not achieve trophy - ' + what.id);
-                }
+                // if (response && !response.success) {
+                //     console.log('Could not achieve trophy - ' + what.id);
+                // }
             });
         }
     }
