@@ -137,7 +137,7 @@ module.exports = function (grunt) {
           archive: 'strider-v' + pkg.version + '.zip'
         },
         files: [
-          {src: ['dist/**'], dest: '/'}, 
+          {expand: true, cwd: 'dist/', src: ['**/*']}, 
         ]
       }
     }
