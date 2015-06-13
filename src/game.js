@@ -1653,5 +1653,21 @@
         'platinum01': {id: 30764, achieved: false},
         'platinum02': {id: 30782, achieved: false}
     };
+    (function(trophies) {
+        if (GJAPI && GJAPI.bActive) {
+            GJAPI.TrophyFetch(GJAPI.TROPHY_ONLY_ACHIEVED, function (response) {
+                if (!response.trophies) 
+                    return;
+                for(var i = 0; i < response.trophies.length; ++i) {
+                    for(var t in trophies) {
+                        if (trophies[t].id == response.trophies[i].id) {
+                            trophies[t].achieved = true;
+                            debug(t + ' is already achieved!');
+                        }
+                    }
+                }
+            });
+        }
+    }(trophies));
     }); //eof-ready
 }(Crafty));
