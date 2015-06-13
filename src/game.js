@@ -253,28 +253,27 @@
     function giveAchievement(what) {
         if (GJAPI && GJAPI.bActive && !what.achieved) {
             what.achieved = true;
-
-            Crafty.e("2D, DOM, Text, Tween").attr({
-                x: 5,
-                w: 150,
-                z: 9999
-            }).css({
-                'color': '#fff',
-                'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-            }).tween({alpha: 0.1}, 1750)
-            .bind("EnterFrame", function () {
-                this.x = 5 - Crafty.viewport.x;
-                this.y = 30 - Crafty.viewport.y;
-                this.text('New achievement unlocked!');
-            })
-            .bind("TweenEnd", function() {
-                this.destroy();
-            });
-
             GJAPI.TrophyAchieve(what.id, function (response) {
-                // if (response && !response.success) {
-                //     console.log('Could not achieve trophy - ' + what.id);
-                // }
+                if (response && response.success) {
+                    Crafty.e("2D, DOM, Text, Tween").attr({
+                        x: 5,
+                        w: 150,
+                        z: 9999
+                    }).css({
+                        'color': '#fff',
+                        'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+                    }).tween({alpha: 0.1}, 1750)
+                    .bind("EnterFrame", function () {
+                        this.x = 5 - Crafty.viewport.x;
+                        this.y = 30 - Crafty.viewport.y;
+                        this.text('New achievement unlocked!');
+                    })
+                    .bind("TweenEnd", function() {
+                        this.destroy();
+                    });
+                } else {
+                    // console.log('Could not achieve trophy - ' + what.id + '.' + response.message);
+                }
             });
         }
     }
