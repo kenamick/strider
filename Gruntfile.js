@@ -79,7 +79,14 @@ module.exports = function (grunt) {
           { expand: true, flatten: true, src: ['Crafty/crafty.js'], dest: 'dist/lib/' },
           { expand: true, src: ['index.html'], dest: 'dist/' }
         ]
-      }
+      },
+      crx: {
+        files: [
+          {expand: true, src: ['src/chrome.js'], dest: 'dist/', flatten: true},
+          {expand: true, src: ['manifest.json'], dest: 'dist/', flatten: true},
+          {expand: true, src: ['assets/crx/*.png'], dest: 'dist/', flatten: true}
+        ]
+      },      
     },
     concat: {
       options: {
@@ -151,4 +158,5 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
+  grunt.registerTask('crx', ['prod', 'copy:crx']);
 };
