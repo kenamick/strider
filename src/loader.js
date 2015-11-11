@@ -59,7 +59,7 @@
         .text('Establishing secure com...');
 
         var percent = Crafty.e('2D, DOM, Text, SpaceFont')
-        .attr({x: 300, y: 150, w: 150 })
+        .attr({x: 310, y: 150, w: 150 })
         .textFont({size: '20px'})
         .textColor('white')
         .text('0%');
