@@ -3,7 +3,7 @@
   "name": "Strider",
   "description": "Strider is a 2D sci-fi platformer game.",
   "author": "Dvubuz Games",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "app": {
     "background": {
       "scripts": ["chrome.js"]
