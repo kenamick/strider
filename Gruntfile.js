@@ -169,5 +169,5 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['serve']);
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml:dist', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
-  grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game']);
+  grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game', 'compress']);
 };

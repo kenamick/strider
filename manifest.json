@@ -1,6 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Strider",
+  "short_name": "Strider",
   "description": "Strider is a 2D sci-fi platformer game.",
   "author": "Dvubuz Games",
   "version": "1.0.5",
