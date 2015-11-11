@@ -69,6 +69,7 @@ module.exports = function (grunt) {
           { expand: true, src: ['assets/images/*.png', 'assets/images/*.gif', 'assets/images/*.jpg'], dest: 'dist/' },
           { expand: true, src: ['assets/sfx/*.ogg', 'assets/sfx/*.m4a'], dest: 'dist/' },
           { expand: true, src: ['assets/fonts/*'], dest: 'dist/' },
+          { expand: true, flatten: true, src: ['css/*.css'], dest: 'dist/css/' },
           { expand: true, flatten: true, src: ['lib/*'], dest: 'dist/lib/' },
           { expand: true, flatten: true, src: ['LICENSE'], dest: 'dist/' },
           { expand: true, src: ['index.html'], dest: 'dist/' }
