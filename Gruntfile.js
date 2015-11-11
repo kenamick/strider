@@ -139,6 +139,16 @@ module.exports = function (grunt) {
         files: {
           'dist/index.html': ['index.html']
         }
+      },
+      crx: {
+        files: {
+          'dist/index.html': ['index.html']
+        }
+      },
+      dev: {
+        files: {
+          'dist/index.html': ['index.html']
+        }
       }
     },
     compress: {
@@ -155,9 +165,9 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', ['concat', 'replace', 'copy']);
   grunt.registerTask('build-craftydev', ['concat', 'replace', 'copy:crafty']);
-  grunt.registerTask('serve', ['build', 'connect:livereload', 'open', 'watch']);
+  grunt.registerTask('serve', ['build', 'processhtml:dev', 'connect:livereload', 'open', 'watch']);
   grunt.registerTask('default', ['serve']);
-  grunt.registerTask('prod', ['build', 'uglify', 'processhtml', 'clean:game']);
+  grunt.registerTask('prod', ['build', 'uglify', 'processhtml:dist', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
-  grunt.registerTask('crx', ['prod', 'copy:crx']);
+  grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game']);
 };

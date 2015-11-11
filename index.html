@@ -12,16 +12,20 @@
 <body>
   <div id="game"></div>
   <p class="sorry">Audio isn't working under Safari, yet! Sorry. :(</p>
-  <!-- build:js lib/gj-js-api-min.js -->
+  <!-- build:template
+  <% if (environment === 'dist') { %>
+  <script src="lib/gj-js-api-min.js"></script>
+  <% } else if (environment !== 'crx') { %>
   <script src="lib/gj-js-api.js"></script>
-  <!-- /build -->
-  <!-- build:js lib/crafty-min.js -->
+  <% } %>
+  /build -->  
+  <!-- build:js:dist,crx lib/crafty-min.js -->
   <script src="lib/crafty.js"></script>
   <!-- /build -->
-  <!-- build:js game.min.js -->
+  <!-- build:js:dist,crx game.min.js -->
   <script src="game.js"></script>
   <!-- /build -->
-  <!-- build:include urch -->
+  <!-- build:include:dist urch -->
   <!-- /build -->
 </body>
 </html>
