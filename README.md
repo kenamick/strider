@@ -1,6 +1,7 @@
-
 _.o0 Strider 0o._
 ===============================
+
+Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/strider/ojbdlgepnccgakbkapekiifbhjchejnh).
 
 :video_game: [game-off-2015](https://github.com/blog/1990-game-off-iii-everyone-s-a-winner) challenge entry.
 
