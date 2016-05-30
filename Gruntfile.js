@@ -58,6 +58,10 @@ module.exports = function (grunt) {
         'dist/lib/crafty.js',
         'dist/lib/gj-js-api.js'
       ],
+      desktop: [
+        'dist/chrome.js',
+        'dist/manifest.json'
+      ],
       dist: [
         'dist/*'
       ]
@@ -90,6 +94,7 @@ module.exports = function (grunt) {
       },
       desktop: {
         files: [
+          {expand: true, src: ['assets/crx/*.png'], dest: 'dist/', flatten: true},
           {expand: true, src: ['package.json'], dest: 'dist/', flatten: true},
         ]
       },
@@ -168,11 +173,11 @@ module.exports = function (grunt) {
     },
     nwjs: {
       options: {
-        version: 'v0.15.0',
+        version: 'v0.14.0',
         platforms: ['osx64'],
         buildDir: './webkitbuilds',
       },
-      src: ['./dist/**/*']
+      src: ['./dist/**/**']
     },
   });
 
@@ -183,5 +188,5 @@ module.exports = function (grunt) {
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml:dist', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
   grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game', 'compress']);
-  grunt.registerTask('desktop', ['build', 'copy:crx', 'copy:desktop', 'uglify', 'processhtml:crx', 'clean:game', 'nwjs']);
+  grunt.registerTask('desktop', ['build', 'copy:desktop', 'uglify', 'processhtml:crx', 'clean:game', 'clean:desktop', 'nwjs']);
 };
