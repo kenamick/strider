@@ -87,7 +87,12 @@ module.exports = function (grunt) {
           {expand: true, src: ['manifest.json'], dest: 'dist/', flatten: true},
           {expand: true, src: ['assets/crx/*.png'], dest: 'dist/', flatten: true}
         ]
-      },      
+      },
+      desktop: {
+        files: [
+          {expand: true, src: ['package.json'], dest: 'dist/', flatten: true},
+        ]
+      },
     },
     concat: {
       options: {
@@ -157,10 +162,18 @@ module.exports = function (grunt) {
           archive: 'strider-v' + pkg.version + '.zip'
         },
         files: [
-          {expand: true, cwd: 'dist/', src: ['**/*']}, 
+          {expand: true, cwd: 'dist/', src: ['**/*']},
         ]
       }
-    }
+    },
+    nwjs: {
+      options: {
+        version: 'v0.15.0',
+        platforms: ['osx64'],
+        buildDir: './webkitbuilds',
+      },
+      src: ['./dist/**/*']
+    },
   });
 
   grunt.registerTask('build', ['concat', 'replace', 'copy']);
@@ -170,4 +183,5 @@ module.exports = function (grunt) {
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml:dist', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
   grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game', 'compress']);
+  grunt.registerTask('desktop', ['build', 'copy:crx', 'copy:desktop', 'uglify', 'processhtml:crx', 'clean:game', 'nwjs']);
 };
