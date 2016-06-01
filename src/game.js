@@ -17,13 +17,13 @@
         MUSIC_VOL = 0.8,
         enableFPS = false,
         enableIntroSfx = !isDebug,
-        
+
         METERS_DEPTH = 3000,
         METERS_DEPTH_2 = METERS_DEPTH * 0.6,
         METERS_DEPTH_3 = METERS_DEPTH * 0.3,
         meters = METERS_DEPTH,
         total_platforms = METERS_DEPTH / 10 - 1,
-        
+
         MAX_POWERUPS = total_platforms / 2,
         MAX_ENEMIES = total_platforms / 2,
         MAX_BULLETS = MAX_ENEMIES * 2,
@@ -32,7 +32,7 @@
         POWERUP_ENERGY_BLUE = 3,
         MAX_ENERGY = 49,
         MAX_HEALTH = 4,
-        // animations        
+        // animations
         MAX_ANIMATIONS = 15,
         anims_data = [],
         playerAnimSpeed = 450,
@@ -84,7 +84,9 @@
         enemies_data = [],
         bullets_data = [],
         SPREAD8 = calcSpread(10, 8),
-        SPREAD8_R = calcSpread(50, 8)
+        SPREAD8_R = calcSpread(50, 8),
+        //
+        menuKeyFn = null
         //
         ;
 
@@ -133,7 +135,7 @@
     function getSpread(ox, oy, spread) {
         var result = [];
         for (var i = 0; i < spread.length; i++) {
-            result.push([ 
+            result.push([
                 spread[i][0] + ox,
                 spread[i][1] + oy,
                 ]);
@@ -215,7 +217,7 @@
             hasDrone: true
         });
         return platforms;
-    }    
+    }
 
     function initState() {
         /**
@@ -340,9 +342,9 @@
         if (obj && obj.visible) {
             obj.trigger('Kill');
             if (obj.energyType === POWERUP_ENERGY_BLUE) {
-                playerEnergy += ~~(MAX_ENERGY * 0.6);    
+                playerEnergy += ~~(MAX_ENERGY * 0.6);
             } else {
-                playerEnergy += ~~(MAX_ENERGY * 0.3);    
+                playerEnergy += ~~(MAX_ENERGY * 0.3);
             }
             playerKills.powerups += 1;
             updateAchievements(playerKills);
@@ -378,7 +380,7 @@
 
     /************************************************************************
      * Main scene
-     */       
+     */
 
     Crafty.scene('main', function () {
         initState();
@@ -398,6 +400,14 @@
             //     this.text(fps);
             // }).text('test');
         // }
+
+        menuKeyFn = function(e) {
+          // Quit game
+          if(e.keyCode == Crafty.keys.ESC) {
+              Crafty.trigger('playerdead');
+          }
+        };
+        Crafty.e('Keyboard').bind('KeyDown', menuKeyFn);
 
         var bg = Crafty.e('2D, Canvas, Image, Background').attr({
             x: -100,
@@ -434,7 +444,7 @@
         .setName('octocat')
         .attr({
             x: Crafty.viewport.width / 2 - 50,
-            y: level_data[0].y, 
+            y: level_data[0].y,
             z: 990
         })
         .origin('center')
@@ -542,7 +552,7 @@
                     addEnemy(ENEMY_DRONE, 50 + Math.random() * 150, 100)
                 }
             }
-            ///////// 
+            /////////
         });
         octocat.bind('EnterFrame', function() {
             this.cx = octocat._x + octocat.w / 2;
@@ -832,7 +842,7 @@
             bgovr.y = -Crafty.viewport.y;
         }
         Crafty.bind("EnterFrame", scrollViewport);
-        
+
         Crafty.uniqueBind("Pause", function() {
             Crafty.audio.mute();
             Crafty('BackgroundOverlay').color("#000000");
@@ -877,6 +887,7 @@
                 octocat.destroy();
                 // score screen
                 Crafty.e('Delay').delay(function () {
+                    Crafty.e('Keyboard').unbind(menuKeyFn);                  
                     Crafty.scene('dead', {'meters': meters, 'kills': playerKills});
                 }, 1150, 0);
             }
@@ -893,7 +904,7 @@
                 this._acc += 0.0125;
                 this._acc = Math.min(this._acc, 5);
                 this.y -= this._acc;
-            });            
+            });
             Crafty.viewport.follow(ship, 0, 0);
             // engines
             var e1 = Crafty.e('2D, Canvas, SpaceshipEngine, SpriteAnimation').attr({
@@ -951,6 +962,7 @@
                 });
             }, 8000, 0);
             // keyboard
+            Crafty.e('Keyboard').unbind(menuKeyFn);
             Crafty.e('Keyboard').bind('KeyDown', function (e) {
                 if(e.keyCode !== Crafty.keys.ESC && e.keyCode !== Crafty.keys.ENTER && e.keyCode !== Crafty.keys.SPACE) {
                     return;
@@ -999,7 +1011,7 @@
             SmokeAnim.visible = true;
             SmokeAnim.animate('smoke');
         });
- 
+
         /************************************************************************
          * Behaviors and Monitoring
          */
@@ -1187,7 +1199,7 @@
                     });
                     return powerups_data[i];
                 }
-            }              
+            }
         }
         function addEnemy(type, x, y) {
             var component, accel
@@ -1340,7 +1352,7 @@
                                 var ecx = this.x + this.w / 2
                                   , ecy = this.y + this.h / 2
                                   , dist = Crafty.math.squaredDistance(ecx, ecy, octocat.cx, octocat.cy);
-                                
+
                                 if (dist < shootRange) {
                                     if (spreadBullet) {
                                         var spread = getSpread(ecx, ecy, SPREAD8);
@@ -1362,17 +1374,17 @@
                     entity.shootDleay = Crafty.e('Delay').delay(entity.shootFn, shootDelay, -1);
                     entity.bind('Kill', function () {
                         switch(this.EnemyType) {
-                            case ENEMY_TURRET: 
+                            case ENEMY_TURRET:
                                 playerKills.turrets += 1;
                                 updateAchievements(playerKills);
                                 break;
-                            case ENEMY_DRONE: 
+                            case ENEMY_DRONE:
                                 playerKills.drones += 1;
                                 updateAchievements(playerKills);
                                 break;
                             default: throw 'Unknown enemy type ' + type; break;
                         }
-                        addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01, 
+                        addAnimation(this.EnemyType === ENEMY_DRONE ? ANIM_EXPLOSION_BLUE : ANIM_EXPLOSION_01,
                             this.x + this.w / 2, this.y + this.h / 2);
                         entity.shootDleay.cancelDelay(entity.shootFn);
                         this.visible = false;
@@ -1429,7 +1441,7 @@
                     if (meters < METERS_DEPTH_3) {
                         entity.animate('shootGlow', -1);
                     } else {
-                        entity.animate(type === BULLET_BLUE ? 'shootBlue' : 'shoot', -1);    
+                        entity.animate(type === BULLET_BLUE ? 'shootBlue' : 'shoot', -1);
                     }
                     return entity;
                 }
@@ -1551,12 +1563,12 @@
             ctx.fillStyle = 'black';
             ctx.fill();
             // ctx.lineWidth = 1;
-            // ctx.strokeStyle = 'none';      
-            // ctx.stroke(); 
+            // ctx.strokeStyle = 'none';
+            // ctx.stroke();
         });
 
         function toggleSFX(e) {
-            if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
+            if(e.mouseButton !== Crafty.mouseButtons.LEFT)
                 return;
             SFX = !SFX;
             Crafty("SFX").image('assets/images/' + (SFX ? 'audioOn.png' : 'audioOff.png'));
@@ -1571,7 +1583,7 @@
         .image("assets/images/audioOn.png")
         .bind('InvalidateViewport', function() {
             this.x = Crafty.viewport.width - Crafty.viewport.x - 52;
-            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;            
+            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;
         })
         .bind('MouseOver', function () {
             this.alpha = 0.8;
@@ -1582,7 +1594,7 @@
         });
 
         function toggleMUSIC(e) {
-            if(e.mouseButton !== Crafty.mouseButtons.LEFT) 
+            if(e.mouseButton !== Crafty.mouseButtons.LEFT)
                 return;
             MUSIC = !MUSIC;
             Crafty("MUSIC").image('assets/images/' + (MUSIC ? 'musicOn.png' : 'musicOff.png'));
@@ -1606,7 +1618,7 @@
         .image("assets/images/musicOn.png")
         .bind('InvalidateViewport', function() {
             this.x = Crafty.viewport.width - Crafty.viewport.x - 96;
-            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;            
+            this.y = Crafty.viewport.height - 50 - Crafty.viewport.y;
         })
         .bind('MouseOver', function () {
             this.alpha = 0.8;
@@ -1656,7 +1668,7 @@
     (function(trophies) {
         if (GJAPI && GJAPI.bActive) {
             GJAPI.TrophyFetch(GJAPI.TROPHY_ONLY_ACHIEVED, function (response) {
-                if (!response.trophies) 
+                if (!response.trophies)
                     return;
                 for(var i = 0; i < response.trophies.length; ++i) {
                     for(var t in trophies) {

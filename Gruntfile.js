@@ -58,6 +58,10 @@ module.exports = function (grunt) {
         'dist/lib/crafty.js',
         'dist/lib/gj-js-api.js'
       ],
+      desktop: [
+        'dist/chrome.js',
+        'dist/manifest.json'
+      ],
       dist: [
         'dist/*'
       ]
@@ -87,7 +91,13 @@ module.exports = function (grunt) {
           {expand: true, src: ['manifest.json'], dest: 'dist/', flatten: true},
           {expand: true, src: ['assets/crx/*.png'], dest: 'dist/', flatten: true}
         ]
-      },      
+      },
+      desktop: {
+        files: [
+          {expand: true, src: ['assets/crx/*.png'], dest: 'dist/', flatten: true},
+          {expand: true, src: ['package.json'], dest: 'dist/', flatten: true},
+        ]
+      },
     },
     concat: {
       options: {
@@ -157,10 +167,20 @@ module.exports = function (grunt) {
           archive: 'strider-v' + pkg.version + '.zip'
         },
         files: [
-          {expand: true, cwd: 'dist/', src: ['**/*']}, 
+          {expand: true, cwd: 'dist/', src: ['**/*']},
         ]
       }
-    }
+    },
+    nwjs: {
+      options: {
+        version: 'v0.12.3',
+        platforms: ['linux64', 'osx64', 'win64'],
+        buildDir: './webkitbuilds',
+        winIco: 'assets/desktop/icon_128.ico',
+        macIcns: 'assets/desktop/icon_128.icns'
+      },
+      src: ['./dist/**/**']
+    },
   });
 
   grunt.registerTask('build', ['concat', 'replace', 'copy']);
@@ -170,4 +190,5 @@ module.exports = function (grunt) {
   grunt.registerTask('prod', ['build', 'uglify', 'processhtml:dist', 'clean:game']);
   grunt.registerTask('zip', ['prod', 'compress']);
   grunt.registerTask('crx', ['build', 'copy:crx', 'uglify', 'processhtml:crx', 'clean:game', 'compress']);
+  grunt.registerTask('desktop', ['build', 'copy:desktop', 'uglify', 'processhtml:crx', 'clean:game', 'clean:desktop', 'nwjs']);
 };

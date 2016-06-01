@@ -8,3 +8,5 @@ urch
 *.zip
 Crafty/
 .settings
+cache/
+webkitbuilds/

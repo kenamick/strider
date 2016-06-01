@@ -11,13 +11,13 @@
     document.addEventListener('DOMContentLoaded', function () {
 
     var logosTimeout = 250, logosShowTimeout = 2000;
-        
+
     /************************************************************************
      * Game Intro Scene
      */
     Crafty.scene('intro', function () {
         Crafty.background('#f6fafb');
-        
+
         // var txt = Crafty.e('2D, DOM, Canvas, SpaceFont, Delay').attr({
         //     x: 4,
         //     y: Crafty.viewport.height - 16,
@@ -49,7 +49,7 @@
         // });
 
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
-            if(e.keyCode !== Crafty.keys.ESC) return;
+            if (e.keyCode !== Crafty.keys.ESC) return;
             this.destroy();
             Crafty.scene('menu');
         });
@@ -94,6 +94,16 @@
      * Game Menu Scene
      */
     Crafty.scene('menu', function () {
+        var gui;
+        var isNW = false;
+        var maxMenuPos = 2;
+
+        if (typeof require !== 'undefined') {
+          isNW = true;
+          maxMenuPos = 3;
+          gui = require('nw.gui');
+        }
+
         Crafty.background('#f6fafb');
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;
@@ -126,6 +136,14 @@
                 w: Crafty.viewport.width,
             }).textFont({size: '14px'}).textColor('white').text('Credits');
 
+            if (isNW) {
+              Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                  x: xpos,
+                  y: ypos + 75,
+                  w: Crafty.viewport.width,
+              }).textFont({size: '14px'}).textColor('white').text('Quit');
+            }
+
             // --- Version ---
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
                 x: 2,
@@ -153,8 +171,8 @@
                     this.pos += 1;
                 }
                 if (this.pos < 0) {
-                    this.pos = 2;
-                } else if (this.pos > 2) {
+                    this.pos = maxMenuPos;
+                } else if (this.pos > maxMenuPos) {
                     this.pos = 0;
                 }
                 this.alpha = 0.9;
@@ -175,14 +193,19 @@
                     // go go go ...
                     switch(selctor.pos) {
                         case 0: Crafty.scene('main'); return;
-                        case 1: 
+                        case 1:
                             Crafty.audio.play('menu2');
                             Crafty.scene('instructions');
                             return;
-                        case 2: 
+                        case 2:
                             Crafty.audio.play('menu2');
-                            Crafty.scene('credits'); 
+                            Crafty.scene('credits');
                             return;
+                        case 3:
+                          if (isNW) {
+                            gui.App.quit()
+                          }
+                          return;
                     }
                 }
             });
