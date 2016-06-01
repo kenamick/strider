@@ -173,7 +173,7 @@ module.exports = function (grunt) {
     },
     nwjs: {
       options: {
-        version: 'v0.14.0',
+        version: 'v0.14.5',
         platforms: ['osx64'],
         buildDir: './webkitbuilds',
       },

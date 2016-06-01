@@ -10,6 +10,11 @@
 (function(Crafty) {
     document.addEventListener('DOMContentLoaded', function () {
 
+    if (typeof require !== 'undefined') {
+      var el = document.getElementById('game');
+      el.className = 'canvas-pos';
+    }
+
     var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
     var STAGE_WIDTH = 400,
         STAGE_HEIGHT = 640,
@@ -19,9 +24,9 @@
     Crafty.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
     // Crafty.canvas.init();
     Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT, screen);
-    Crafty.viewport.bounds = { 
-        min: { x:-100, y: -Infinity }, 
-        max: { x: STAGE_WIDTH + 50, y: STAGE_HEIGHT } 
+    Crafty.viewport.bounds = {
+        min: { x:-100, y: -Infinity },
+        max: { x: STAGE_WIDTH + 50, y: STAGE_HEIGHT }
     };
     // Crafty.viewport.clampToEntities = true;
     Crafty.settings.modify('autoPause', true);
@@ -75,7 +80,7 @@
 
         Crafty.paths({ audio: "assets/sfx/", images: "assets/images/" });
         var assets = {
-            images: ['splash_screen.jpg', 'splash_screen_blurred.jpg', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png', 
+            images: ['splash_screen.jpg', 'splash_screen_blurred.jpg', 'cratfy_logo.png', 'gameoff.jpg', 'wall01.png',
                 'backgrounds.png', 'starsky.png', 'audioOn.png', 'audioOff.png', 'musicOn.png', 'musicOff.png'],
             sprites: {
                 'ui_energy.png': {
