@@ -1,0 +1,7 @@
+#!/bin/bash
+# Desc: Strider startup script
+
+export GAMEDIR="INSTALL_DATADIR"
+
+cd $GAMEDIR
+exec ./Strider "$@"

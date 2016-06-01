@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Strider
+GenericName=Action Game
+Version=@@VERSION
+Type=Application
+Categories=Game;ActionGame;ArcadeGame
+Keywords=Game;Action;2D;Arcade;Shooter
+Comment=Strider is a 2D sci-fi platformer
+TryExec=strider
+Exec=strider
+Terminal=false
+Icon=strider48
