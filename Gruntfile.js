@@ -176,7 +176,8 @@ module.exports = function (grunt) {
         version: 'v0.12.3',
         platforms: ['linux64', 'osx64', 'win64'],
         buildDir: './webkitbuilds',
-        winIco: 'assets/desktop/icon_48.ico'
+        winIco: 'assets/desktop/icon_128.ico',
+        macIcns: 'assets/desktop/icon_128.icns'
       },
       src: ['./dist/**/**']
     },
