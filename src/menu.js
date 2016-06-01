@@ -94,6 +94,16 @@
      * Game Menu Scene
      */
     Crafty.scene('menu', function () {
+        var gui;
+        var isNW = false;
+        var maxMenuPos = 2;
+
+        if (typeof require !== 'undefined') {
+          isNW = true;
+          maxMenuPos = 3;
+          gui = require('nw.gui');
+        }
+
         Crafty.background('#f6fafb');
         Crafty.viewport.x = 0;
         Crafty.viewport.y = 0;
@@ -126,6 +136,14 @@
                 w: Crafty.viewport.width,
             }).textFont({size: '14px'}).textColor('white').text('Credits');
 
+            if (isNW) {
+              Crafty.e('2D, DOM, Text, SpaceFont').attr({
+                  x: xpos,
+                  y: ypos + 75,
+                  w: Crafty.viewport.width,
+              }).textFont({size: '14px'}).textColor('white').text('Quit');
+            }
+
             // --- Version ---
             Crafty.e('2D, DOM, Text, SpaceFont').attr({
                 x: 2,
@@ -153,8 +171,8 @@
                     this.pos += 1;
                 }
                 if (this.pos < 0) {
-                    this.pos = 2;
-                } else if (this.pos > 2) {
+                    this.pos = maxMenuPos;
+                } else if (this.pos > maxMenuPos) {
                     this.pos = 0;
                 }
                 this.alpha = 0.9;
@@ -183,6 +201,11 @@
                             Crafty.audio.play('menu2');
                             Crafty.scene('credits');
                             return;
+                        case 3:
+                          if (isNW) {
+                            gui.App.quit()
+                          }
+                          return;
                     }
                 }
             });
