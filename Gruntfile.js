@@ -173,9 +173,10 @@ module.exports = function (grunt) {
     },
     nwjs: {
       options: {
-        version: 'v0.14.5',
-        platforms: ['osx64'],
+        version: 'v0.12.3',
+        platforms: ['linux64', 'osx64', 'win64'],
         buildDir: './webkitbuilds',
+        winIco: 'assets/desktop/icon_48.ico'
       },
       src: ['./dist/**/**']
     },
