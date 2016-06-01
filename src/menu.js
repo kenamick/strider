@@ -11,13 +11,13 @@
     document.addEventListener('DOMContentLoaded', function () {
 
     var logosTimeout = 250, logosShowTimeout = 2000;
-        
+
     /************************************************************************
      * Game Intro Scene
      */
     Crafty.scene('intro', function () {
         Crafty.background('#f6fafb');
-        
+
         // var txt = Crafty.e('2D, DOM, Canvas, SpaceFont, Delay').attr({
         //     x: 4,
         //     y: Crafty.viewport.height - 16,
@@ -49,7 +49,7 @@
         // });
 
         Crafty.e('Keyboard').bind('KeyDown', function (e) {
-            if(e.keyCode !== Crafty.keys.ESC) return;
+            if (e.keyCode !== Crafty.keys.ESC) return;
             this.destroy();
             Crafty.scene('menu');
         });
@@ -175,13 +175,13 @@
                     // go go go ...
                     switch(selctor.pos) {
                         case 0: Crafty.scene('main'); return;
-                        case 1: 
+                        case 1:
                             Crafty.audio.play('menu2');
                             Crafty.scene('instructions');
                             return;
-                        case 2: 
+                        case 2:
                             Crafty.audio.play('menu2');
-                            Crafty.scene('credits'); 
+                            Crafty.scene('credits');
                             return;
                     }
                 }
