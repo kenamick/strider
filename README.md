@@ -1,8 +1,6 @@
 _.o0 Strider 0o._
 ===============================
 
-Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/strider/ojbdlgepnccgakbkapekiifbhjchejnh).
-
 :video_game: [game-off-2015](https://github.com/blog/1990-game-off-iii-everyone-s-a-winner) challenge entry.
 
 The year is 2415. You are _Strider_. An agent of the rebel forces of Atira and Taristol II. Your mission is to infiltrate the government science facility on the moon *Efriador V* and extract all the information available about the development of a new war unit called the *Spitflyer*. You have successfully collected the data required and you now need to head to the extraction point at the top most level of the facility. A transport will be waiting for you to take you to safety. 
@@ -12,6 +10,13 @@ Good luck!
 ![Screenshot 1](http://i.imgur.com/NvyohaR.png) 
 
 ![Gameplay GIF](http://i.imgur.com/LB1j1Kgs.gif) | [View gameplay gif](http://i.imgur.com/LB1j1Kg.gifv)
+
+## Install
+
+  * Get it on [Chrome Web Store](https://chrome.google.com/webstore/detail/strider/ojbdlgepnccgakbkapekiifbhjchejnh).
+  * Get it on ArchLinux [AUR](https://aur.archlinux.org/packages/strider/).
+  * Play it on [Gamejolt](http://gamejolt.com/games/strider/60063) (Includes Hall of Fame).
+  * Play it on [itch.io](https://petarov.itch.io/strider).
 
 ## Fork Info
 
