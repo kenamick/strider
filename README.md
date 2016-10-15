@@ -103,7 +103,7 @@ Audio assets edited with [Audacity](http://audacity.sourceforge.net/).
 
 ## License
 
-*Strider* is under [MIT License](LICENSE)
+[MIT License](LICENSE)
 
 Original [Octocat Jump](https://github.com/ogoshen/game-off-2012) game is @copyright Omer Goshen <gershon@goosemoose.com>
 
