@@ -172,14 +172,14 @@ module.exports = function (grunt) {
       }
     },
     nwjs: {
+      src: ['./dist/**/**'],
       options: {
-        version: 'v0.12.3',
+        files: ['./dist/**/**'],
         platforms: ['linux64', 'osx64', 'win64'],
         buildDir: './webkitbuilds',
         winIco: 'assets/desktop/icon_128.ico',
         macIcns: 'assets/desktop/icon_128.icns'
-      },
-      src: ['./dist/**/**']
+      }
     },
   });
 
